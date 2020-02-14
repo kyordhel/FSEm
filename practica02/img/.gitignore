@@ -1,0 +1,8 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+# And these filetypes
+!*.png
+!*.pdf
+!*.jpg

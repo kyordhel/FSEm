@@ -1,0 +1,11 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+!LICENCE
+!README.md
+# And these filetypes
+!*.py
+!*.pdf
+# Even if they are in subdirectories
+!*/
