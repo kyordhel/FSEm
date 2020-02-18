@@ -25,23 +25,23 @@ from time import sleep
 # Configurar la librería para usar el número de pin.
 GPIO.setmode(GPIO.BOARD)
 # Configurar pines 36, 38, 40 y 37 como salida y habilitar en bajo
-GPIO.setup(32, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(36, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(38, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(40, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(37, GPIO.OUT, initial=GPIO.LOW)
 
 # Mapea bits a los pines de la GPIO
 def bcd7(num):
-GPIO.output(32, GPIO.HIGH if num & 0x00000008 else GPIO.LOW )
-GPIO.output(38, GPIO.HIGH if num & 0x00000004 else GPIO.LOW )
-GPIO.output(40, GPIO.HIGH if num & 0x00000002 else GPIO.LOW )
-GPIO.output(37, GPIO.HIGH if num & 0x00000001 else GPIO.LOW )
+	GPIO.output(36, GPIO.HIGH if (num & 0x00000001) > 0 else GPIO.LOW )
+	GPIO.output(38, GPIO.HIGH if (num & 0x00000002) > 0 else GPIO.LOW )
+	GPIO.output(40, GPIO.HIGH if (num & 0x00000004) > 0 else GPIO.LOW )
+	GPIO.output(37, GPIO.HIGH if (num & 0x00000008) > 0 else GPIO.LOW )
 
 flag = True
 while flag:
 	try:
 		num = int(input("Ingrese número entero: "))
-		bcd(num)
+		bcd7(num)
 	except:
 		flag = False
 	#end try
