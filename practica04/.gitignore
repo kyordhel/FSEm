@@ -1,0 +1,11 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+!etc/hostapd/hostapd.conf
+!etc/dnsmasq.conf
+# And these filetypes
+!*.py
+!*.pdf
+# Even if they are in subdirectories
+!*/
