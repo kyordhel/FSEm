@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Panel de Control LED - Raspberry Pi</title>
+<meta charset="ISO-8859-1">
+<style type="text/css">
+	html{
+		width:                 100vw;
+		height:                100vh;
+		min-width:             100vw;
+		min-height:            100vh;
+		margin:                0;
+		padding:               0;
+		box-sizing:            border-box;
+		overflow:              hidden;
+	}
+
+	body{
+		width:                 800px;
+		height:                100vh;
+		max-width:             800px;
+		min-height:            100vh;
+		padding:               0;
+		margin:                0 auto;
+		box-sizing:            border-box;
+	}
+
+	body::after{
+		content:               "";
+		position:              absolute;
+		top:                   0;
+		left:                  0;
+		bottom:                0;
+		right:                 0;
+		z-index:               -1;
+		opacity:               0.5;
+		background-image:      url('img/raspberry.png');
+		background-repeat:     no-repeat;
+		background-attachment: fixed;
+		background-position:   center;
+		background-size:       contain;
+	}
+
+	header{
+		width:                 100%;
+		padding:               0;
+		margin:                0;
+		box-sizing:            border-box;
+		text-align:            center;
+	}
+
+	h1{
+		height:                2em;
+		padding:               1em 0;
+	}
+
+	.container{
+		width:                 100%;
+		padding:               0;
+		margin:                0;
+		box-sizing:            border-box;
+		display:               flex;
+		flex-direction:        row;
+	}
+
+	.column{
+		flex:                  1 0 0;
+		display:               flex;
+		flex-direction:        column;
+	}
+
+	.numpad{
+		width:                 6.5em;
+		height:                12.75em;
+		background-color:      #333333;
+		margin:                0.5em auto;
+		padding:               0;
+		font-size:             28pt;
+		flex-wrap:             wrap;
+	}
+
+	.numbutton{
+		font-size:             inherit;
+		flex:                  1 0 0;
+		margin:                0.25em;
+	}
+
+	.ledstrip{
+		justify-content:       space-evenly;
+		width:                 90%;
+		height:                4em;
+		padding:               0;
+		margin:                0.5em auto;
+		/*background-color:      #333333;*/
+
+	}
+
+	.ledbutton{
+		width:                 3.5em;
+		height:                3.5em;
+		color:                 #F00;
+		background-color:      #933;
+		border-radius:         50%;
+		margin:                0.25em;
+		padding:               0;
+		border:                none;
+		box-shadow:            0px 4px 5px rgba(0, 0, 0, 0.2);
+	}
+
+	.ledbutton:hover{
+		background-color:      #F33;
+	}
+
+	.widebutton{
+		font-size:             18pt;
+		width:                 90%;
+		margin:                0.25em auto;
+	}
+
+	.on{
+		color:                 #0F0;
+		background-color:      #3F3;
+	}
+</style>
+</head>
+<body>
+	<header><h1>Panel de Control LED</h1></header>
+	<section class="container">
+		<article class="column">
+			<header><h2>Leds</h2></header>
+			<section class="container ledstrip">
+				<button class="ledbutton" onclick="handle(this, 'led', 1)">1</button>
+				<button class="ledbutton" onclick="handle(this, 'led', 2)">2</button>
+				<button class="ledbutton" onclick="handle(this, 'led', 3)">3</button>
+				<button class="ledbutton" onclick="handle(this, 'led', 4)">4</button>
+				<button class="ledbutton" onclick="handle(this, 'led', 5)">5</button>
+				<button class="ledbutton" onclick="handle(this, 'led', 6)">6</button>
+				<button class="ledbutton" onclick="handle(this, 'led', 7)">7</button>
+			</section>
+			<button class="widebutton" onclick="handle(this, 'marquee', 'left')">Marquesina Izq.</button>
+			<button class="widebutton" onclick="handle(this, 'marquee', 'right')">Marquesina Der.</button>
+			<button class="widebutton" onclick="handle(this, 'marquee', 'pingpong')">Ping-pong</button>
+		</article>
+		<article class="column">
+			<header><h2>Display</h2></header>
+			<section class="container numpad">
+				<button class="numbutton" onclick="handle(this, 'numpad', 7)">7</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 8)">8</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 9)">9</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 4)">4</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 5)">5</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 6)">6</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 1)">1</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 2)">2</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 3)">3</button>
+				<button class="numbutton" onclick="handle(this, 'numpad', 0)">0</button>
+			</section>
+		</article>
+	</section>
+</body>
+</html>
+<script language="javascript">
+<!--
+function deactivateAll(){
+	var buttons = document.getElementsByTagName('button');
+	for(button in buttons)
+		button.classList.remove("on")
+}
+
+function activate(sender){
+	if(sender == null)
+		return;
+	sender.classList.add("on");
+}
+
+function handle(sender, action, value){
+	// deactivateAll();
+	// activate(sender);
+	submit(action, value);
+}
+
+function submit(action, value){
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", window.location.href, true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify({
+		'action' : action,
+		'value' :  value,
+	}));
+}
+//-->
+</script>

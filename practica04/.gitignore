@@ -4,6 +4,7 @@
 !.gitignore
 !etc/hostapd/hostapd.conf
 !etc/dnsmasq.conf
+!user_interface.html
 # And these filetypes
 !*.py
 !*.pdf
