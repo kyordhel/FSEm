@@ -1,0 +1,203 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% reporte.tex
+%
+%  Author: Mauricio Matamoros
+%  Date:   2020.02.28
+%
+%  Ejemplo de reporte escrito para práctica de laboratorio
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% La raiz del proyecto (este archivo)
+%!TEX root = ./reporte.tex
+% Archivo de referencias bibliográficas
+%!TEX root = ./references.bib
+
+% CHKTEX-FILE 1
+% Plantilla de artículo con fuente de 10.5 puntos a doble columna en papel tamaño carta
+\documentclass[letterpaper,10.5pt,twocolumn]{article}
+% Plantilla de artículo con fuente de 10.5 puntos en papel tamaño carta
+% \documentclass[letterpaper,10.5pt]{article}
+
+% Configurado el tipo de documento, se agregan los paquetes
+\input{setup/packages}
+
+% Tras los paquetes se añaden las macros (nuevas funciones)
+\input{setup/macros}
+
+% Escriba a continuación el título del documento y su nombre
+\author{Fulano de Tal} % Su nombre
+\title{Práctica N. \enquote{Título de la Práctica}} % Título del documento
+% \date{} % Fecha de creación del documento
+
+
+% A continuacion se configura la página y la geometría del documento
+\input{setup/document}
+
+% Finalmente se definen los estilos para el código fuente
+\input{setup/code-styles}
+
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Introducción}
+\label{sec:intro}
+Breve descripción del desarrollo de la práctica.
+En la introducción se resume qué se va a hacer, para qué y, en su caso, que resultados se desean obtener.
+La introducción no debería exceder la primer columna.
+
+\section{Antecedentes}
+\label{sec:background}
+Breve sumario de los conocimientos teóricos y detalles técnicos que necesitan conocerse para realizar y entender la práctcia.
+Cualquier componente que vayan a utilizar tiene que ser presentado y explicado aquí, además de indicar por qué se le incluye.
+
+Es aquí, y no en la introducción, donde pueden comenzar a incluir tablas, gráficos, diagramas, figuras e imágenes.
+También se pueden incluir algoritmos en forma de pseudo-código pero no código ni tablas de resultados.
+
+\section{Sección principal o desarrollo de la práctica}
+\label{sec:main}
+Tras introducir el tema del escrito (introducción) y establecer el marco teórico (antecedentes), se procede a desarrollar el tema propiamente dicho.
+Esto puede realizarse en una o más secciones, dependiendo del tipo de texto y número de subtemas a tratar.
+En el caso de reportes técnicos, prácticas de laboratorio y artículos científicos, esto suele hacerse en una sola sección salvo cuando el estudio se compone de una parte teórica y un conjunto de experimentos que deben validar a la teoría.
+En estos casos, es común que se separe a la tesis (postulado teórico) de la parte experimental que, dependiendo de su complejidad, puede encapsularse en una sóla sección, o plantear una sección para describir los experimentos y otra para presentar y analizar los resultados.
+Con esto en mente, se puede considerar que un buen artículo o reporte tendrá a lo sumo siete secciones considerando referencias.
+
+Finalmente, es aconsejable que el título de las secciones principales describan el problema que se está estudiando o presentando.
+
+El resto de esta sección toca los siguientes temas.
+En la \Cref{sec:main-narrative} se proveen algunos tips para hacer textos amenos y de fácil comprensión.
+A continuación, la \Cref{sec:main-style} provee lineamientos de estilo para hacer más legible el texto y los datos, así como para facilitar el localizar la información.
+
+\subsection{Narrativa e hilo conductor}
+\label{sec:main-narrative}
+Un texto científico no tiene por qué ser críptico, árido o aburrido.
+
+Al escribir un documento, considere que se está contando una historia.
+Es decir, los elementos han de acomodarse de tal forma que el lector se sienta siendo guiado por un hilo conductor que
+\begin{enumerate*}[label=\alph*\rpar]
+	\item plantea el tema (introducción),
+	\item desarrolla una trama (antecedentes y desarrollo),
+	\item conduce a un climax (desarrollo)
+	y
+	\item cierra con un desenlace (conclusiones).
+\end{enumerate*}
+Cuanto mejor interconectados estén los elementos presentados, más fácil será la lectura del documento.
+
+Al igual que en la narrativa en prosa, un buen reporte científico debe ser cíclico. Tanto en la introducción como en el abstract (resumen de 3 párrafos y hasta 250 palabras que sumariza el documento completo) se plantea una premisa o tema que es retomado en las conclusiones.
+De manera similar, los actores deberán ser presentados antes de dar pie a la descripción de los sucesos importantes que toman lugar.
+Finalmente, cuando se reflexiona sobre lo acontecido, es cuando se retoma lo introducio al principio y se contrasta con lo aprendido para extraer las conclusiones.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\columnwidth,height=5cm,keepaspectratio]{img/figure.jpg}
+	\caption{Figura de ejemplo}%
+	\label{fig:example-figure} %CHKTEX 24
+\end{figure}
+
+\begin{table*}[t]
+	\centering
+	\caption{Tabla de ejemplo con ancho de página completo}%
+	\label{tbl:full-width-table} %CHKTEX 24
+	\begin{tabularx}{0.9\textwidth}{X c c c c c c c c c}
+	\toprule
+	& Cabecera 1 & Cabecera 2 & Cabecera 3
+	& Cabecera 4 & Cabecera 5 & Cabecera 6\\
+	\midrule
+	Fila 1 & a & b & c & d & e & f \\
+	Fila 2 & g & h & i & j & k & l \\
+	Fila 3 & m & n & o & p & q & r \\
+	Fila 4 & s & t & u & v & w & x \\
+	\bottomrule
+	\end{tabularx}
+\end{table*}
+\subsection{Estilo y formato}
+\label{sec:main-style}
+
+La regla de oro en cuanto a estilo en \LaTeX{} es jamás modificar la plantilla que provee el editor.
+Esto incluye
+\begin{enumerate*}[label=\alph*\rpar]
+	\item márgenes,
+	\item espacio entre párrafos,
+	\item espaciado de títulos,
+	\item tamaño y tipo de letra,
+	\item encabezado y pies de página
+	y
+	\item sangrías
+\end{enumerate*}
+entre otros.
+Además, jamás deberán usarse primitivas de ajuste de espacio como \textcommand{vspace} y \textcommand{vskip}.
+
+Todos los elementos de apoyo que incluyan (tablas, gráficos, código, algoritmos, diagramas, figuras, imágenes, etcétera) deben ir numerados y leyendados (ej.~con pie de foto o \textcommand{caption}), además de debidamente referidos en el texto, como la \Cref{tbl:column-width-table} y la \Cref{fig:example-figure}.
+Se estila que los elementos gráficos lleven el pie de foto o leyenda en la parte inferior, mientras que los elementos de texto (tablas, código, algoritmos) la lleven en la parte superior.
+
+\begin{table}[H]
+	\centering
+	\caption{Tabla de ejemplo con ancho de una columna}%
+	\label{tbl:column-width-table} %CHKTEX 24
+	\begin{tabularx}{0.9\columnwidth}{X c c c}
+	\toprule
+	& Cabecera 1 & Cabecera 2 & Cabecera 3 \\
+	\midrule
+	Fila 1 & a & b & c \\
+	Fila 2 & d & e & f \\
+	Fila 3 & g & h & i \\
+	\bottomrule
+	\end{tabularx}
+\end{table}
+
+Cuando agregue tablas, utilice las guías de estilo de \texttt{booktabs}, es decir los encabezados entre \texttt{toprule} y \texttt{midrule}, y \texttt{bottomrule} como línea inferior, sin delimitadores visibles verticales (rayas). Esto dará una apariencia más límpia.
+Por otro lado, cuando las tablas tengan que presentar una gran cantidad de datos (recuerde presentar sólo lo relevante y prefiera vínculos a recursos en línea o use apéndices), estas podrían no caber en el espacio de una sola columna.
+En estos casos utilice el entorno estrella delimitado por \textenviron{table*} para generar tablas del ancho de la página en documentos a doble columna, tal como ejemplifica la \Cref{tbl:full-width-table}.
+
+En lo correspondiente a enumeraciones, para enumeraciones cortas se desaconseja el uso de listas ordenadas con un elemento por línea. En su lugar, y a fin de ahorrar espacio, se prefieren listas en línea, las cuales se pueden obtener importando el paquete \texttt{enumitem} con la opción \texttt{inline}, como se muestra en el \Cref{lst:inline-enum}.
+
+\begin{lstlisting}[language={[LaTex]{TeX}},label={lst:inline-enum},caption={Enumeración en línea},captionpos=t]
+\begin{enumerate*}[label=\alph*\rpar]
+	\item elemento 1,
+	\item elemento 2
+	y
+	\item elemento 3.
+\end{enumerate*}
+\end{lstlisting}
+
+Otro aspecto importante es el de las citas y referencias.
+En general, se espera que un documento cuente con al menos 70\% de contenido original, lo que deja entre un 20\% y 30\% del contenido para citas textuales y paráfrasis.
+Es importante aclarar que el análisis y contraste de ideas se considera contenido original, por lo que referir a varias fuentes, comparar los puntos de vista, y realizar el proceso de síntesis de conclusiones no cuenta como plagio.
+
+No obstante, el crédito siempre ha de darse de manera explícita.
+En el caso de las citas textuales, éstas deberán ir entrecomilladas y seguidas de las referencias pertinentes mediante el comando \textcommand{cite}, cuando son cortas, o en un párrafo aparte con sangrías en ambos lados y letra cursiva cuando son largas.
+Para evitar estos inconvenientes y lidiar con las tipografías que cada idioma requiere para el manejo de citas, se recomienda el uso del paquete \texttt{csquotes} que provee el comando \textcommand{enquote} para este propósito (véase \Cref{lst:enquote})~\Citep{Lehman2005csquotes}.
+
+\begin{lstlisting}[language={[LaTex]{TeX}},label={lst:enquote},caption={Uso de enquote para entrecomillado de citas},captionpos=t]
+\enquote{This package\dots include commands, environments, and user-definable \enquote{smart quotes} which dynamically adjust to their context. Quotation marks are switched automatically if quotations are nested andcan adjust to the current language}~\Citep{Lehman2005csquotes}.
+\end{lstlisting}
+
+Continuando con las citas, se aconseja el uso del paquete \textcommand{natbib} o algún otro manejador de referencias poderoso como \emph{biber}.
+\texttt{natbib} ofrece comandos adicionales a \textcommand{cite} como los siguientes~\citep{Daly2006natbib}
+\begin{itemize}
+	\item\textbf{\textcommand{citep}:} Cita entre paréntesis, como en \emph{(Johnes et al.,~1990)}.
+	\item\textbf{\textcommand{citep*}:} Cita entre paréntesis sin comprimir, como en \emph{(Johnes, Backer and Williams,~1990)}.
+	\item\textbf{\textcommand{citet}:} Cita en texto, como en \emph{Johnes et al.~(1990)}.
+	\item\textbf{\textcommand{citet*}:} Cita en texto sin comprimir, como en \emph{Johnes, Backer and Williams~(1990)}.
+	\item\textbf{\textcommand{citeyear}:} Cita sólo el año de una publicación.
+	\item\textbf{\textcommand{citeauthor}:} Cita sólo el autor de una publicación.
+\end{itemize}
+
+Además, \texttt{natbib} permite especificar capítulos y ofrece otra variedad de comandos para el control bibliográfico, y permite cambiar el estilo de referencia con facilidad entre APA, MLA, IEEE, etcétera.
+
+\section{Conclusiones}
+\label{sec:conclusions}
+Todo trabajo debe cerrar con conclusiones, las cuales retoman los postulados o suposiciones iniciales y, tras una recapitulación de lo logrado, aprendido, o analizado, sintetizan los puntos más relevantes del trabajo.
+Dicho de una manera simplista, es en las conclusiones donde se validan o refutan las hipótesis planteadas al principio con base en el trabajo realizado.
+
+De manera similar, es en esta sección donde se reflexiona el alcance de lo conseguido y se proponen los siguientes pasos a seguir, qué falta por investigar, y que nuevas dudas, problemas o cuestionamientos plantea lo estudiado.
+
+\section{Referencias}
+\label{sec:references}
+\nocite{*}
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}

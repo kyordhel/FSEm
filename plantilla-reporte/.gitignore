@@ -1,0 +1,11 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+!Makefile
+# And these filetypes
+!*.bib
+!*.tex
+!*.pdf
+# Even if they are in subdirectories
+!*/

@@ -1,0 +1,44 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% packages.tex
+%
+%  Author: Mauricio Matamoros
+%  Date:   2020.02.28
+%
+%  Contiene la lista de paquetes requeridos para generar
+%  el archivo-reporte de las prácticas de laboratorio
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Archivo principal de LaTeX
+%!TEX root = ../reporte.tex
+
+\usepackage[utf8]{inputenc}                  % Soporte para utf8
+\usepackage[T1]{fontenc}                     % Soporte extendido de caracteres unicode
+\usepackage[english,spanish,mexico]{babel}   % Define el idioma del documento a español (México) con soporte para inglés
+% Standard packages
+\usepackage{float}                           % Imágenes flotantes en el documento
+\usepackage{ifthen}                          % Soporte if-then en macros
+\usepackage{xspace}                          % Soporte de autoespaciado en macros
+\usepackage{xstring}                         % Operaciones con cadenas en macros
+\usepackage{wrapfig}                         % Permite colocar texto al rededor de figuras y otros flotantes
+\usepackage{booktabs}                        % Embellece tablas
+\usepackage{csquotes}                        % Entrecomillado automático y manejo de citas textuales
+\usepackage{fancyhdr}                        % Permite reconfigurar encabezado y pie de página
+\usepackage{fancyvrb}                        % Define estilos para entornos Verbatim
+\usepackage{geometry}                        % Permite reconfigurar la geometría del documento
+\usepackage{graphicx}                        % Permite insertar imágenes en varios formatos
+\usepackage{lastpage}                        % Referencia a la última página del documento
+\usepackage{listings}                        % Define estilos para entornos de código de programación (sintaxis)
+\usepackage{multicol}                        % Manejo de texto en varias columnas
+\usepackage{tabularx}                        % Tablas con ancho de columna variable
+\usepackage{algorithm}                       % Entorno para escribir algoritmos
+\usepackage{algpseudocode}                   % Entorno para escribir algoritmos en pseudocódigo
+\usepackage[justification=centering]{subcaption} % Permite imágenes en viñetas
+\usepackage[all]{nowidow}                    % Control de viudas y huérfanas
+\usepackage[inline]{enumitem}                % Añade opciones de configuración a listas
+\usepackage[usenames,dvipsnames]{xcolor}     % Permite el uso de colores en el documento
+% Referencing
+\usepackage{varioref}                        % Gestión de referencias variables
+\usepackage{hyperref}                        % Gestión de referencias e hipervínculos
+\usepackage[noabbrev,nameinlink,spanish]{cleveref} % Gestión de referencias cruzadas inteligentes con hipervínculos
+\usepackage[square, comma, numbers, sort&compress]{natbib} % Gestión de referencias bibliográficas
