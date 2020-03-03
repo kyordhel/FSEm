@@ -1,0 +1,11 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+# And these filetypes
+!*.pdf
+!*.conf
+!*.netdev
+!*.network
+# Even if they are in subdirectories
+!*/
