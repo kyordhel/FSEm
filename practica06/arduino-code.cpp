@@ -13,7 +13,7 @@
 #define VAREF 2.7273
 
 // Prototypes
-void main(void);
+int main(void);
 void setup(void);
 float read_temp(void);
 float read_avg_temp(int count);
@@ -25,7 +25,7 @@ void setup(void){
 	// Configure ADC to use voltage reference from AREF pin (external)
 	analogReference(EXTERNAL);
 	// Set ADC resolution to 10 bits
-	analogReadResolution(10)
+	// analogReadResolution(10);
 
 	// Setup the serial port to operate at 56.6kbps
 	Serial.begin(56600);
@@ -60,10 +60,16 @@ float read_avg_temp(int count){
 	return avgtemp / count;
 }
 
-void main(){
+int main(){
+	float temp = 0;
+	setup();
+
 	// Read temperature in an endless loop and report it
 	while(1){
 		temp = read_avg_temp(5);
-		Serial.print("%.1f\n", temp);
+		Serial.print((int)temp);
+		Serial.print(".");
+		Serial.print((int)(10 * temp) % 10);
 	}
+	return 0;
 }

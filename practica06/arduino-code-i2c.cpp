@@ -20,7 +20,7 @@
 float temperature = 0;
 
 // Prototypes
-void main(void);
+int main(void);
 void setup(void);
 void i2c_received_handler(int count);
 void i2c_request_handler(int count);
@@ -34,7 +34,7 @@ void setup(void){
 	// Configure ADC to use voltage reference from AREF pin (external)
 	analogReference(EXTERNAL);
 	// Set ADC resolution to 10 bits
-	analogReadResolution(10)
+	// analogReadResolution(10)
 
 	// Configure I2C to run in slave mode with the defined address
 	Wire.begin(I2C_SLAVE_ADDR);
@@ -68,7 +68,7 @@ void i2c_received_handler(int count){
 	while (Wire.available()){
 		received = (char)Wire.read();
 		digitalWrite(BOARD_LED, received ? HIGH : LOW);
-		Serial.print("%c", received);
+		Serial.print(received);
 	}
 
 }
@@ -87,10 +87,12 @@ float read_temp(void){
 	return vdiff * VAREF / 10.24f;
 }
 
-void main(){
+int main(){
+	setup();
 	// Read temperature every 100ms in an endless loop
 	while(1){
-		temperature = read_temp(5);
+		temperature = read_temp();
 		delay(100);
 	}
+	return 0;
 }
