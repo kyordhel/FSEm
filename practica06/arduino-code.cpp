@@ -35,14 +35,17 @@ void setup(void){
 * Reads temperature in C from the ADC
 */
 float read_temp(void){
+	// The actual temperature
 	int vplus  = analogRead(0);
+	// The reference temperature value, i.e. 0°C
 	int vminus = analogRead(1);
 	// Calculate the difference. when V+ is smaller than V- we have negative temp
 	int vdiff = vplus - vminus;
-	// Now, we need to convert values to the ADC resolution, AKA 2.72V/1024
-	// We also know that 1C = 0.01V so we can multiply by 2.72V / (0.01V/°C) = 272°C
-	// to get C instead of V. Analogously we can multiply VAREF by 100 but
-	// since we will divide per 1024, it suffice with dividing by 10.24
+	/* Now, we need to convert values to the ADC resolution, AKA 2.72V/1024
+	*  We also know that 1C = 0.01V so we can multiply by 2.72V / (0.01V/°C) = 272°C
+	*  to get C instead of V. Analogously we can multiply VAREF by 100 but
+	*  since we will divide per 1024, it suffice with dividing by 10.24
+	*/
 	float temp = vdiff * VAREF / 10.24f;
 	return temp;
 }
