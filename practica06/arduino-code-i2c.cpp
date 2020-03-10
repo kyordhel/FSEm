@@ -66,7 +66,7 @@ void i2c_received_handler(int count){
 	while (Wire.available()){
 		received = (char)Wire.read();
 		digitalWrite(BOARD_LED, received ? HIGH : LOW);
-		Serial.print(received);
+		Serial.println(received);
 	}
 
 }

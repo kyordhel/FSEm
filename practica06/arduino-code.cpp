@@ -63,7 +63,7 @@ void loop(){
 	float temp = read_avg_temp(5);
 	Serial.print((int)temp);
 	Serial.print(".");
-	Serial.print((int)(10 * temp) % 10);
+	Serial.println((int)(10 * temp) % 10);
 	digitalWrite(13, HIGH);
 	delay(5);
 	digitalWrite(13, LOW);
