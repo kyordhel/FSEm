@@ -20,8 +20,6 @@
 float temperature = 0;
 
 // Prototypes
-int main(void);
-void setup(void);
 void i2c_received_handler(int count);
 void i2c_request_handler(int count);
 float read_temp(void);
@@ -87,12 +85,7 @@ float read_temp(void){
 	return vdiff * VAREF / 10.24f;
 }
 
-int main(){
-	setup();
-	// Read temperature every 100ms in an endless loop
-	while(1){
-		temperature = read_temp();
-		delay(100);
-	}
-	return 0;
+void loop(){
+	temperature = read_temp();
+	delay(100);
 }

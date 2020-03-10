@@ -13,8 +13,6 @@
 #define VAREF 2.7273
 
 // Prototypes
-int main(void);
-void setup(void);
 float read_temp(void);
 float read_avg_temp(int count);
 
@@ -28,7 +26,8 @@ void setup(void){
 	// analogReadResolution(10);
 
 	// Setup the serial port to operate at 56.6kbps
-	Serial.begin(56600);
+	Serial.begin(9600);
+	pinMode(13, OUTPUT);
 }
 
 /**
@@ -60,16 +59,13 @@ float read_avg_temp(int count){
 	return avgtemp / count;
 }
 
-int main(){
-	float temp = 0;
-	setup();
-
-	// Read temperature in an endless loop and report it
-	while(1){
-		temp = read_avg_temp(5);
-		Serial.print((int)temp);
-		Serial.print(".");
-		Serial.print((int)(10 * temp) % 10);
-	}
-	return 0;
+void loop(){
+	float temp = read_avg_temp(5);
+	Serial.print((int)temp);
+	Serial.print(".");
+	Serial.print((int)(10 * temp) % 10);
+	digitalWrite(13, HIGH);
+	delay(5);
+	digitalWrite(13, LOW);
+	delay(5);
 }
