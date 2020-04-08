@@ -1,0 +1,92 @@
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 18
+% CHKTEX-FILE 35
+% \documentclass[letterpaper,10.5pt,twocolumn]{article}
+\documentclass[letterpaper,10.5pt]{article}
+% Input encodign
+
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/document}
+\input{setup/listings}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Tarea 3:\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{Entrega: Miércoles 1\textsuperscript{o} de Marzo, 2020}
+
+\renewcommand*{\lstlistingname}{Archivo}
+
+% Document body
+\begin{document}
+\maketitle
+\paragraph*{Instrucciones:} Desarrolle de manera puntual, concisa y suficiente los siguientes incisos e incluya figuras, diagramas y ejemplos cuando así fuere necesario.
+Todas las respuestas deberán incluir la referencia a las fuentes de las cuales se obtiene la información para responder cada inciso y que deberán listarse en la bibliografía.
+
+\begin{enumerate}[label=\alph*)]
+	\item Complete la información de las \Cref{tbl:diseases-in-mexico,tbl:deaths-in-mexico}.
+	\item Estime la función de crecimiento exponencial de COVID-19 a partir del histórico de casos registrados a la fecha.
+	% (véase)
+	\item Investigue, para cada una de las clases económicas en México (Baja Baja, Baja Alta, Media Baja, Media Alta, Alta Baja, Alta Alta) cuál es el ingreso promedio del mexicano y estime el ahorro promedio que éste podría tener.
+	\item Con base en la información recabada, responda las siguientes preguntas:
+	\begin{enumerate}
+		\item{} ¿Durante cuánto tiempo podrá una familia de cada clase económica mantenerse en cuarentena sin pasar hambre? [3 puntos]
+		\item{} ¿Qué causas de muerte en México tienen un índice de mortalidad mayor a la esperada del COVID-19 en el peor escenario? [3 puntos]
+		\item{} ¿Qué causas de muerte deberían recibir atención prioritaria por parte del Estado? Proponga soluciones para cada uno de los problemas. [4 puntos]
+	\end{enumerate}
+
+\end{enumerate}
+
+\begin{table}[ht]
+	\centering
+	\caption{Enfermedades en México}
+	\label{tbl:diseases-in-mexico} % CHKTEX 24
+	\begin{tabularx}{0.9\linewidth}{X cccccc }
+	\toprule
+		\multirow{2}{*}{\bfseries Causa asociada } &
+		\multicolumn{6}{c}{\bfseries Total de casos al año }
+		\\
+		& 2014 & 2015 & 2016 & 2017 & 2018 & 2019
+		\\ \midrule
+	Dengue                               &~&~&~&~&~&~\\[1cm] \midrule
+	Diabetes                             &~&~&~&~&~&~\\[1cm] \midrule
+	Enfermedades asociadas a la obesidad
+	y al consumo desmedido de azúcares   &~&~&~&~&~&~\\[1cm] \midrule
+	Influenza y neumonía                 &~&~&~&~&~&~\\[1cm] \midrule
+	Enfermedades pulmonares y asociadas
+	al consumo de tabaco                 &~&~&~&~&~&~\\[1cm] \midrule
+	Narcotráfico y
+	delincuencia organizada              &~&~&~&~&~&~\\[1cm] \midrule
+	Accidentes de tránsito               &~&~&~&~&~&~\\[1cm] \bottomrule
+	\end{tabularx}
+\end{table}
+
+\begin{table}[ht]
+	\centering
+	\caption{Causas de muerte en México}
+	\label{tbl:deaths-in-mexico} % CHKTEX 24
+	\begin{tabularx}{0.9\linewidth}{X ccccc cc }
+	\toprule
+		\multirow{2}{*}{\bfseries Causa asociada } &
+		\multicolumn{5}{c}{\bfseries Total de muertes al año } &
+		\multicolumn{2}{c}{\bfseries Muertes en 2019 }
+		\\
+		& 2014 & 2015 & 2016 & 2017 & 2018 & Promedio Semanal & Total Anual
+		\\ \midrule
+	Dengue                               &~&~&~&~&~&~\\[1cm] \midrule
+	Diabetes                             &~&~&~&~&~&~\\[1cm] \midrule
+	Enfermedades asociadas a la obesidad
+	y al consumo desmedido de azúcares   &~&~&~&~&~&~\\[1cm] \midrule
+	Influenza y neumonía                 &~&~&~&~&~&~\\[1cm] \midrule
+	Enfermedades pulmonares y asociadas
+	al consumo de tabaco                 &~&~&~&~&~&~\\[1cm] \midrule
+	Narcotráfico y
+	delincuencia organizada              &~&~&~&~&~&~\\[1cm] \midrule
+	Feminicidios                         &~&~&~&~&~&~\\[1cm] \midrule
+	Accidentes de tránsito               &~&~&~&~&~&~\\[1cm] \bottomrule
+	\end{tabularx}
+\end{table}
+
+
+\end{document}
