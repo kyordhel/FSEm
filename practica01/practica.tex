@@ -1,0 +1,333 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 1:\\Instalación de Raspbian en la Raspberry Pi\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a instalar un sistema operativo basado en Linux, como sistema operativo embebido, en una tarjeta microcontroladora.
+
+\section{Introducción}%
+\label{sec:introduction}
+Raspbian es el sistema operativo más popular para Raspberry Pi, además de ser el único con soporte oficial.
+Raspbian es una distribución de Linux basada en Debian, optimizado para la Raspberry Pi y que permite a esta operar como una PC.~La distro incorpora terminal y navegador web entre otros programas.
+
+\section{Instrucciones}%
+\label{sec:instructions}
+
+Instalar Raspbian en la Raspberry Pi es sencillo.
+Basta con descargar Raspbian y grabar la imagen de disco en una tarjeta de memoria microSD, desde la cual arrancará el sistema operativo.
+
+Para esta práctica se necesitará:
+\begin{itemize}[nosep]
+	\item Una tarjeta de memoria microSD de al menos 4 GB (se recomiendan 8GB)
+	\item Una computadora capaz de leer y escribir tarjetas microSD (o bien un adaptador para la misma) y conexión a internet para descargar la imagen de Raspbian.
+	\item Una Raspberry Pi 2B o posterior
+	\item Un monitor con soporte para HDMI
+	\item Un teclado USB
+	\item Un mouse USB
+	\item Una fuente de alimentación de 5V@1A con adaptador microUSB
+\end{itemize}
+
+\paragraph*{Importante:} Si no cuenta con monitor, teclado y mouse, aún es posible instalar Raspbian en la Raspberry Pi. Consulte el \Cref{sec:anex1}.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Descargar Raspbian}%
+\label{sec:step1}
+Ingrese a \url{https://www.raspberrypi.org/downloads/raspbian/} y descargue alguna de las imágenes de Raspbian disponibles (véase \Cref{fig:raspbian-flavors}). Si se descargó un archivo Zip, habrá que descomprimirlo para extraer la imagen.
+
+\begin{figure}
+	\centering%
+	\includegraphics[width=0.8\columnwidth,height=8cm,keepaspectratio]{img/p01-01.png} %CHKTEX 8
+	\caption{Versiones disponibles (o sabores) de Raspbian}
+	\label{fig:raspbian-flavors} %CHKTEX 24
+\end{figure}
+
+La versión a descargar dependerá de la capacidad de la memoria microSD y la cantidad de recursos de la tarjeta Raspbian.
+Para tarjetas de 4GB se aconseja el sabor \emph{Raspbian Buster with desktop}, mientras que usuarios con tarjetas de sólo 512MB de RAM querrán instalar \emph{Raspbian Buster Lite}.
+
+Ligas de acceso rápido se proporcionan a continuación por conveniencia:
+
+\begin{itemize}[noitemsep]
+	\item \href{https://downloads.raspberrypi.org/raspbian_full_latest}{Raspbian Buster with desktop and recommended software}
+	\item \href{https://downloads.raspberrypi.org/raspbian_latest}{Raspbian Buster with desktop}
+	\item \href{https://downloads.raspberrypi.org/raspbian_lite_latest}{Raspbian Buster Lite}
+\end{itemize}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Escribir imagen en la microSD}%
+\label{sec:step2}
+Si no lo ha hecho, introduzca la memoria microSD en la computadora.
+La memoria tendrá que formatearse, por lo que se aconseja respaldar la información.
+
+Escribir la imagen de Raspbian en la microSD requiere de un programa externo según el sistema operativo.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2a: Linux
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Escribir imagen usando Linux}%
+Descargue \href{https://etcher.io/}{Etcher} en \texttt{\textasciitilde/Downloads}, descomprima y ejecute; por ejemplo
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ cd ~/Downloads
+$ unzip balena-etcher-electron-1.5.75-linux-x64.zip
+$ ./balenaEtcher-1.5.75-x64.AppImage
+\end{Verbatim}
+
+
+A continuación, siga los pasos de Etcher para grabar la imagen (véase \Cref{fig:write-image-linux})
+\begin{enumerate}[noitemsep]
+	\item Seleccione la imagen IMG de Raspbian
+	\item Seleccione el medio en el cual se grabará la imagen de Raspbian (punto de montaje de la microSD)
+	\item De click en \emph{Flash!} para empezar el proceso de grabado
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-linux-imagea.png} %CHKTEX 8
+		\caption{Selección de imagen a grabar}
+		\label{fig:write-image-linux-a} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-linux-imageb.png} %CHKTEX 8
+		\caption{Listo para grabar la imagen}
+		\label{fig:write-image-linux-b} %CHKTEX 24
+	\end{subfigure}
+	\caption{Escritura de la imagen IMG de Raspbian en la microSD con Etcher}%
+	\label{fig:write-image-linux} %CHKTEX 24
+\end{figure}
+
+Cuando la escritura de datos en la microSD termine, notará que ésta ha sido reparticionada en \texttt{boot} (partición de arranque tipo \textit{FAT32}) y \texttt{rootfs} (partición raíz tipo \textit{EXT4}).
+
+Si no cuenta con monitor, teclado o mouse, consulte el \Cref{sec:annex1}.
+De otro modo, desmonte la tarjeta microSD e insértela en la Raspberry Pi.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2b: Windows
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Escribir imagen usando Windows}%
+Descargue e instale \href{https://sourceforge.net/projects/win32diskimager/}{Win32 Disk Imager}.
+Si no ha descmprimido la imagen de Raspbian, proceda a hacerlo con un programa que descomprima archivos Zip como \href{https://www.7-zip.org/download.html}{7zip} (Windows 7 y posterior deberí soportar descompresión zip).
+
+A continuación, siga los pasos de Win32 Disk Imager para grabar la imagen (véase \Cref{fig:write-image-windows})
+\begin{enumerate}[noitemsep]
+	\item Seleccione la imagen IMG de Raspbian en \emph{Image File}
+	\item Seleccione la unidad en la cual se grabará la imagen de Raspbian (letra asignada a la microSD) en \emph{Device}
+	\item De click en \emph{Write} para iniciar el proceso de escritura.
+	\item Win32 Disk Imager mostrará una advertencia, de click en \emph{Yes} para continuar.
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-windows-imagea.png} %CHKTEX 8
+		\caption{Selección de imagen a grabar}
+		\label{fig:write-image-windows-a} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-windows-imageb.png} %CHKTEX 8
+		\caption{Listo para grabar la imagen}
+		\label{fig:write-image-windows-b} %CHKTEX 24
+	\end{subfigure}
+	\caption{Escritura de la imagen IMG de Raspbian en la microSD con Win32 Disk Imager}%
+	\label{fig:write-image-windows} %CHKTEX 24
+\end{figure}
+
+Cuando la escritura de datos en la microSD termine, Windows asignará una letra al nuevo volúmen de datos de la microSD, llamada \texttt{boot}.
+Desmonte la tarjeta microSD e insértela en la Raspberry Pi.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 3
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\subsection{Paso 3: Configurar Raspbian}%
+Para configuar Raspbian, la Raspberry Pi deberá tener una tarjeta de memoria microSD con una imagen de Raspbian precargada y estar conectada a un monitor vía el puerto HDMI incorporado.
+Además, se precisa de un teclado y apuntador (mouse) USB para realizar el proceso de configuración.
+A continuación, conecte la Raspberry Pi y espere entre 1 y 3 minutos a que el sistema operativo cargue.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-03-desktop.png} %CHKTEX 8
+	\caption{Escritorio de Raspbian}
+	\label{fig:raspbian-desktop} %CHKTEX 24
+\end{figure}
+
+Una vez terminado el proceso de arranque, siga el asistente para configurar Raspbian, tal como se muestra en la \Cref{fig:setup-wizard}.
+
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.33\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-03-wizard-1.png} %CHKTEX 8
+		\caption{Inicio del\\Asistente de Conficuración\\~}
+		\label{fig:setup-wizard-step-1} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.33\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-03-wizard-2.png} %CHKTEX 8
+		\caption{Selección de idioma\\y datos de localización\\~}
+		\label{fig:setup-wizard-step-2} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.33\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-03-wizard-3.png} %CHKTEX 8
+		\caption{Cambio de contraseña\\del usuario principal \textit{pi}\\~}
+		\label{fig:setup-wizard-step-3} %CHKTEX 24
+	\end{subfigure}\\
+	\begin{subfigure}[b]{0.33\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-03-wizard-4.png} %CHKTEX 8
+		\caption{Calibración de pantalla\\~}
+		\label{fig:setup-wizard-step-4} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.33\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-03-wizard-5.png} %CHKTEX 8
+		\caption{Actualización de Software\\Requiere conexión a internet}
+		\label{fig:setup-wizard-step-5} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.33\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-03-wizard-6.png} %CHKTEX 8
+		\caption{Fin del asistente y reinicio\\~}
+		\label{fig:setup-wizard-step-6} %CHKTEX 24
+	\end{subfigure}\\
+	\caption{Asistente de configuración de Raspbian}%
+	\label{fig:setup-wizard} %CHKTEX 24
+\end{figure}
+
+Finalmente, se aconseja expandir la partición de Raspbian a su máxima capacidad.
+Para ello, ejecute en una terminal la herramienta de configuración \texttt{sudo raspi-config} (véase \Cref{fig:raspberry-config-tool}), seleccione la opción 7, \textit{Opciones avanzadas} (Avanced Options), y luego la opción A1, \textit{Extender el sistema de archivos} (Expand Filesystem).
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Anex
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix%
+% \clearpage%
+\section{Instalación de Raspbian via SSH}%
+\label{sec:annex1}
+En caso de que no se cuente con un monitor, es posible instalar Raspbian vía SSH. %CHKTEX 13
+Para ello es necesario habilitar conexiones vía SSH ya que estas se encuentran deshabilitadas por defecto.
+
+
+\subsection{Habiliar conexiones SSH}
+\label{sec:annex1-ssh-enable}
+Para habilitar SSH, se necesita crear un archivo vacío llamado \texttt{SSH} en la raíz de la partición \texttt{rootfs}.
+Supóngase que la microSD está asociada a \texttt{/dev/sdc}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/sdc1} y \texttt{/dev/sdc2} respectivamente.
+El proceso de creación del archivo \texttt{SSH} en la raíz de la partición \texttt{rootfs} es como sigue:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ mkdir /media/user/rootfs
+# mount /dev/sdc2 /media/user/rootfs
+# touch /media/user/rootfs/SSH
+\end{Verbatim}
+
+Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
+
+Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
+
+\subsection{Configurar Raspbian vía SSH}
+Para configuar Raspbian via SSH, la Raspberry Pi deberá estar conectada a la red local vía un cable Ethernet y tener una tarjeta de memoria microSD con una imagen de Raspbian precargada.
+
+A continuación, conecte la Raspberry Pi y espere entre 1 y 3 minutos a que el sistema operativo cargue.
+Utilice un escaner de IP o consulte su enrutador para conocer la IP asignada a la Raspberry Pi.
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=9cm]{img/p01-appendix01.png} %CHKTEX 8
+	\caption{Dirección IP de una Raspbery Pi}
+	\label{fig:raspberry-ip} %CHKTEX 24
+\end{figure}
+
+Una vez conozca la dirección IP de la Raspberry Pi, conéctese a ésta mediante SSH. %CHKTEX 13
+Secure Shell le advertirá que no puede verificar la autenticidad del certificado, por lo que pedirá que confirme la conexión tecleando \texttt{yes}, como se muestra a continuación.
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ ssh pi@192.168.1.126
+
+    The authenticity of host '192.168.1.126 (192.168.1.126)' can't be established.
+    ECDSA key fingerprint is SHA256:1nrpQeTIb+Gzg4aIJ0WE+V0aLUQgDnQbxOGraWf0Kso.
+    Are you sure you want to continue connecting (yes/no)?
+\end{Verbatim}
+
+Teclee \texttt{yes} y presione Enter.
+De inmediato se le solicitará la contraseña
+
+\begin{Verbatim}[fontsize=\footnotesize]
+    Warning: Permanently added '192.168.1.126' (ECDSA) to the list of known hosts.
+
+    pi@192.168.1.126's password:
+\end{Verbatim}
+
+Teclee \texttt{raspberry}, la contraseña por default en Raspbian, y presione Enter.
+Se concretará la conexión.
+
+\begin{Verbatim}[fontsize=\footnotesize]
+    Linux raspberrypi 4.19.75-v7+ #1270 SMP Tue Sep 24 18:45:11 BST 2019 armv7l
+
+    The programs included with the Debian GNU/Linux system are free software;
+    the exact distribution terms for each program are described in the
+    individual files in /usr/share/doc/*/copyright.
+
+    Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+    permitted by applicable law.
+    Last login: Thu Feb  6 18:28:53 2020
+
+    SSH is enabled and the default password for the 'pi' user has not been changed.
+    This is a security risk - please login as the 'pi' user and type 'passwd' to set a new password.
+\end{Verbatim}
+
+Finalmente, para configurar su Raspbian, ejecute \texttt{sudo raspi-config}  para iniciar la herramienta de configuración (véase \Cref{fig:raspberry-config-tool}).
+Se aconseja definir el idioma, localización, y cambiar la contraseña del usuario por defecto \textit{pi}.
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.8\linewidth,height=5cm,keepaspectratio]{img/p01-appendix02.png} %CHKTEX 8
+	\caption{Herramienta de configuración de Raspbian}
+	\label{fig:raspberry-config-tool} %CHKTEX 24
+\end{figure}
+
+\end{document}

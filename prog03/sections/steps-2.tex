@@ -1,0 +1,34 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-2.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+%!TEX ROOT=../main.tex
+%!TEX ROOT=../references.bib
+
+\subsection{Paso 2: Cálculo del divisor de voltaje}%
+\label{sec:step2}
+
+El simulador configurado en la \Cref{sec:step1} implementa la simulación de un sensor de temperatura LM35 en configuración básica acoplado a un circuito ADC con un divisor de voltaje en $V_{Ref+}$ y $V_{Ref-}$ a tierra, mismo que se configura con la línea:
+
+\lstinputlisting[%
+	firstline=58,
+	lastline=58,
+	label={lst:adc-board-config},
+	caption=Configuración del ADC del sensor LM35 virtual \IIC{} (\texttt{temperature.py:58})
+]{src/temperature.py}
+
+La función \texttt{run\_temperature\_board} recibe tres parámetros, los valores de las resistencias $R_1$ y $R_2$ para la alimentación del $V_{Ref+}$ y un boleano que configura el módulo ADC para operar con una presición de 8 bits (\texttt{p8bits=True}) o de 10 bits  (\texttt{p8bits=False}).
+
+Sin embargo, los valores por defecto de las resistencias usadas no son óptimos, ya que hacen que el módulo ADC opere en rango completo de $0-5V$ mientras que el LM35 en configuración básica opera en el rango de $0.02-1.50V$, motivo por el cual deben proporcionarse otros valores para las resistencias.
+
+Para calcular las resistencias del divisor de voltaje, lea cuidadosamente la \Cref{sec:intro-adc} y utilice la \Cref{eqn:vdiv} tomando un valor fijo para $R_1$ (ej.~$10k\Omega$) y despejando $R_2$.
+
+\begin{importantbox}{\bfseries IMPORTANTE}
+Verifique que al calcular los valores de $R_1$ y $R_2$ aproxima sus resultados a los valores de resistencias comerciales, por ejemplo cambiando una resitencia de $1273.5\Omega$ por una resistencia comercial de $1k2$.
+\end{importantbox}

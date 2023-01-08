@@ -1,0 +1,216 @@
+% CHKTEX-FILE 1
+% CHKTEX-FILE 36
+% CHKTEX-FILE 46
+
+\newcommand{\ENA}{$\overline{\mbox{\texttt{\textsc{Ena}}}}$}
+\newcommand{\RW}{\texttt{R}$\overline{\mbox{\texttt{W}}}$}
+\newcommand{\RS}{\texttt{R}$\overline{\mbox{\texttt{S}}}$}
+\newcommand{\hex}[1]{$0\times#1$}
+
+\subsection{LCD 1602 \IIC{}}%
+\label{sec:intro-lcd1602}
+
+El LCD 1602 es un display de cristal líquido de 32 caracteres organizados en 2 líneas de 16 caracteres con iluminación trasera que cuenta con 8 pines de datos que pueden ser usados en modo de byte completo o por \emph{nibbles} (dos segmentos de 4 bits).
+
+La inicialización del display usando los pines de datos no es tarea trivial.
+Por facilidad, es común acoplar el display a un adaptador de puerto paralelo cuasi bidireccional con interfaz \IIC{}:\,el integrado PCF8574.
+Este integrado  se encarga de la escritura de los datos al display LCD $16\times02$, permitiendo su uso mediante \IIC{}.
+
+\medskip
+
+\noindent \textbf{IMPORTANTE:} Normalmente el PCF8574 está preconfigurado con las direcciones \IIC{} \hex{3F} o \hex{27}.
+Es crucial identificar correctamente la dirección \IIC{} del adaptador o el display no funcionará correctamente.
+
+\subsubsection{Comunicación}
+
+La comunicación con el LCD 1602 se realiza mediante la lectura y escritura de la memoria del display o el envío de comandos.
+Como el display está conectado al PCF8574 que sólo tiene 8 pines, el display no puede ser operado en modo de byte completo pues no habría manera de enviar las 3 señales de control que el display requiere para operar:
+\ENA{}, \RW{} y \RS{}.
+Las señales de control operan como sigue:
+
+\begin{table}[H]
+	\centering
+	\caption{Señales de control del LCD 1601}%
+	\label{tbl:lcd-control-signals}
+	\begin{tabularx}{0.9\linewidth}{c X}
+		\toprule
+		\multicolumn{1}{c}{\bfseries Señal} &
+		\multicolumn{1}{c}{\bfseries Descripción} \\
+		\midrule
+		\ENA{} & Habilita el display. Poner esta línea en alto pone al LCD 1602 en modo de bajo consumo. \\
+
+		\RW{}  & Establece que la operación es una lectura (alto) o una escritura (bajo) de la memoria del display. \\
+
+		\RS{}  & Establece si la información enviada debe ser interpretada como datos (alto) o como un comando para el display (bajo). \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Al haber sólo 4 bits disponibles, el envío de datos y de comandos requerirá de dos operaciones de escritura en el bus \IIC{}: el primero para la parte alta o nibble superior y el segundo para la parte baja o nibble inferior.
+
+Los \Cref{alg:lcd-command-send,alg:lcd-data-send} resumen el envío de datos y comandos.
+Ambos algoritmos son, escencialmente, idénticos, con la única diferencia de un cambio de valor en la bandera \RS{}.
+
+\begin{algorithm}[H]
+	\centering
+	\caption{Envío de commandos al LCD 1601}%
+	\label{alg:lcd-command-send}
+	\begin{algorithmic}
+		\Procedure{SendCommand}{cmd}
+			\State buffer $\leftarrow$ cmd \& \hex{f0}
+			\Comment{Elimina el nibble inferior}
+
+			\State buffer $\leftarrow$ buffer $\vert$ \hex{04}
+			\Comment{Banderas \ENA{}$=1$, \RW{}$=0$, \RS{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía bits 7--4}
+
+			\State \Call{Sleep}{2ms}
+			\Comment{Tiempo de espera del display}
+
+			\State buffer $\leftarrow$ buffer \& \hex{FB}
+			\Comment{Cambia bandera \ENA{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía confirmación de fin de nibble}
+
+			\medskip
+
+			\State buffer $\leftarrow$ (cmd \& \hex{f0}) $\ll$ 4
+			\Comment{Elimina el nibble superior y recorre el inferior a la parte alta}
+
+			\State buffer $\leftarrow$ buffer $\vert$ \hex{04}
+			\Comment{Banderas \ENA{}$=1$, \RW{}$=0$, \RS{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía bits 3--0}
+
+			\State \Call{Sleep}{2ms}
+			\Comment{Tiempo de espera del display}
+
+			\State buffer $\leftarrow$ buffer \& \hex{FB}
+			\Comment{Cambia bandera \ENA{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía confirmación de fin de nibble}
+		\EndProcedure{}
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\centering
+	\caption{Envío de datos al LCD 1601}%
+	\label{alg:lcd-data-send}
+	\begin{algorithmic}
+		\Procedure{SendData}{data}
+			\State buffer $\leftarrow$ data \& \hex{f0}
+			\Comment{Elimina el nibble inferior}
+
+			\State buffer $\leftarrow$ buffer $\vert$ \hex{05}
+			\Comment{Banderas \ENA{}$=1$, \RW{}$=0$, \RS{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía bits 7--4}
+
+			\State \Call{Sleep}{2ms}
+			\Comment{Tiempo de espera del display}
+
+			\State buffer $\leftarrow$ buffer \& \hex{FB}
+			\Comment{Cambia bandera \ENA{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía confirmación de fin de nibble}
+
+			\medskip
+
+			\State buffer $\leftarrow$ (data \& \hex{f0}) $\ll$ 4
+			\Comment{Elimina el nibble superior y recorre el inferior a la parte alta}
+
+			\State buffer $\leftarrow$ buffer $\vert$ \hex{05}
+			\Comment{Banderas \ENA{}$=1$, \RW{}$=0$, \RS{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía bits 3--0}
+
+			\State \Call{Sleep}{2ms}
+			\Comment{Tiempo de espera del display}
+
+			\State buffer $\leftarrow$ buffer \& \hex{FB}
+			\Comment{Cambia bandera \ENA{}$=0$}
+
+			\State \Call{SendWord}{\texttt{LCD\_ADDR}, buffer}
+			\Comment{Envía confirmación de fin de nibble}
+		\EndProcedure{}
+	\end{algorithmic}
+\end{algorithm}
+
+La función \texttt{\textsc{SendWord}} se presenta a continuación en lenguage Python. Esta dependerá de la implementación subyaciente de \texttt{smbus2}.
+
+\begin{lstlisting}[language=Python]
+import smbus2
+BUS = smbus2.SMBus(1)
+def send_word(addr, data):
+	global BLEN
+	temp = data
+	if BLEN == 1:
+		temp |= 0x08
+	else:
+		temp &= 0xF7
+	BUS.write_byte(addr ,temp)
+\end{lstlisting}
+
+\subsubsection{Inicialización}
+\noindent
+La rutina de inicialización del LCD 1602 es la siguiente:
+
+\begin{algorithm}[H]
+	\centering
+	\caption{Inicialización del LCD 1601}%
+	\label{tbl:lcd-init}
+	\begin{algorithmic}
+		\Procedure{InitLCD}{}
+			\State \Call{SendCommand}{\hex{33}}
+			\Comment{Inicializar display}
+			\State \Call{Sleep}{5ms}
+
+			\State \Call{SendCommand}{\hex{32}}
+			\Comment{Cambiar a modo de 4 líneas}
+			\State \Call{Sleep}{5ms}
+
+			\State \Call{SendCommand}{\hex{28}}
+			\Comment{Configurar modo: 2 líneas y caracteres de 35 puntos}
+			\State \Call{Sleep}{5ms}
+
+			\State \Call{SendCommand}{\hex{0C}}
+			\Comment{Habilitar display y ocultar cursor}
+			\State \Call{Sleep}{5ms}
+
+			\State \Call{SendCommand}{\hex{01}}
+			\Comment{Borrar pantalla}
+			\State \Call{Sleep}{5ms}
+		\EndProcedure{}
+	\end{algorithmic}
+\end{algorithm}
+\medskip
+
+Nótese la espera activa de 5ms después de cada comando. Esta espera es para dar tiempo al display de cambiar de modo, ya que la inicialización es un proceso lento.
+
+\subsubsection{Comandos}
+Los comandos del LCD 1602 son los siguientes.
+
+\begin{tabularx}{0.9\linewidth}{c X}
+	\toprule
+	\multicolumn{1}{c}{\bfseries Comando} &
+	\multicolumn{1}{c}{\bfseries Descripción} \\
+	\midrule
+	\hex{01} & Borrar pantalla \\
+	\hex{08} & Activar luz posterior \\
+	\hex{0C} & Habilitar display sin cursor \\
+	\hex{33} & Inicializar display (modo de 8 pines) \\
+	\hex{32} & Cambio a modo de 4 pines \\
+	\hex{32} & Configurar display con 2 líneas y caracteres de $5\times7$ puntos \\
+	\hex{80} + \hex{40}$\times y + x$
+	         & Mover cursor a posición $(x, y)$\\
+	\bottomrule
+\end{tabularx}

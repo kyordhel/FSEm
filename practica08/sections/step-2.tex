@@ -1,0 +1,44 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-1.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Implementación un controlador P}%
+\label{sec:step-2}
+
+Alambre cuidadosamente los circuitos de las prácticas \href{https://github.com/kyordhel/FSEm/tree/master/practica06}{6} y \href{https://github.com/kyordhel/FSEm/tree/master/practica07}{7} para crear un circuito AC-DC optoacoplado completo para control cerrado de temperatura usando un foco incandescente operado con un LM35 y un circuito de variación de fase mediante detección de cruce por cero.
+El circuito completo alambrado debe verse como el de la \Cref{fig:circuit-full}.
+
+\medskip
+
+\begin{importantbox}{\large Importante}
+	\begin{center}
+		Asegúrese de verificar con un multímetro que el circuito de AC está debidamente aislado y que no se tienen valores mayores a 5V en el segmento de DC.
+		De otro modo podría quemar su Arduino y su Raspberry Pi.
+	\end{center}
+\end{importantbox}
+
+\medskip
+
+El controlador proporcional a implementar opera de manera muy similar al controlador On/Off implementado en la \Cref{sec:step-1}, por lo que también requerirá de las funciones auxiliares \emph{readTemperature} (véase \Cref{lst:controller-code-read}) y \emph{writePower} (véase \Cref{lst:controller-code-write}), y operará dentro de un bucle infinito.
+Sin embargo, a diferencia del controlador anterior, el controlador P calcula primero el error (la diferencia entre temperatura deseada y la temperatura medida) y multiplica éste por la constante de contorl proporcional \texttt{PI} para obtener el factor de potencia a suministrar a la planta que llevará al sistema producir la salida deseada, tal como se muestra en el \Cref{lst:controller-p-code}.
+
+\begin{minipage}{\linewidth}%
+\lstinputlisting[%
+	language=python,
+	caption={\texttt{controller-p.py:46--64} --- Función \emph{main}},
+	label={lst:controller-p-code},
+	linerange={46-46,50-51,53-54,56-56-58-59,61-64} %CHKTEX 8
+	]{src/controller-p.py}
+\end{minipage}
+
+Nótese que a diferencia del controlador On/Off el controlador proporcional realiza acciones siempre. Además, el tiempo de espera es mucho menor.\footnote{Este tiempo de espera es necesario para permitir a la planta actuar, ya que la temperatura se eleva con relativa lentitud en comparación con otros cambios físicos. En general este podrá reducirse hasta un mínimo de apriximadamente 9ms, periodo de media onda de la sinusoidal de AC en una línea de 60Hz.}

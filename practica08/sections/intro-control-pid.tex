@@ -1,0 +1,62 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-control-pid.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsubsection{Control PID digital}%
+\label{sec:control-pid}
+Un control \emph{proporcional-integral-derivativo} o PID incorpora las mejores características de los controles PI y PD, motivo por el cual ha sido uno de las técnicas de control continuo más utilizados en la industria por más de siete décadas \citep{Hernandez2010,Odwyer2009,Ogata2003}.
+
+Con base en las ecuaciones \Cref{eqn:ctrl-p,sec:control-i,eqn:ctrl-d} el controlador sería de la forma:
+
+\begin{equation}
+G_{c}(s) = \frac{V(s)}{E(s)} =
+	K_{P} + \frac{K_I}{s} + K_{D}s
+\end{equation}
+
+Sin embargo, como se mencionó anteriormente en la \Cref{intro-control}, integrar señales en tiempo contínuo es computacionalmente muy costoso.
+Además, la señal del sensor pasará por un convertidor analógico-digital que discretizará la señal, por lo que tiene más sentido implementar un controlador discreto.
+Luego entonces, interesa conocer el valor (también discreto) que se proporcionará a la planta para obtener la señal deseada en el sensor.
+En el contínuo esta sería:
+
+\begin{equation*}
+v(t) = K_{P}\,e(t) + {K_I}\int e(t)\,dt+ K_{D}\frac{d\,e(t)}{dt}
+\label{eqn:v-pid}
+\end{equation*}
+
+Si se muestrea el error a una intervalos de tiempo constante con frecunecia lo suficientemente alta, es posible convertir la \cref{eqn:v-pid} en una ecuación en diferencias sobre la $k$-ésima muestra tomada:
+
+\begin{equation*}
+v[k] =
+		K_{P}\,e[k] +
+		K_{I}\sum^{k}_{j=0} e[j]+
+		K_{D}\big(e[k] - e[k-1]\big)
+\end{equation*}
+
+\noindent donde
+
+\begin{align*}
+	&e[k]                     && \text{el error actual}\\
+	&e[k-1]                   && \text{el error anterior}
+\end{align*}
+
+Además, si se considera $P_{I}[k] = K_{I}\sum^{k}_{j=0} e[j]$ entonces:
+
+\begin{align*}
+P_{I}[k]
+	&= K_{I}\sum^{k}_{j=0} e[j]\\
+	&= K_{I}\,e[k] + P_{i}[k-1]
+\end{align*}
+
+Así, aproximar un control digital para un sistema simple puede ser tan sencillo como almacenar en memoria los últimos valores sensados del error y el acumulado de la componente integral del PID, lo que reduce el cómputo a sólo unas cuantas operaciones aritméticas simples: sumas, restas y productos.
+No obstante, es necesario recordar que ésto no funcionará con sistemas que tengan una dinámica compleja, particularmente los no-lineales.
+

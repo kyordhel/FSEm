@@ -1,11 +1,14 @@
-# ignore everything
+# Ignore everything
 *
 # But these files
 !.gitignore
-!LICENCE
-!README.md
-# And these filetypes
+!*.tex
 !*.py
 !*.pdf
+!Makefile
+!License
+!readme.MD
+# And these folders
+
 # Even if they are in subdirectories
 !*/

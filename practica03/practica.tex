@@ -1,0 +1,314 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 3:\\Uso del puerto GPIO de la Raspberry Pi\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a utilizar el puerto GPIO de la Raspberry Pi, configurándo varios pines como salidas digitales para el control de leds y circuitos de lógica TTL.%
+
+% \section{Introducción}%
+% \label{sec:introduction}
+% Raspbian es el sistema operativo más popular para Raspberry Pi, además de ser el único con soporte oficial.
+% Raspbian es una distribución de Linux basada en Debian, optimizado para la Raspberry Pi y que permite a esta operar como una PC.~La distro incorpora terminal y navegador web entre otros programas.
+
+\section{Material}%
+\label{sec:material}
+Se asume que el alumno cuenta con un una Raspberry Pi con sistema operativo Raspbian e interprete de Python instalado. Se aconseja encarecidamente el uso de \textit{git} como programa de control de versiones.
+
+\begin{multicols}{2}[%
+Además, el alumno necesitará:
+]
+\begin{itemize}[noitemsep]
+	\item 7 Diodos emisores de luz LEDS
+	\item 8 resistencias de 330$\Omega$
+	\item 1 Condensador de 0.1$\mu$F
+	\item 1 Array Darlington ULN2003 (o 7 transistores de potencia)
+	\item 1 Decodificador de 7--segmentos ánodo común
+	\item 1 Display de 7 segmentos ánodo común
+	\item 1 Conector DIL con cable plano tipo listón para el GPIO de la Raspberry Pi (similar al de un Disco Duro PATA, véase  \Cref{fig:cable-dil})
+	\item 1 protoboard o circuito impreso equivalente
+	\item 1 fuente de alimentación regulada a 5V y al menos 2 amperios de salida
+	\item Cables y conectores varios
+\end{itemize}
+\columnbreak
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.9\columnwidth]{img/p03-dil.jpg} %CHKTEX 8
+	\caption{Cable plano con conector DIL}
+	\label{fig:cable-dil} %CHKTEX 24
+\end{figure}
+% ~\\
+\end{multicols}
+
+
+% Se controlará el encendido y apagado de LEDS usando la Raspberry Pi
+
+\section{Instrucciones}%
+\label{sec:instructions}
+\begin{enumerate}[noitemsep]
+	\item Alambre el circuito tal y como se detalla en la \cref{sec:step1}
+	\item Antes de conectar la Raspberry Pi, pruebe el circuito como se explica en la \cref{sec:step2}
+	\item Realice los programas de las \cref{sec:step3,sec:step4,sec:step5}
+	\item Analice los programas de las \cref{sec:step3,sec:step4,sec:step5}, realice los experimentos propuestos en la \cref{sec:experiments} y con los resultados obtenidos responda el cuestionario de la \cref{sec:questionnaire}.
+\end{enumerate}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Alambrado}%
+\label{sec:step1}
+
+El proceso de alambrado de esta práctica considera dos circuitos.
+
+El primer circuito permitirá controlar con las salidas digitales del GPIO de la Raspberry Pi el encendido y apagado de siete leds mediante el uso de un encapsulado de varios controladores de potencia tipo Darlington (\textit{Darlington Array}).
+De manera simimlar, el segundo circuito se auxiliará de un integrado TTL para desplegar números del 0 al 9 en un display de 7 segmentos (véase \Cref{fig:wiring-diagram}).
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.9\columnwidth,height=8cm,keepaspectratio]{img/p03-diagram.pdf} %CHKTEX 8
+	\caption{Diagrama de conexiones del circuito a alambrar}
+	\label{fig:wiring-diagram} %CHKTEX 24
+\end{figure}
+
+\subsubsection{Subcircuito 1: leds en línea}.
+Forme los siete leds en línea, cuidando de que todos tengan la misma orientación. A continuación, conecte el cátodo de cada LED a una resistencia de 300$\Omega$, y ésta a su vez a una salida libre del controlador ULN2003, de tal manera que el primer led de la fila esté conectado a la salida 1, el segundo a la salida 2, y así sucesivamente.
+
+De manera similar, conecte las entradas 1 a 7 del ULN2003 a las salidas GPIO 18, 23, 24, 25, 8, 7, y 12 de la Raspberry Pi mediante el cable tipo listón (pines 12, 16, 18, 22, 24, 26 y 32).
+La conexión de uno de los leds se conecte al GPIO12/PWM es importante, pues éste pin se utilizará para variar la intensidad del led más adelante.
+
+Complete el alambrado del ULN2003 conectándolo a tierra, conectando el común de éste a VCC mediante el capacitor de 0.1$\mu$F. Finalmente, conecte el ánodo de todos los leds a VCC.%
+
+\subsubsection{Subcircuito 2: Display de 7 segmentos}.
+Comience conectando las salidas \emph{a} a \emph{g} del display del circuito controlador 74LS47 con los pines homónimos del display de siete segmentos.
+A continuación, conecte el integrado a tierra y las terminales LT y RBI (pines 3 y 5) a VCC, dejando BI (pin 4) sin conectar tal como se muestra en la \Cref{fig:wiring-diagram}.
+Como siguiente paso, conecte el ánodo común del display a VCC mediante una resistencia de 330$\Omega$.
+
+A continuación conecte las entradas A, B, C, D a las salidas GPIO 16, 20, 21 y 26 respectivamente (pines 36, 38, 40 y 37 de la Raspberry Pi) mediante el cable tipo listón.
+
+Finalmente, para terminar el alambrado, conecte el 74LS47 a VCC y tierra.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Configuración y prueba del circuito}%
+\label{sec:step2}
+Antes de proceder, verifique conexiones con un multímetro en busca de corto circuitos. En particular verifique que exista una impedancia muy alta entre los pines 4 y 6 (VCC y tierra) del cable listón que conectará al GPIO de la Raspberry Pi.
+
+Tras lo anterior, conecte VCC y tierra del circuito alambrado a un eliminador de corriente de 5V y cierre el circuito entre los pines 4 y 32 del cable listón. Si todo está alambrado correctamente, el último del de la fila deberá encender.
+
+Ahora cierre el circuito entre los pines 4 y 37 del cable listón. Si todo está alambrado correctamente, el display de siete segmentos deberá mostrar un 1.
+
+\paragraph{Importante:} Ninguno de los circuitos o resistencias debe calentarse.
+Si alguno de los componentes emitiera calor, verifique las conexiones en busca de corto circuitos o reemplace los componentes dañados.
+
+Verificadas las conexiones, instale los complementos de desarrollo del puerto de propósito general de la Raspberry Pi (deberían venir instalados por defecto).
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ sudo apt-get install python-rpi.gpio python3-rpi.gpio
+\end{Verbatim}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 3
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 3: Led parpadeante}%
+\label{sec:step3}
+Con todas las conexiones probadas y verificadas, es seguro proceder al control de señales digitales utilizando el GPIO de la Raspberry Pi.
+
+Inicie su Raspberry Pi y, ya sea mediante una terminal remota o directamente en ella, ejecute el siguiente código Python para hacer parpadear uno de los leds del circuito alambrado.
+
+\medskip
+\begin{lstlisting}
+# Importa la librería de control del GPIO de la Raspberry Pi
+import RPi.GPIO as GPIO
+# Importa la función sleep del módulo time
+from time import sleep
+
+# Desactivar advertencias (warnings)
+GPIO.setwarnings(False)
+# Configurar la librería para usar el número de pin.
+# Llame GPIO.setmode(GPIO.BCM) para usar el canal SOC definido por Broadcom
+GPIO.setmode(GPIO.BOARD)
+# Configurar el pin 32 como salida y habilitar en bajo
+GPIO.setup(32, GPIO.OUT, initial=GPIO.LOW)
+
+# El siguiente código hace parpadear el led
+while True: # Bucle infinito
+	sleep(0.5)                 # Espera 500ms
+	GPIO.output(32, GPIO.HIGH) # Enciende el led
+	sleep(0.5)                 # Espera 500ms
+	GPIO.output(32, GPIO.LOW)  # Apaga el led
+\end{lstlisting}
+\medskip
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 4
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 4: Led parpadeante con PWM}%
+\label{sec:step4}
+En lugar de utilizar tiempos de espera (mismos que consumen tiempo de procesamiento y energía), es posible hacer parpadear el led de manera mucho más precisa y rápida utilizando uno de los moduladores de ancho de pulso (en inglés \emph{Pulse Width Modulation} o \emph{PWM}) por hardware que incorpora la Raspberry Pi.
+
+Ejecute el siguiente código Python para hacer parpadear uno de los leds del circuito alambrado.
+
+\medskip
+\begin{lstlisting}
+# Importa la librería de control del GPIO de la Raspberry Pi
+import RPi.GPIO as GPIO
+# Importa la función sleep del módulo time
+from time import sleep
+
+# Desactivar advertencias (warnings)
+GPIO.setwarnings(False)
+# Configurar la librería para usar el número de pin.
+GPIO.setmode(GPIO.BOARD)
+# Configurar el pin 32 como salida y habilitar en bajo
+GPIO.setup(32, GPIO.OUT, initial=GPIO.LOW)
+# Inicializar el pin 32 como PWM a una frecuencia de 2Hz
+pwm = GPIO.PWM(32, 1)
+
+# El siguiente código hace parpadear el led
+pwm.start(50)
+
+flag = True
+while flag:
+	try:
+		dutyCycle = int(input("Ingrese ciclo de trabajo: "))
+		pwm.ChangeDutyCycle(dutyCycle)
+	except:
+		flag = False
+		pwm.ChangeDutyCycle(0)
+# Detiene el PWM
+pwm.stop()
+# Reinicia los puertos GPIO (cambian de salida a entrada)
+GPIO.cleanup()
+\end{lstlisting}
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 5
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 5: Display de siete segmentos}%
+\label{sec:step5}
+El último ejemplo consiste en mostrar números en el display de siete segmentos.
+
+Analice y ejecute el código mostrado a continuación.
+\medskip
+\begin{lstlisting}
+# Importa la librería de control del GPIO de la Raspberry Pi
+import RPi.GPIO as GPIO
+# Importa la función sleep del módulo time
+from time import sleep
+
+# Desactivar advertencias (warnings)
+GPIO.setwarnings(False)
+# Configurar la librería para usar el número de pin.
+GPIO.setmode(GPIO.BOARD)
+# Configurar pines 36, 38, 40 y 37 como salida y habilitar en bajo
+GPIO.setup(32, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(38, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(40, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(37, GPIO.OUT, initial=GPIO.LOW)
+
+# Mapea bits a los pines de la GPIO
+def bcd7(num):
+	GPIO.output(32, GPIO.HIGH if num & 0x00000008 else GPIO.LOW )
+	GPIO.output(38, GPIO.HIGH if num & 0x00000004 else GPIO.LOW )
+	GPIO.output(40, GPIO.HIGH if num & 0x00000002 else GPIO.LOW )
+	GPIO.output(37, GPIO.HIGH if num & 0x00000001 else GPIO.LOW )
+
+flag = True
+while flag:
+	try:
+		num = int(input("Ingrese número entero: "))
+		bcd(num)
+	except:
+		flag = False
+# Reinicia los puertos GPIO (cambian de salida a entrada)
+GPIO.cleanup()
+\end{lstlisting}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Experiments
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experimentos}%
+\label{sec:experiments}
+
+\begin{enumerate}
+	\item{} [1pt] Modifique el código de la \cref{sec:step3} para todos los leds de la fila parpadeen.
+	\item{} [1pt] Modifique el código de las \cref{sec:step3,sec:step5} para que los leds de la fila enciendan de manera continua en una marquesina de izquierda a derecha.
+	\item{} [2pt] Modifique el código de las \cref{sec:step3,sec:step5} para que los leds de la fila enciendan de manera continua en una marquesina de derecha a izquierda con velocidad variable definida por el usuario.
+	\item{} [1pt] Con base en las modificaciones anteriores, genere una marquesina que haga parecer que \enquote{la luz rebota} al llegar a las orillas (efecto ping-pong) con velocidad variable definida por el usuario.
+	\item{} [3pt] Tomando como base el código de la \cref{sec:step4}, haga que uno de los leds encienda gradualmente a lo largo de un segundo hasta adquirir máxima potencia, permanezca encendido medio segundo, y después se apague gradualmente a lo largo de otro segundo.
+\end{enumerate}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Questionnaire
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cuestionario}%
+\label{sec:questionnaire}
+\begin{enumerate}
+	\item{} [0.5pt] Explique por qué usar corrimientos es la manera más eficiente de generar una marquesina.
+	\item{} [0.5pt] Explique las ventajas o desventajas que tiene utilizar un modulador de ancho de pulso sobre tiempos de espera programados (\emph{delays}).
+	\item{} [0.5pt] ¿Sería posible generar una marquesina circular utilizando el 74LS47 y el display de siete segmentos? Justifique su respuesta.
+	\item{} [0.5pt] ¿Es posible configurar cualquier pin de la GPIO como PWM? Justifique su respuesta.
+\end{enumerate}
+
+\appendix
+
+\cleardoublepage
+\section{Programa Ejemplo: \texttt{blink.py}}%
+\label{sec:appendix1}
+\lstinputlisting[language=C,firstline=13]{src/blink.py}
+
+\cleardoublepage
+\section{Programa Ejemplo: \texttt{bcd.py}}%
+\label{sec:appendix2}
+\lstinputlisting[language=Python,firstline=14]{src/bcd.py}
+
+\cleardoublepage
+\section{Programa Ejemplo: \texttt{pwm.py}}%
+\label{sec:appendix3}
+\lstinputlisting[language=C,firstline=11]{src/pwm.py}
+
+\cleardoublepage
+\section{Programa Ejemplo: \texttt{pwm\_fast.py}}%
+\label{sec:appendix3}
+\lstinputlisting[language=C,firstline=11]{src/pwm_fast.py}%CHKTEX 25
+
+\end{document}

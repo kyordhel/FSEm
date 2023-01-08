@@ -1,0 +1,48 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-control-pi.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsubsection{Control integral}%
+\label{sec:control-i}
+Un control es integral cuando la salida $v(t)$ del controlador es proporcional a la integral del error $e(t)$:
+
+\begin{equation*}
+v(t) = K_{I} \int e(t) dt
+\end{equation*}
+
+\noindent o en el dominio de la frecuencia:
+
+\begin{equation*}
+V(s) = \frac{K_I}{s} E(s)
+\end{equation*}
+
+\noindent por lo tanto
+
+\begin{equation}
+G_{c}(s) = \frac{V(s)}{E(s)} = \frac{K_I}{s}
+\label{eqn:ctrl-i}
+\end{equation}
+
+El objetivo de un control integral es el de reducir el error de estado estable, aunque esta corrección viene a costa de sobrecorregir el error, por lo que la respuesta del sistema tiende a oscilatoria o incluso a volverse inestable.
+Es por esto que un controlador I suele venir acompañado de otros elementos que ayuden a estabilizar el sistema y a reducir las oscilaciones.
+
+Cuando se combina con un controlador tipo proporcional para formar un control PI \Citep{Hernandez2010}:
+\begin{itemize}[noitemsep]
+	\item El amortiguamiento se reduce.
+	\item El máximo pico de sobreimpulso se incrementa.
+	\item Decrece el tiempo de elevación.
+	\item Se mejoran los márgenes de ganancia y fase.
+	\item El tipo de sistema se incrementa en una unidad.
+	\item El error de estado estable mejora por el incremento del tipo de sistema.
+\end{itemize}
+

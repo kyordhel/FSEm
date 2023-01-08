@@ -1,0 +1,61 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% experiments.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\section{Experimentos}%
+\label{sec:experiments}
+
+\begin{enumerate}
+	\item{} [2pts] Implemente el controlador on-off descrito en las \Cref{sec:step-1,sec:appendix1} y verifique que la temperatura dentro de la caja se mantenga en 50°C ± 10°C.
+	Reporte el conjunto de valores $threshold$ utilizados por el controlador.%
+	\label{enu:ctrl-onoff}
+
+	\item{} [2pts] Con base en la teoría de la \Cref{sec:control-p} y el código presentado en el \Cref{sec:appendix1}, desarrolle un controlador proporcional que mantenga la temperatura dentro de la caja entre 45°C y 55°C.
+	Reporte el valor de $K_P$ y el valor medio de potencia suministrado al elemento calefactor (planta).
+
+	\item{} [2pts] Modifique el programa anterior para que el controlador mantenga la temperatura ingresada por línea de comandos con una incertidumbre de ±5°C. El rango de operación es entre 30°C y 100°C.\footnote{El valor mínimo de operación no podrá ser menor a la temperatura ambiente.}%
+	\label{enu:ctrl-p}
+
+	\item{} [2pts] Con base en la teoría de la \Cref{sec:control-p,sec:control-i} y el código presentado en el \Cref{sec:appendix1}, desarrolle un controlador proporcional-integral (PI) que mantenga la temperatura dentro de la caja entre 45°C y 55°C.
+	Reporte los valores de $K_P$ y $K_I$ así como el valor medio de potencia suministrado al elemento calefactor (planta).%
+	\label{enu:ctrl-pi}
+
+	\item{} [2pts] Tomando como condición inicial $T_0$ la temperatura ambiente y $T_f = 50^{o}C$, grafique la respuesta del sistema $y(t) = T(t)$ con cada uno de los controladores implementados en el intervalo $0s \leq t \leq 180s$, reportando las constante $K_P$ utilizada.%
+	\label{enu:graph}
+	\begin{itemize}[nosep]
+		\item Controlador On/Off (1 pt).
+		\item Controlador P. Reporte la $K_P$ (1 pt).
+	\end{itemize}
+\end{enumerate}
+
+\paragraph{Puntos Extra}
+\begin{itemize}
+	\item{} [+2pts] Con base en la teoría de las \Cref{sec:control-p,sec:control-d} y el código presentado en el \Cref{sec:appendix1}, desarrolle un controlador proporcional-derivativo (PD) que mantenga la temperatura dentro de la caja entre 45°C y 55°C.
+
+	\item{} [+2pts] Con base en la teoría de las \Cref{sec:control-p,sec:control-i,sec:control-d,sec:control-pid} y el código presentado en el \Cref{sec:appendix1}, desarrolle un controlador proporcional-integral-derivativo (PID) que mantenga la temperatura dentro de la caja entre 45°C y 55°C.
+	Reporte los valores de $K_P$, $K_I$ y $K_D$ así como el valor medio de potencia suministrado al elemento calefactor (planta).
+
+	\item{} [+2pts] Optimice las constantes del controlador para que el error $\big\lvert e[k]\big\rvert \leq 2^{o}C$.
+
+	\item{} [+2pts] Con base en lo aprendido, modifique el código del punto~\ref{enu:ctrl-p} para que la Raspberry Pi sirva una página web donde se pueda modificar con un control gráfico la temperatura deseada del sistema.
+
+	\item{} [+2pts] Modifique el servidor web implementado para que éste muestre una gráfica en tiempo real con la temperatura registrada por el sensor del sistema.
+
+	\item{} [+5pts] Tomando como base la gráfica realizada en el punto~\ref{enu:graph}, anexe las gráficas de la respuesta del sistema $y(t) = T(t)$ con cada uno de los controladores implementados con $0s \leq t \leq 180s$, reportando las constantes utilizadas:
+	\begin{itemize}[nosep]
+		\item Controlador PI. Reporte las $K_P$, $K_I$ utilizadas (1 pt).
+		\item Controlador PD. Reporte las $K_P$ y $K_D$ utilizadas (2 pts).
+		\item Controlador PID. Reporte las $K_P$, $K_I$ y $K_D$ utilizadas (2 pts).
+	\end{itemize}
+\end{itemize}
+

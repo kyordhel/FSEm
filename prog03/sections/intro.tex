@@ -1,0 +1,33 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX ROOT=../main.tex
+%!TEX ROOT=../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+
+\section{Introducción}%
+\label{sec:introduction}
+La presente sección resume los pasos a seguir para leer una señal analógica discretizada con un microcontrolador.
+En particular, se interesa en la lectura de la temperatura registrada por un sensor LM35 acoplado a un convertidor analógico-digital o ADC vía \IIC{}.
+Los datos registrados serán posteriormente enviados a una Raspberry Pi para llevar una bitácora de temperatura que podrá ser desplegada en un navegador web.
+
+
+\subsection{El sensor LM35}%
+\label{sec:intro-lm35}
+\input{sections/intro-lm35}
+
+\subsection{Convertidor Analógico-Digital}%
+\label{sec:intro-adc}
+\input{sections/intro-adc}
+
+\subsection{Bus \IIC}%
+\label{sec:intro-i2c}
+\input{sections/intro-i2c}
+

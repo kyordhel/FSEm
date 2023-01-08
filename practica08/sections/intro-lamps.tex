@@ -1,0 +1,191 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-lamps.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Lámparas, eficiencia y calor}%
+\label{intro-lamps}
+En general, una lámpara cuenta con tres características fundamentales que definen su desempeño:
+\begin{enumerate}[nosep,label=\roman*\rpar]
+	\item \textbf{Brillo}: Medido en \emph{lúmenes}, el brillo determina la cantidad de iluminación que la lámpara provee; es decir, la cantidad de lúmenes es directamente proporcional a la iluminación que la lámpara proveerá.
+	De hecho, el lúmen (abreviado $lm$) es la unidad del Sistema Internacional para medir el brillo, medida de la cantida de luz visible emitida por una fuente por unidad de tiempo; y que no debe ser confundido con la potencia total irradiada que contempla todas las frecuenciasen el espectro electromagnético, visibles o no.
+
+	\item \textbf{Potencia}: Medida en \emph{watts}, se refiere a la potencia de consumo del dispositivo, aproximado por el producto del voltaje por la corriente.
+	Debe diferenciarse de la potencia de trabajo que corresponde al trabajo realizado por el dispositivo, en este caso la cantidad de energía convertida en luz, y de la potencia total disipada que corresponde a diferencia entre la potencia suministrada y el trabajo realizado, es decir la energía perdida como calor y absorbida por los materiales.
+
+	\item \textbf{Temperatura}: Medida en \emph{Kelvin}, se refiere al color de la luz que emite el dispositivo y está asociada a la temperatura en Kelvin del filamento en una lámpara incandecente y a la percepción subjetiva o sensación de calor que esta luz produce.
+	Esto produce un efecto contradictorio entre los valores numéricos y su descripción.
+	Contrario al sentido común, se le llama luz cálida a las lámparas que emiten luz en el rango de 2700--3000K y que emiten una mayor cantidad de fotones en la zona rojiza del espectro de luz visible,
+	mientras que las lámparas de luz fría irradian en el rango de 5000--6500K que corresponde a la zona azulada del espectro de luz visible.
+	Por último, están las lámparas de luz neutra que irradian en la zona amarillo-verdosa del espectro de luz visible en el rango de los 3500--4100K.
+	Es importante hacer notar que, contrario al sentido común, de estas tres características y para los objetivos de esta práctica, la temperatura de una lámpara es el factor menos relevante a tomar en cuenta, puesto que es la que menos contribuye a la generación de calor.
+\end{enumerate}
+
+La eficiencia de una lámpara se determina como la cantidad de lúmenes que esta puede suministrar por Watt.
+Una lámpara teórica perfecta tendría que ser capaz de convertir el 100\% de la energía proporcionada (electrones) en luz (fotones), valor que se encuentra determinado en $683\sfrac{lm}{w}$.
+Este valor se utiliza para calcular la eficiencia real de cualquier lámpara del tipo que sea, como los ejemplos mostrados en la \Cref{tbl:lamp-efficiency}.
+% Para este cálculo se toma en cuenta que la energía de un fotón se determina por la fórmula $E = hf$, donde $h=6.62\times10^{-34}\frac{m^{2}kg}{s}$, la constante de Plank, y $f$ es la frecuencia de oscilación del fotón, que está asociada a su longitud de onda $\lambda$ con la proporción $c=\lambda f$ donde $c=2.998\times 10^{8}\sfrac{m}{s}$.
+% La longitud de onda está asociada al color (en una lámpara no interesan fotones fuera del espectro de luz visible que va de 770 a 380 nanómetros), así que una lámpara de máxima eficiencia liberaría fotones con la máxima energía visible posible, es decir, a una longitud de onda $\lambda = 380\times10^{-9}m$ lo que implica una frecuencia
+% \(
+% f
+% 	= \frac{c}{\lambda}
+% 	= \frac{2.998\times 10^{8}\frac{\cancel{m}}{s}}{770\times10^{-9}\cancel{m}}
+% 	= 7.89\times10^{-4}s^{-1}
+% \).
+
+
+
+\begin{table}[t]
+	\centering
+	\caption[Eficiencia comparativa de lámparas]%
+	{Eficiencia comparativa de lámparas\footnote{%
+	Información obtenida de \url{https://www.lamps-on-line.com/watts-to-lumens}}}%
+	\label{tbl:lamp-efficiency}
+	\begin{tabularx}{0.85\linewidth}{X c c c c S S}
+	\toprule
+	\multicolumn{1}{c}{\multirow{2}{*}{\bfseries Foco}} &
+	\multicolumn{4}{c}{\bfseries Consumo [W]} &
+	\multicolumn{1}{c}{\multirow{2}{*}{\bfseries Eficiencia
+	$\left[\frac{\text{lm}}{\text{W}}\right]$}} &
+	\multicolumn{1}{c}{\multirow{2}{*}{\bfseries Eficiencia [\%]}}  \\
+	              & 1500lm & 1100lm & 800lm & 450lm &        &      \\
+	\midrule
+	Incandescente &    100 &     75 &    60 &    40 &   15.0 &  2.1 \\
+	Fluorescente  &     20 &     15 &    11 &     7 &   75.0 & 10.9 \\
+	LED           &     13 &      9 &     8 &     5 &  125.0 & 18.3 \\
+	\bottomrule
+	\end{tabularx}
+\end{table}
+
+Con una eficiencia del 2.1\%, la lámpara incandescente se vuelve la opción más eficiente para generar calor (que no luz), ya que por cada 100W suministrados, aproximadamente 98W se convertirán en calor.
+Además, otros tipos de lámparas funcionan por medio de una electrónica compleja basada en inductores o \emph{clamppers} que, además de ser no-lineales, son incompatibles con el método de modulación de potencia por detección de cruce por cero que se estudió en la pŕactica anterior.
+
+Aparece entonces la pregunta de por qué no usar una resistencia convencional de alta potencia para estufa capaz de convertir el 99.9\% de la energía suministrada en calor.
+Esto es debido a varias razones.
+Primero, por costos, ya que una lámpara incandescente es mucho más barata que otro tipo de generadores de claor.
+Segundo, porque es mucho más sencillo aprender a controlar un dispositivo observable a simple vista en el cual el calor disipado será proporcional de forma lineal al brillo emitido.
+El tercer factor es la seguridad, ya que las resistencias para estufa generan demasiado calor demasiado rápido y pueden ocasionar quemaduras y encender llamas en segundos.
+Y, por último, porque las resistencias para estufa están diseñadas para operar con un termostato y una carga y no para calentar un entorno por convección, por lo que habría que acoplarle un disipador con ventilador.
+
+Luego entonces, corresponde estimar el incremento de temperatura por segundo para un volúmen de $1dm^3$ (un litro).
+Se sabe que un foco incandescente opera como un resistor lineal y que 1 Watt equivale a 1 Julio por segundo.
+Por otro lado una caloría está definida como la cantidad de calor requerida para elevar la temperatura de un gramo de agua a 4°C un $\Delta T = 1^{o}C$ en condiciones de presión de una atmósfera estándar, aproximadamente unos $4.184J$.
+
+Sin embargo, el incremento de temperatura por unidad de calor varía de material a material (por ejemplo, el metal se calienta más rápido que el agua).
+Por ello, es necesario calcular el incremento de temperatura que que tendrá un determinado volúmen de aire por cada caloría de energía suministrada, lo cual se logra considerando el calor específico de cada material.
+Se sabe que el calor específico del agua es:\footnotemark{}
+\footnotetext{El lector notará que el valor proporcionado del calor específico del agua no conincide con el valor de una caloría $1cal=4.1813\frac{J}{gK} \neq 4.1813\frac{J}{gK} = c_{p_\text{agua}}$. Esto se debe a que el valor usado para calcular el incremento de temperatura de un volumen de aire considera una temperatura ambiente promedio de 25°C, es decir, agua a 25°C y no los 4°C usados para conocer el equivalente mecánico del calor calculado por Joule.}
+
+\begin{equation}
+\label{eqn:sh-water}
+	c_{p_\text{agua}} = 1\frac{cal}{gK} = 4.1813\frac{J}{gK}
+\end{equation}
+
+\noindent mientras que el calor específico del aire es:
+
+\begin{equation}
+\label{eqn:sh-air}
+	c_{p_\text{aire}} = 1.012\frac{J}{gK}
+\end{equation}
+
+\noindent por lo que igualando valores con la fórmula del calor específico $Q = mc_{p}\Delta T$ se tiene que:
+
+\begin{equation*}
+	m_{_\text{agua}}c_{p_\text{agua}}\Delta T_{_\text{agua}} = Q = m_{_\text{aire}}c_{p_\text{aire}}\Delta T_{_\text{aire}}
+\end{equation*}
+
+\noindent considerando un volúmen fijo de un litro ($1L=1\times10^{-3}m^{3}$) y la densidad $\rho=\frac{m}{V}$ de cada material:
+
+\begin{align*}
+	\cancel{V_{_\text{agua}}\bigg\rvert_{1L}}\rho_{_\text{agua}}c_{p_\text{agua}}\Delta T_{_\text{agua}}
+	=&&Q&&=
+	\cancel{V_{_\text{aire}}\bigg\rvert_{1L}}\rho_{_\text{aire}}c_{p_\text{aire}}\Delta T_{_\text{aire}}
+	\\
+	\rho_{_\text{agua}}c_{p_\text{agua}}\Delta T_{_\text{agua}}
+	=&&Q&&=
+	\rho_{_\text{aire}}c_{p_\text{aire}}\Delta T_{_\text{aire}}
+\end{align*}
+
+considerando $\rho_{_\text{agua}}=1000\frac{kg}{m^3}$ y como $\Delta^{o}C = \Delta K$, se tiene:
+\begin{align*}
+	\cancelto{\scriptscriptstyle 1000\frac{kg}{m^3}}{\rho}_{_\text{agua}}
+	c_{p_\text{agua}}
+	\Delta T_{_\text{agua}}
+	&=
+	\rho_{_\text{aire}}c_{p_\text{aire}}\Delta T_{_\text{aire}}
+	\\
+	\left(1000\frac{kg}{m^3}\right)c_{p_\text{agua}}
+	&=
+	\rho_{_\text{aire}}c_{p_\text{aire}}\Delta T_{_\text{aire}}
+\end{align*}
+
+\noindent despejando
+\begin{equation}
+\label{eqn:traise-equivalence}
+	\frac{\Delta T_{_\text{aire}}}{\Delta T_{_\text{agua}}} =
+	\frac{c_{p_\text{agua}}}{\rho_{_\text{aire}}c_{p_\text{aire}}}
+	\times
+	\left(1\times10^3\left[\frac{kg}{m^3}\right]\right)
+\end{equation}
+
+\noindent reemplazando valores donde la densidad promedio del aire de $1.225\frac{kg}{m^3}$ y los calores específicos del agua y del aire (véase \cref{eqn:sh-water,eqn:sh-air}) se obtiene:
+
+\begin{align*}
+	\frac{\Delta T_{_\text{aire}}}{\Delta T_{_\text{agua}}} &=
+	\frac{4.1813\cancel{\frac{J}{gK}}}%
+	{1.012\cancel{\frac{J}{gK}}\cdot 1.225\cancel{\frac{kg}{m^3}}}
+	\times
+	\left(1\times10^3\cancel{\left[\frac{kg}{m^3}\right]}\right)\\
+	&=3.37\times10^3[1]
+\end{align*}
+
+\noindent o bien:
+
+\begin{equation}
+\label{eqn:traise-equivalence-final}
+	\Delta T_{_\text{aire}} = 3.37\times10^3 \Delta T_{_\text{agua}}
+\end{equation}
+
+Ahora bien, si se administran 100 watts de potencia durante 1 segundo a 1 gramo de agua a temperatura ambiente, éste elevaría su temperatura en aproximadamente 24°C asumiendo un comportamiento lineal ($100Ws = 100J = 23.9cal$); pero si se tratase de un litro de agua ($\rho_{agua} = 1\times10^3\frac{kg}{m^3} = 1\frac{kg}{L}$), éste sólo elevaría su temperatura en 0.024°C por tratarse de mil veces más agua.
+Sin embargo, interesa calentar aire y no agua.
+Por fortuna, la \cref{eqn:traise-equivalence-final} nos permite conocer cuál sería el incremento de temperatura en el mismo volumen de aire.
+Así, aplicar 100 watts de pontencia durante 1 segundo a 1 litro de aire a temperatura ambiente elevaría la temperatura del aire en:
+\begin{align*}
+	\Delta T_{_\text{aire}}
+	&= 3.37\times10^3 \Delta T_{_\text{agua}}\bigg\rvert_{0.024^{o}C}\\
+	&= (3.37\times10^3)(0.024)\left[^{o}C\right]\\
+	&= (3370)(0.024)\left[^{o}C\right]\\
+	&= 80.88^{o}C\\
+\end{align*}
+
+Siguiendo este mismo razonamiento, es posible generalizar una fórmula, la \Cref{eqn:pow-temp}, que permite estimar el incremento de temperatura $\Delta T$ de un volumen de aire (en litros) por watt de energía suministrado cada segundo.
+
+\begin{align*}
+	\Delta T_{_\text{aire}}
+	&= 3.37\times10^3 \Delta T_{_\text{agua}}\bigg\rvert_{2.39\times10^{-4}\frac{^{o}C}{Ws}}\\
+\end{align*}
+
+\noindent es decir:
+
+\begin{align}
+	\Delta T
+	&= w_{f}t\big(3.37\times10^3\big) \big(2.39\times10^{-4}\big)\left[\tfrac{^{o}C}{Ws}\right]\\
+	&= w_{f}t\big(3.37\times10^3\big) \big(0.239\big)\left[\tfrac{^{o}C}{Ws}\right]\\
+\label{eqn:pow-temp}
+	&= 80.54\times10^{-2}\left[\tfrac{^{o}C}{Ws}\right]w_{f}t
+\end{align}
+
+\noindent donde $\Delta T$ es el incremento de temperatura en un volumen de un litro de aire, $w_f$ es la potencia de disipación del foco y $t$ es el tiempo durante el cual la potencia es suministrada.
+
+Es importante mencionar que la fórmula de la \Cref{eqn:pow-temp} es únicamente una aproximación burda que se basa en asunciones bastante fuertes, como por ejemplo el considerar la densidad y el calor específico de los materiales como constante, lo cual es altamente inexacto en el caso de gases, los cuales tienden a expandirse y reducir su densidad al ser calentados.
+Si se intentara implementar un control de lazo abierto sería necesario un modelo matemático mucho más exacto\footnotemark{} para que la temperatura real fuera lo más próxima posible al valor deseado; pero como se implementará un controlador de lazo cerrado, esta aproximación lineal será suficiente.
+\footnotetext{Un modelo matemático más preciso tendría que, por lo menos, modelar el volúmen de aire con la ecuación del gas ideal $PV=nRT$ junto con las contribuciones de energía derivadas del recambio de aire en el medio no sellado, lo que invariablemente llevaría a una ecuación integrodiferencial.}

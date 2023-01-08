@@ -1,0 +1,35 @@
+% CHKTEX-FILE 26
+% CHKTEX-FILE 36
+
+\tcbuselibrary{most}
+% \tcbuselibrary{listings,breakable}
+% \usetikzlibrary{shadings,shadows}
+% \usetikzlibrary{decorations.pathmorphing}
+% \usetikzlibrary{patterns}
+% \usetikzlibrary{spy}
+% \usetikzlibrary{arrows.meta}
+
+\newtcolorbox{importantbox}[1]{%
+	enhanced,
+	colback=red!5!white,%
+	colframe=red!75!black,%
+	fonttitle=\bfseries,%
+	center title,
+	title={#1},%
+	drop fuzzy shadow
+}
+
+\newtcolorbox{marker}[1][]{%
+	enhanced,
+	before skip=2mm,after skip=3mm,
+	boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
+	colback=yellow!50,
+	colframe=yellow!20!black,
+	sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
+%	underlay={%
+%		\path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+%		\path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+%		\path[fill=yellow!50!black,draw=none] (interior.south west) rectangle node[white]{\Huge\bfseries !} ([xshift=4mm]interior.north west);
+%	},
+	drop fuzzy shadow,#1
+}

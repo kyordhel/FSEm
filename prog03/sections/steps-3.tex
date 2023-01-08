@@ -1,0 +1,50 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-3.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX ROOT=../main.tex
+%!TEX ROOT=../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+
+\subsection{Paso 3: Lectura del sensor LM35}%
+\label{sec:step3}
+
+Para leer la temperatura se necesita convertir los valores discretos leídos por el ADC en valores de temperatura.
+Esto se puede realizar mediante un simple análisis debido a la linearidad del LM35.
+En un ADC típico se obtienen dos lecturas: V\textsubscript{OUT+} y V\textsubscript{OUT-}, de las cuales la segunda es la referencia del LM35 y por lo tanto, la diferencia entre estos voltajes será proporcional a la temperatura en escala centígrada.
+Esto expresado matemáticamente es:
+
+\begin{equation*}
+	T[^{o}C] \propto V_{diff} = V_{OUT+}-V_{OUT-}
+\end{equation*}
+
+\noindent o bien
+
+\begin{equation*}
+	T[^{o}C] = k \times V_{diff} = k \times \big( V_{OUT+}-V_{OUT-} \big)
+\end{equation*}
+
+\noindent lo que implica que en $T = 0^{o}C; V_{OUT+}=V_{OUT-} \rightarrow V_{diff} = 0$
+
+\medskip
+Es necesario entonces calcular la constante de proporcionalidad $k$.
+Sabemos que el ADC entregará lecturas de 0 a 1024 para los voltajes registradoes entre \GND y \textsc{Aref}.
+Por ejemplo, con el LM35 en una configuración básica ($V_{OUT-}$ en \GND), $V_{Ref+} = 2.72V$ y considerando que que $1^{o}C = 0.01V$ se tendría:
+\begin{align*}
+	T[^{o}C] &= V_{diff} \times \frac{2.72[V]}{ 1024 \times 0.01[\tfrac{V}{^{o}C}] }  \\
+	         &= V_{diff} \times \frac{2.72}{ 10.24 }[^{o}C]  \\
+	         &= 0.266 V_{diff}[^{o}C]  \\
+\end{align*}
+
+\noindent o bien, generalizando para todo voltaje de referencia:
+\begin{equation*}
+	T[^{o}C] = V_{diff} \times \frac{V_{Ref+}}{ 10.24 }[^{o}C]
+\end{equation*}
+
+Esta fórmula de conversión, o su equivalente según el divisor de voltaje utilizado, deberá programarse en la Raspberry Pi que adquiera los valores discretos de temperatura del sensor.

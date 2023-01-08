@@ -1,0 +1,40 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX ROOT=../main.tex
+%!TEX ROOT=../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+
+\subsection{Paso 4: Adquisición de datos via \IIC}%
+\label{sec:step4}
+
+Una forma de leer del puerto serial \IIC{} de la Raspberry Pi usando Python es mediante el paquete \texttt{smbus}, o su sucesor \texttt{smbus2} que incorpora exactamente las mismas funciones pero está implementada completamente en Python en lugar de ser un envoltorio para la \emph{SMBusLib} de C.
+
+El primer paso es instanciar un objeto de tipo \texttt{SMBus} indicando el número de dispositivo a controlar (véase el \Cref{lst:iic-read}, línea 1).
+
+\lstinputlisting[%
+	linerange={30-32,34-40}, %CHKTEX 8
+	label={lst:iic-read},%
+	caption={Lectura de datos usando \IIC{} (\texttt{temperature.py:30--43})}
+]{src/temperature.py}
+
+Debido a que las transmisiones de datos en \IIC{} son síncronas y completamente controladas por el dispositivo maestro, no es necesario realizar complicadas rutinas que almacenen datos en búfferes y controlen interrupciones.
+En su lugar, simplemente se genera un mensaje \IIC{} de tipo lectura o escritura y se realiza la transacción con la función \texttt{i2c\_rdwr} (en \IIC{} toda lectura requiere de una escritura al canal SDA).
+Para generar el mensaje es necesario especificar tanto la dirección del dispositivo esclavo colmo los datos a enviar, en el caso de una escritura, o el número de bytes que se leerán de éste.
+Esta operación se muestra en el \Cref{lst:iic-read}, líneas 5 y 6.
+
+Un aspecto a tomar en cuenta es que las transmisiones seriales de datos no son otra cosa que flujos de bytes sin significado alguno, mientras que las variables en Python son objetos con un tipo inferido sobre los cuales se pueden realizar un gran número de operaciones; es decir, ambos son incompatibles.
+Es por esto que es necesario convertir los datos binarios en algo que Python pueda entender.
+Estas conversiones las realizan las funciones \texttt{pack} y \texttt{unpack} del paquete \texttt{struct}.
+En particular, la función \texttt{unpack} recibe un \textit{bytearray} y un especificador de formato que indica cómo deben interpretarse los bytes en el arreglo para poder generar una tupla de $n$ elementos interpretados.
+
+En el \Cref{lst:iic-read} (línea 8), se realiza la lectura de 1 byte como entero no signado (ADC de 8 bits con rango de 0--255), por lo que se utiliza el especificador de formato \texttt{`<B'} para leer 1 byte no signado (\texttt{unsigned char} en C).
+Si se quisieran leer 16 bits (ADC de 10 bits) habrpia que especificar un \emph{unsigned half int} con la cadena de formato \texttt{`<H'}. El caracter de \emph{menor que} ($<$) en la cadena de formato se requiere para especificar que los bytes están codificados en \emph{little endian}, es decir, con el byte menos significativo a la izquierda, que es la codificación por defecto en \IIC{}.
+

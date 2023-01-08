@@ -1,0 +1,191 @@
+%CHKTEX-FILE 1
+%CHKTEX-FILE 7
+%CHKTEX-FILE 9
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{8} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{8}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{keywordsColor}{rgb}{0,0,0.5}
+\definecolor{customColor}{rgb}{0.6,0,0}
+\definecolor{stringColor}{rgb}{0,0.5,0}
+
+% Code highlighting python
+\renewcommand{\ttdefault}{pcr}
+\lstset{
+	language=Python,                              % the language of the code (can be overrided per snippet)
+	backgroundcolor=\color{white},                % choose the background color
+	basicstyle=\footnotesize\ttfamily,            % the size of the fonts that are used for the code
+	breakatwhitespace=false,                      % sets if automatic breaks should only happen at whitespace
+	breaklines=true,                              % sets automatic line breaking
+	captionpos=t,                                 % sets the caption-position to bottom
+	commentstyle=\color{gray},                    % comment style
+	deletekeywords={},                            % if you want to delete keywords from the given language
+%	escapeinside={\%*}{*)},                       % if you want to add LaTeX within your code
+	extendedchars=true,                           % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+	frame=tb,                                     % adds a frame around the code
+	keepspaces=true,                              % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+	keywordstyle=\color{keywordsColor}\bfseries,  % keyword style
+	numbers=left,                                 % where to put the line-numbers; possible values are (none, left, right)
+	numbersep=5pt,                                % how far the line-numbers are from the code
+	numberstyle=\tiny\color{gray},                % the style that is used for the line-numbers
+	rulecolor=\color{black},                      % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+	showspaces=false,                             % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+	showstringspaces=false,                       % underline spaces within strings only
+	showtabs=false,                               % show tabs within strings adding particular underscores
+	stepnumber=1,                                 % the step between two line-numbers. If it's 1, each line will be numbered
+	stringstyle=\color{stringColor},              % string literal style
+	tabsize=2,                                    % sets default tabsize to 2 spaces
+	title=\lstname,                               % show the filename of files included with \lstinputlisting; also try caption instead of title
+	columns=fixed,                                % Using fixed column width (for e.g. nice alignment)
+	otherkeywords={self},                         % if you want to add more keywords to the set
+	emphstyle=\color{customColor}\bfseries,       % Custom highlighting style
+	emph={__init__,__main__,True,False,None},     % Custom highlighting keywords
+	xleftmargin=1cm,                              % Left margin
+	xrightmargin=1cm,                             % Right margin
+	% Unicode compatibility
+	inputencoding=utf8,
+	literate={%
+	            {Á}{{\'a}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1%
+	            {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1%
+	            {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1%
+	            {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1%
+	            {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1%
+	            {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1%
+	            {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1%
+	            {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1% CHKTEX 19
+	            {Ã}{{\~a}}1 {Ẽ}{{\~E}}1 {Ĩ}{{\~I}}1 {Õ}{{\~O}}1 {Ũ}{{\~U}}1 {Ñ}{{\~N}}1%
+	            {ã}{{\~a}}1 {ẽ}{{\~e}}1 {ĩ}{{\~i}}1 {õ}{{\~o}}1 {ũ}{{\~u}}1 {ñ}{{\~n}}1%
+	            {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1%
+	            {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1%
+	            {€}{{\EUR}}1 {£}{{\pounds}}1 {×}{{\(\times\)}}1% CHKTEX 21
+	            {°}{{\textsuperscript{o}}}1%
+	            {¹}{{\textsuperscript{1}}}1%
+	            {²}{{\textsuperscript{2}}}1%
+	            {³}{{\textsuperscript{3}}}1%
+	            {⁴}{{\textsuperscript{4}}}1% CHKTEX 19
+	            {⁵}{{\textsuperscript{5}}}1% CHKTEX 19
+	            {⁶}{{\textsuperscript{6}}}1% CHKTEX 19
+	            {⁷}{{\textsuperscript{7}}}1% CHKTEX 19
+	            {⁸}{{\textsuperscript{8}}}1% CHKTEX 19
+	            {⁹}{{\textsuperscript{9}}}1% CHKTEX 19
+	            {⁰}{{\textsuperscript{0}}}1% CHKTEX 19
+%	            {A}{{\textAlpha}}1
+	            {α}{{\textalpha}}1%
+%	            {B}{{\textBeta}}1
+	            {β}{{\textbeta}}1%
+	            {Γ}{{\textGamma}}1
+	            {γ}{{\textgamma}}1%
+	            {Δ}{{\textDelta}}1
+	            {δ}{{\textdelta}}1% CHKTEX 19
+%	            {E}{{\textEpsilon}}1
+	            {ϵ}{{\textepsilon}}1%
+%	            {Z}{{\textZeta}}1
+	            {ζ}{{\textzeta}}1%
+%	            {H}{{\textEta}}1
+	            {η}{{\texteta}}1%
+	            {Θ}{{\textTheta}}1
+	            {θ}{{\texttheta}}1%
+%	            {I}{{\textIota}}1
+	            {ι}{{\textiota}}1%
+%	            {K}{{\textKappa}}1
+	            {κ}{{\textkappa}}1%
+	            {Λ}{{\textLambda}}1
+	            {λ}{{\textlambda}}1%
+%	            {M}{{\textMu}}1
+	            {μ}{{\textmu}}1%
+%	            {N}{{\textNu}}1
+	            {ν}{{\textnu}}1%
+	            {Ξ}{{\textXi}}1
+	            {ξ}{{\textxi}}1%
+%	            {O}{{\textOmikron}}1
+%	            {o}{{\textomikron}}1%
+	            {Π}{{\textPi}}1
+	            {π}{{\textpi}}1%
+%	            {P}{{\textRho}}1
+	            {ρ}{{\textrho}}1%
+	            {Σ}{{\textSigma}}1
+	            {σ}{{\textsigma}}1%
+%	            {T}{{\textTau}}1
+	            {τ}{{\texttau}}1%
+	            {ϒ}{{\textUpsilon}}1
+	            {υ}{{\textupsilon}}1%
+	            {Φ}{{\textPhi}}1
+	            {ϕ}{{\textphi}}1%
+%	            {X}{{\textChi}}1
+	            {χ}{{\textchi}}1%
+	            {Ψ}{{\textPsi}}1
+	            {ψ}{{\textpsi}}1%
+	            {Ω}{{\textOmega}}1
+	            {ω}{{\textomega}}1%
+	            {ζ}{{\varsigma}}1%
+%	            {}{{\straightphi}}1%
+%	            {}{{\scripttheta}}1%
+%	            {}{{\straighttheta}}1%
+%	            {}{{\straightepsilon}}1%
+	         },
+}
+
+\lstdefinestyle{c_with_comments}%
+{
+	language     = c,
+	morecomment  = [l]{//},
+	morecomment  = [s]{/*}{*/},
+	breaklines,
+}
+
+\lstdefinestyle{c_without_comments}%
+{
+	style        = c_with_comments,
+	% numbers      = none,
+	% keepspaces   = false,
+	morecomment  = [l][\nullfont]{//},
+	morecomment  = [is]{//}{\^^M},
+	morecomment  = [is]{/*}{*/},
+}
+
+\lstdefinelanguage{conf}
+{
+	basicstyle=\ttfamily\small,
+	columns=fullflexible,
+	morecomment=[s][\color{Orchid}\bfseries]{[}{]},
+	morecomment=[l]{\#},
+	morecomment=[l]{;},
+	commentstyle=\color{gray}\ttfamily,
+	% morekeywords={},
+	% otherkeywords={=,:},
+	% keywordstyle={\color{Green}\bfseries}
+}
+
+% \captionsetup[lstlisting]{font={small,tt}}
+\captionsetup[lstlisting]{%
+	font={small},
+}
+
+
+
+\DefineVerbatimEnvironment{Verbatim}{Verbatim}{%
+	fontsize=\footnotesize,%
+	frame=leftline,%
+	framesep=2em,    % separation between frame and text
+}
+
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}{%
+	fontsize=\footnotesize,
+%	frame=lines,            % top and bottom rule only
+	frame=leftline,         % left rule only
+	numbers=left,           % Line numbers on the left
+	numbersep=0.25em,       % Gap between numbers and verbatim lines
+	xleftmargin=4em,        % Indentation to add at the start of each line
+	xrightmargin=4em,       % Right margin to add after each line
+	framesep=0.5em,         % separation between frame and text
+	rulecolor=\color{Gray}, % Color of the lines
+	labelposition=topline,  %
+	samepage=false,         % When true, prevents verbatim environment from
+	                        % being broken between pages
+%	commandchars=\|\(\),    % escape character and argument delimiters for
+	                        % commands within the verbatim
+%	commentchar=*           % comment character
+}
+

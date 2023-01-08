@@ -1,0 +1,135 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% CHKTEX-FILE 1
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 2:\\Instalación de Windows 10 IoT Core en la Raspberry Pi\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a instalar un sistema operativo basado en Windows, como sistema operativo embebido, en una tarjeta microcontroladora.
+
+% \section{Introducción}%
+% \label{sec:introduction}
+% Raspbian es el sistema operativo más popular para Raspberry Pi, además de ser el único con soporte oficial.
+% Raspbian es una distribución de Linux basada en Debian, optimizado para la Raspberry Pi y que permite a esta operar como una PC.~La distro incorpora terminal y navegador web entre otros programas.
+
+\section{Instrucciones}%
+\label{sec:instructions}
+
+Para Windows 10 en la Raspberry se necesita lo siguiente:
+\begin{itemize}[nosep]
+	\item Una computadora cono Microsoft Windows 10 capaz de leer y escribir tarjetas microSD (o bien un adaptador para la misma) y conexión a internet para descargar la imagen de Windows 10 IoT Core.
+	\item Una tarjeta de memoria microSD de al menos 16 GB (se recomiendan 32GB)
+	\item Una Raspberry Pi 2 o posterior (se requieren versiones con 1GB de ram o más)
+	\item Un monitor con soporte para HDMI
+	\item Un teclado USB
+	\item Un mouse USB
+	\item Una fuente de alimentación de 5V@1A con adaptador microUSB
+\end{itemize}
+
+\paragraph*{IMPORTANTE:} Se necesita Windows 10 para poder instalar Windows 10 IoT Core en una Raspberry Pi. Si no cuenta con una máquina que tenga Windows 10 precargado, no podrá realizarse esta práctica. Debido a que Windows 10 es software propietario, la realización de esta práctica no es obligatoria.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Descargar Windows 10 IoT Core}%
+\label{sec:step1}
+
+\begin{enumerate}
+	\item Vaya a centro de desarrollo de Windows 10 (Windows 10 developer center).
+	\item De clic en \textit{Get Windows 10 IoT Core Dashboard} para descargar la aplicación requerida.
+	\begin{figure}[H]
+		\centering%
+		\includegraphics[width=0.5\columnwidth,height=8cm,keepaspectratio]{img/p02-01.jpg} %CHKTEX 8
+		\caption{Descarga de Windows 10 IoT Core Dashboard}
+		\label{fig:dashboard-download} %CHKTEX 24
+	\end{figure}
+	También puede utilizarse ésta liga:
+	\url{https://docs.microsoft.com/en-us/windows/iot-core/downloads}
+
+	\item Instale la aplicación y ejecútela.
+
+	\item Seleccione la opción \textit{configurar un nuevo dispositivo} (Set up a new device) en la barra lateral y seleccione configurar Windows 10 IoT Core en una Raspberry Pi tal como se muestra en la \Cref{fig:setup-new-device}
+	Tenga cuidado de seleccionar la letra de unidad correcta de la memoria microSD, una conexión a internet, y de anorar un nombre de dispositivo y contraseña.
+    \begin{figure}
+		\centering%
+		\includegraphics[width=0.9\columnwidth,height=8cm,keepaspectratio]{img/p02-02.jpg} %CHKTEX 8
+		\caption{Configuración de la descarga de Windows 10 IoT Core}
+		\label{fig:setup-new-device} %CHKTEX 24
+	\end{figure}
+
+	\item De clic en el botón \textit{Descargar e instalar} (Download and install).
+
+\end{enumerate}
+
+La aplicación descargará los archivos requeridos de los servidores Microsoft y los exscribirá en la memoria microSD. % CHKTEX 13
+Tenga en cuenta que este proceso puede llevar varias horas, especialmente con conexiones lentas.
+
+Windows 10 IoT Core Dashboard le notificará cuando el proceso de descarga y copiado de datos haya concluído (véase \Cref{fig:image-installed}).
+
+\begin{figure}
+	\centering%
+	\includegraphics[width=0.9\columnwidth,height=8cm,keepaspectratio]{img/p02-03.jpg} %CHKTEX 8
+	\caption{Imagen de Windows 10 IoT Core instalada en la memoria microSD}
+	\label{fig:image-installed} %CHKTEX 24
+\end{figure}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Configuración de Windows 10 IoT Core en la Raspberry Pi}%
+\label{sec:step2}
+
+Una vez terminados la descarga y copiado de datos en la microSD, inserte la tarjeta en la Raspberry Pi.
+A continuación, conecte la Raspberry Pi a un monitor usando el puerto HDMI, así como a un teclado y ratón.
+Finalmente, conecte la Raspberry Pi a la alimentación.
+
+La raspberry Pi tardará aproximadamente dos minutos en arrancar y mostrará una pantalla de carga durante el proceso de arranque (véase \Cref{fig:boot}).
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.9\columnwidth,height=8cm,keepaspectratio]{img/p02-04.jpg} %CHKTEX 8
+	\caption{Arranque de Windows 10 IoT Core en la Raspberry Pi}
+	\label{fig:boot} %CHKTEX 24
+\end{figure}
+
+Notará que a diferencia de otros sistemas Windows, hay muy poco que configurar a la Raspberry Pi.
+Se le solicitará que elija el idioma y que entre la contraseña de la red inalámbrica con la que desea conectarse a la Internet (si su Raspberry Pi está equipada con WiFi).
+
+Notará que el ambiente es bastante austero y carece de aplicaciones.
+Esto es debido a que una vez que se instale una aplicación en la Raspberry Pi, Windows desaparecerá y sólo le permitirá interactuar con la App.
+
+Si la Raspberry Pi está conectada a la red local, podrá ver que ésta aparece en la aplicación de desarrollo (\Cref{fig:listed-pi}).
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.9\columnwidth,height=8cm,keepaspectratio]{img/p02-05.jpg} %CHKTEX 8
+	\caption{Raspberry Pi en la Windows 10 IoT Core Dashboard}
+	\label{fig:listed-pi} %CHKTEX 24
+\end{figure}
+
+
+\end{document}

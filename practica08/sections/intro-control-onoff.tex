@@ -1,0 +1,38 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-control.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsubsection{Control On/Off}%
+\label{sec:control-onoff}
+
+Un \emph{On/Off control} o control por encendido-apagado es la técnicas de control má simple que existe.
+Su principio de funcionamiento se basa en definir regiones de operación fuera de las cuales la operación de la planta se detiene.
+En su versión más simple, un controlador on-off hará funcionar a la planta a máxima potencia hasta que la salida registrada supere un valor umbral (\emph{threshold}), momento en el que se reducirá la potencia de la planta, normalmente cortando el suministro de enegía o \emph{apagándola}.
+La planta permanecerá apagada hasta que la salida del sistema se reduzca por debajo del umbral de operación, momento en el que el controlador volverá a poner la planta en operación a máxima potencia.
+
+Este tipo de controlador se observa comúnmente en sistemas que responden lentamente a cambios y que tienden a almacenar mucha energía, como por ejemplo los calentadores de agua estacionarios donde el quemador se enciende hasta que la temperatura del agua se eleva hasta cierto nivel (ej.~80°C) y no se volverá a encender hasta que la temperatura registrada descienda por debajo de un umbral de operación (ej.~60°C).
+Además, el mecanismo de doble umbral del calentador evita que el quemador se esté encendiendo constantemente con cambios pequeños de temperatura.
+
+Formalmente,
+
+\begin{equation}
+V(t) =
+	\begin{cases}
+	r(t) & \text{si}\; \left\lvert e(t)\right\rvert \geq k\\
+	0    & \text{si}\; \left\lvert e(t)\right\rvert < k\\
+	\end{cases}
+\end{equation}
+
+El inconveniente principal de este tipo de controlador es que genera transiciones abruptas que tienden a desgastar los materiales, especialmente cuando se opera a altas frecuencias.
+Además, con este tipo de controlador no es posible modular la entrada del sistema dentro del rango de operación, dado que las transiciones sólo se producen en los umbrales, por lo que una operación suave es imposible.
+Es por esto que este tipo de controladores es raramente usado en aplicaciones industriales.

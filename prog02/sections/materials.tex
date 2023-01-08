@@ -1,0 +1,31 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% materials.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../main.tex
+%!TEX root = ../references.bib
+
+\section{Material}%
+\label{sec:material}
+\begin{enumerate}[noitemsep]
+	\item Plataforma:
+	\begin{itemize}[nosep]
+		\item Computadora con sistema operativo Linux, o
+		\item Máquina virtual con sistema operativo Raspbian, o
+		\item Raspberry Pi con sistema operativo Raspbian
+	\end{itemize}
+	\item Interprete de Python 3.5 instalado.
+	\item Código del programa anterior.
+\end{enumerate}
+
+\begin{importantbox}{\bfseries ADVERTENCIA}
+Cuando se configura un sistema Linux como punto de acceso inalámbrico con DHCP, éste pierde la capacidad de utilizar la tarjeta inalámbrica para conectarse a internet via inalámbrica.
+
+Por este motivo se recomienda que los programas se prueben en una máquina virtual o en una Raspberry Pi si no se sabe cómo revertir este proceso.
+\end{importantbox}
+
+\textbf{Nota:} Si se cuenta con una Raspberry Pi sin WiFi integrado (e.j~Raspberry Pi2), se precisará de un adaptador WiFi USB compatible para la misma.

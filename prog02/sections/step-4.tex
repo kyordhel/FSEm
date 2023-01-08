@@ -1,0 +1,128 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../main.tex
+%!TEX root = ../references.bib
+
+\subsection{Paso 4: Configuración de la Raspberry Pi como punto de acceso inalámbrico}%
+\label{sec:ap}
+
+Para operar como punto de acceso la Raspberry Pi necesita tener instalado el software apropiado, incluyendo un servidor DHCP para proporcionar a los dispositivos que se conecten una dirección IP. %CHKTEX 13
+
+Se comienza por instalar los paquetes \texttt{DNSMasq} y \texttt{HostAPD}:
+
+\begin{Verbatim}
+# apt-get install dnsmasq hostapd
+# pip3 install -U python-magic
+\end{Verbatim}
+
+Si están ejecutándose los servicios, deténgalos a fin de poder reconfigurarlos
+\begin{Verbatim}
+# systemctl stop dnsmasq
+# systemctl stop hostapd
+\end{Verbatim}
+
+
+\subsubsection{Configuración del adaptador y el cliente DHCP}%
+\label{sec:ap-adapter}
+Para configurar una red independiente con servidor DHCP la Raspberry Pi debe tener asignada una dirección IP estática en el adaptador inalámbrico que proveerá la conexión.
+Debido a que la Raspberry Pi tiene un procesador pequeño, se configurará para servir en una red privada clase C, es decir con direcciones IP del tipo 198.168.x.x.
+Así mismo, se supondrá que el dispositivo inalámbrico utilizado es \texttt{wlan0}.
+En el caso de Raspbian ejecutándose en una máquina virtual, utilice el puerto ethernet predeterminado \texttt{eth0}.
+
+Para configurar la dirección IP estática edite el archivo de configuración \texttt{/etc/dhcpcd.conf} como superusuario:
+
+\begin{Verbatim}
+interface wlan0
+    static ip_address=192.168.1.254/24
+    nohook wpa_supplicant
+\end{Verbatim}
+
+A continuación, reinicie el cliente DHCP
+
+\begin{Verbatim}
+# service dhcpcd restart
+\end{Verbatim}
+
+\subsubsection{Configuración del servidor DHCP}%
+\label{sec:ap-dhcp}
+
+\begin{importantbox}{\bfseries IMPORTANTE}
+Configurar un servidor DHCP en su computadora de trabajo podría dejarle sin acceso a la red local y sin salida a internet. No realice estas configuraciones si no trabaja con una Raspberry Pi física.
+\end{importantbox}
+
+El siguiente paso consiste en configurar el servidor DHCP, provisto por el servicio \texttt{dnsmasq}.
+
+De manera predeterminada el archivo de configuración \texttt{/etc/dnsmasq.conf} contiene mucha información que no es necesaria, por lo que es más fácil comenzar desde cero.
+Respáldelo y cree uno nuevo con el siguiente texto:
+
+\VerbatimInput[%
+	samepage=true,
+	label=\texttt{/etc/dnsmasq.conf},
+]{src/dnsmasq.conf}
+
+Esta configuración proporcionará 20 direcciones IP entre 192.168.1.200 y 192.168.1.220, válidas durante 24 horas.
+
+Ahora debe iniciarse el servidor DHCP
+
+\begin{Verbatim}
+systemctl start dnsmasq
+\end{Verbatim}
+
+\subsubsection{Configuración del punto de acceso}%
+\label{sec:ap-hotspot}
+\begin{importantbox}{\bfseries IMPORTANTE}
+Configurar un punto de acceso en su computadora de trabajo o en una máquina vrtual podría dejarle sin acceso a la red local y sin salida a internet. No realice estas configuraciones si no trabaja con una Raspberry Pi física.
+\end{importantbox}
+
+Para configurar el punto de acceso se debe editar el archivo de configuración \texttt{/etc/hostapd/hostapd.conf} con los parámetros adecuados.
+
+Respáldelo y cree uno nuevo con el siguiente texto:
+
+\VerbatimInput[%
+	samepage=true,
+	label=\texttt{/etc/hostapd/hostapd.conf},
+]{src/hostapd.conf}
+
+La configuración ingresada configura la Raspberry Pi para crear una red inalámbrica tipo 802.11g en el canal 5 de nombre \emph{Raspbberry} y contraseña \texttt{12345678} con seguridad WPA2.
+
+Los modos de operación posibles son:
+\begin{itemize}[nosep]
+\item a = IEEE 802.11a (5 GHz)
+\item b = IEEE 802.11b (2.4 GHz)
+\item g = IEEE 802.11g (2.4 GHz)
+\end{itemize}
+
+\paragraph*{Importante:} Tanto el nombre de la red o SSID y la contraseña no deben entrecomillarse. La contraseña debe tener entre 8 y 64 caracteres. \textbf{Cambie el SSID a \texttt{Raspberry\_Apellido} para evitar conflictos.}\medskip
+
+Ahora edite el archivo \texttt{/etc/default/hostapd} y reemplace la línea que comienza con \texttt{\#DAEMON\_CONF} con:
+
+\begin{Verbatim}
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+\end{Verbatim}
+
+\subsubsection{Configuración e inicio del punto de acceso}%
+\label{sec:ap-hotspot}
+Finalmente, habilite los servicios para iniciar el punto de acceso:
+
+\begin{Verbatim}
+# systemctl unmask hostapd
+# systemctl enable hostapd
+# systemctl start hostapd
+\end{Verbatim}
+
+Verifique que los servicios se están ejecutando
+
+\begin{Verbatim}
+# systemctl status hostapd
+# systemctl status dnsmasq
+\end{Verbatim}
+
+\paragraph*{Nota:} El servicio \texttt{hostapd} requiere acceso exclusivo a la tarjeta de red inalámbrica que podría estar ocupada por el proceso \texttt{wpa\_supplicant}.
+Si \texttt{hostapd} se reusara a iniciar indicando un error tal como \emph{Could not configure driver mode nl80211 driver initialization failed}, termine los procesos que puedan estar utilizando la tarjeta de red inalámbrica, por ejemplo ejecutando \texttt{killall wpa\_supplicant}.
+

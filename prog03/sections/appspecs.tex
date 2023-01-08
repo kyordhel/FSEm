@@ -1,0 +1,76 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% appspecs.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX ROOT=../main.tex
+%!TEX ROOT=../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+
+\section{Programas}%
+\label{sec:programs}
+
+Tomando como base el código de ejemplo del \Cref{sec:temperature-py}, desarrolle un programa llamado \texttt{temp\_srvr.py} que cumpla con  las siguientes especificaciones:
+\begin{itemize}
+	\item{} El programa lee vía \IIC valores \textbf{discretos} de temperatura de un sensor LM35 proporcionados por un Arduino o cualquier otro ADC compatible con la siguiente configuración.
+
+	\begin{itemize}
+		\item{} [2 pts] La resolución del convertidor analógico-digital es de 10 bits.
+
+		\item{} [2 pts] El divisor de voltaje para el pin de referencia $V_{Ref+}$ permite tomar lecturas en el rango de 0--150\textsuperscript{o}C con la máxima resolución posible usando resistencias comerciales.
+	\end{itemize}
+
+	\item{} El programa recibe por línea de comandos tres parámetros opcionales:
+	\begin{itemize}
+		\item Los valores de las resistencias $R_1$ y $R_2$ del divisor de voltaje en formato: \texttt{R1=1,R2=1} (valores de resistencias en kilo Ohms). El rango válido es de $1k\Omega$ a $100M\Omega$.
+		\item La resolución en bits del convertidor ADC con el formato \texttt{b=8} o \texttt{b=10}. Valores diferentes no son aceptables.
+		\item La frecuencia de operación del convertidor ADC con el formato \texttt{f=3} (en Hertz). El rango válido es de $1Hz$ a $100Hz$.
+	\end{itemize}
+
+
+	\item{} El programa muestra en pantalla la temperatura en grados centígrados cada segundo. La temperatura reportada es la promedio obtenida del sensor.
+
+	\item{} [2 pts] El programa almacena en el archivo local \texttt{temp\_history.py} el historial de temperatura promedio en grados centígrados con una precisión de un segundo (1s).
+
+	\item{} [Robustez] Si los parámetros introducidos son incorrectos o están fuera de rango, el programa desplegará una ayuda mostrando el uso correcto de los parámetros y no se mostrará ninguna interfaz gráfica.
+
+	\item{} [+5 pts] El programa ejecuta un servidor web (ej. \texttt{127.0.0.1:8080}) que permite monitorear de manera remota la temperatura con un cliente web, mostrando la información del sensor (resolución, rango y frecuencia).
+
+	\textbf{Importante:} El video-evidencia deberá mostrar ambas ventanas, la interfaz del cliente web y el simulador. Las temperaturas deberán coincidir dentro de lo razonable.
+
+	\item{} [+5 pts] El cliente web remoto permite consultar la bitácora de temperatura y utiliza esta información para generar una gráfica \emph{en tiempo real} con el histórico de los valores de temperatura registrados.
+\end{itemize}
+
+\noindent\textbf{Nota:} La nota máxima del programa sin elementos adicionales es de 6 puntos (60/100).
+
+\section{Especificaciones técnicas de los programas}%
+\label{sec:programs-specs}
+\begin{itemize}[noitemsep]
+	\item No utilice paquetes adicionales.
+	\item El código deberá ser ejecutable con Python versión 3.5 o posterior.
+	\item Todos los programas deberán comenzar con la línea de intérprete o \emph{she-bang} correspondiente
+	\item Todos los programas deberán tener el nombre del autor de la forma:
+
+\begin{lstlisting}[language=python]
+# Author: Nombre del Alumno
+\end{lstlisting}
+
+	\item Cuando se implemente un servidor web los videos-evidencia deberá observarse claramente cómo el alumno controla remotamente desde la interfaz de usuario al simulador de la RaspBerry Pi (ej.~desde su celular o desde otra máquina virtual).
+
+	\item Incluya sólo los videos y el código fuente de los programas \textbi{sin librerías ni paquetes}.
+
+	\item Los archivos de código python deberán estar en raíz \texttt{./}.
+
+	\item Los videos-evidencia deberán estar en el subdirectorio \texttt{./vid/}.
+
+	\item Los videos-evidencia deberán durar no más de 60 segundos, incluir sólo la ventana del simulador y contar únicamente con \emph{stream} de video comprimido con \emph{codec} h.264 a \(15fps\) con una resolución máxima de \(1280 \times 720\) y con un tamaño máximo de 3MB por archivo (velocidad de datos aproximada de \(1500kbps\))\footnote{\texttt{ffmpeg -i input -an -vf scale=-1:720 -c:v libx264 -crf 28 -r 15 -preset veryslow video.mp4}}.
+
+	\item Los entregables deberán estar empaquetados en un archivo comprimido de nombre \texttt{[prefijo]\_p03} donde \texttt{[prefijo]\_p03} corresponde a los primeros 4 caracteres de la CURP del alumno, por ejemplo \texttt{hicm\_p03.zip}.
+
+	Los formatos aceptables son \emph{7z}, \emph{rar}, \emph{tar.bz2}, \emph{tar.gz} y \emph{zip}.
+\end{itemize}

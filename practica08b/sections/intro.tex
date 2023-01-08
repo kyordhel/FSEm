@@ -1,0 +1,19 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+\section{Introducción}%
+\label{sec:introduction}
+La presente práctica resume los pasos a seguir para desplegar texto en una pantalla de cristal líquido de 16 caracteres en dos líneas, mejor conocido como display LCD \(16\times2\).
+En particular, se interesa en el desplegado de una cadena de más de 16 caracteres en la primera ĺínea del display y en la segunda la temperatura registrada por un sensor DS18B20 mediante el bus 1-Wire.
+
+\input{sections/intro-1wire}
+\input{sections/intro-iic}
+\input{sections/intro-lcd1602}

@@ -1,0 +1,36 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% experimens.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\section{Experimentos}%
+\label{sec:experiments}
+
+\begin{enumerate}
+	\item{} [2pt] Realice un programa en Python que despliegue en consola la temperatura sensada por el DS18B20 cada segundo.
+
+	\item{} [6pt] Con base en las especificaciones de la \cref{sec:intro-lcd1602} realice un programa en Python que imprima en la primera línea del display el apellido paterno de uno de los integrantes del equipo de trabajo.
+
+	\item{} [2pt] Modifique el programa anterior para que el display muestre en la segunda línea del display la temperatura en grados centígrados registrada por el DS18B20, actualizada cada segundo.%
+	\label{itm:base}
+
+	\item{} [+2pt] Modifique el programa del \cref{itm:base} para que el display muestre la temperatura tanto en grados Celcius como en Farenheit.%
+	\label{itm:farenheit}
+
+	\item{} [+3pt] Modifique el programa del \cref{itm:base} para que el display muestre en la primera línea del display el apellido paterno de cada integrante del equipo de trabajo, separados por espacio, como un corrimiento infinito de marquesina izquierda además de la temperatura en la segunda línea.%
+	\label{itm:marquee}
+
+	\item{} [+5pt] Con base en lo aprendido, modifique el programa de los \cref{itm:base,itm:marquee,itm:farenheit} para que la Raspberry Pi sirva una página web donde se pueda variar la velocidad y dirección de la marquesina, además de seleccionar si la temperatura se muestra en escala centígrada, Farenheit o ambas.
+
+	\item{} [+5pt] Con base en lo aprendido, modifique el programa del \cref{itm:base} para que la Raspberry Pi sirva una página web donde se pueda observar la gráfica de temperatura (histórico) desde la bitácora con resolución de hasta 1 minuto.
+\end{enumerate}

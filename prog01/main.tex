@@ -1,0 +1,255 @@
+% CHKTEX-FILE 1
+% \documentclass[letterpaper,10.5pt,twocolumn]{article}
+\documentclass[letterpaper,10.5pt]{article}\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\hypersetup{
+	hidelinks,
+	pdfauthor={Mauricio Matamoros},
+	pdftitle={Programa 01 – Fundamentos de Sistemas Embebidos},
+% 	pdfsubject={The Subject},
+% 	pdfkeywords={Some Keywords},
+% 	pdfproducer={Latex with hyperref, or other system},
+% 	pdfcreator={pdflatex, or other tool}
+}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Programa 1:\\Puerto GPIO de la Raspberry Pi en simulador\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno se familiarizará con el puerto GPIO de la Raspberry Pi (simulado), configurándo varios pines como salidas digitales para el control de leds y circuitos de lógica TTL.%
+
+\section{Material}%
+\label{sec:material}
+Ninguno
+
+
+% Se controlará el encendido y apagado de LEDS usando la Raspberry Pi
+
+\section{Instrucciones}%
+\label{sec:instructions}
+\begin{enumerate}[noitemsep]
+	\item Descargue y pruebe la tarjeta simuladora siguiendo los pasos de la \cref{sec:step1}
+	\item Realice los programas de las \cref{sec:step2,sec:step3,sec:step4}
+	\item Analice los programas de las \cref{sec:step2,sec:step3,sec:step4}, realice los experimentos propuestos en la \cref{sec:experiments} y con los resultados obtenidos responda el cuestionario de la \cref{sec:questionnaire}.
+\end{enumerate}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Configuración del Simulador}%
+\label{sec:step1}
+
+Descargue el simulador de \url{https://github.com/kyordhel/RPiVirtualBoard} ejecutando la siguiente línea de comandos:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+git clone https://github.com/kyordhel/RPiVirtualBoard.git
+cd RPiVirtualBoard
+\end{Verbatim}
+
+A continuación instale todas las dependencias requeridas por el simulador usando \emph{pip}:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+sudo apt install python3-tk
+pip install --user -r requirements.txt
+\end{Verbatim}
+
+Finalmente, pruebe el simulador ejecutando la siguiente línea:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+./blink.py
+\end{Verbatim}
+
+O bien, si desea mantener el simulador conmo un proyecto aislado y cuenta con la utilería \emph{pipenv}\footnotemark{} para tal propósito, después de clonar el proyecto basta con ejecutar:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+pipenv run python blink.py
+\end{Verbatim}
+
+Si la configuración es correcta, verá una ventana similar a la de la \Cref{fig:simboard} con uno de los leds virtuales parpadeando.
+Este simulador implementa el circuito mostrado en la \Cref{fig:wiring-diagram}
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}{0.49\textwidth}
+		\centering%
+		\includegraphics[width=0.9\textwidth,height=8cm,keepaspectratio]{img/simboard.jpg} %CHKTEX 8
+		\caption{Simulador de tarjeta con leds para la GPIO de la Raspberry Pi}
+		\label{fig:simboard} %CHKTEX 24
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.49\textwidth}
+		\centering%
+		\includegraphics[width=0.9\columnwidth,height=8cm,keepaspectratio]{img/diagram.pdf} %CHKTEX 8
+		\caption{Circuito implementado en el simulador}
+		\label{fig:wiring-diagram} %CHKTEX 24
+	\end{subfigure}
+	\caption{Simulador y circuito implementado}
+	\label{fig:sim} %CHKTEX 24
+\end{figure}
+
+\footnotetext{\emph{pipenv} es una herramienta que facilita la creación y administración de entornos virtuales en cualquier proyecto escritos en Python, llevando un control riguroso de los paquetes de los que depende dicho proyecto. Se puede instalar fácilmente con la línea \texttt{pip install --user pipenv}}
+
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Led parpadeante}%
+\label{sec:step2}
+El código mostrado en \Cref{src:blink} muestra cómo se haría parpadear un LED mediante tiempos de espera o \emph{sleeps} utilizando la Raspberry Pi.
+
+\smallskip
+\lstinputlisting[%
+	language=Python,
+	linerange={18-40}, % chktex 8
+	caption={\texttt{blink.py}},
+	label={src:blink}
+]{src/blink.py}
+\smallskip
+
+Estudie el código y véalo en funcionamiento, ejecutándolo de la siguiente manera:
+\begin{Verbatim}[fontsize=\footnotesize]
+./blink.py
+\end{Verbatim}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 3
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 3: Led parpadeante con PWM}%
+\label{sec:step3}
+En lugar de utilizar tiempos de espera (mismos que consumen tiempo de procesamiento y energía), es posible hacer parpadear el led de manera mucho más precisa y rápida utilizando uno de los moduladores de ancho de pulso (en inglés \emph{Pulse Width Modulation} o \emph{PWM}) por hardware que incorpora la Raspberry Pi.
+
+El código mostrado en \Cref{src:pwm} muestra cómo se haría parpadear un LED mediante \emph{PWM} utilizando la Raspberry Pi.
+
+\smallskip
+\lstinputlisting[%
+	language=Python,
+	linerange={18-54}, % chktex 8
+	caption={\texttt{pwm.py}},
+	label={src:pwm}
+]{src/pwm.py}
+\smallskip
+
+Estudie el código y véalo en funcionamiento, ejecutándolo de la siguiente manera:
+\begin{Verbatim}[fontsize=\footnotesize]
+./pwm.py
+\end{Verbatim}
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 5
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 4: Display de siete segmentos}%
+\label{sec:step4}
+El código mostrado en \Cref{src:bcd} muestra cómo se operaría un display de siete segmentos mediante una controladora TTL 74LS47 utilizando la Raspberry Pi.
+
+\smallskip
+\lstinputlisting[%
+	language=Python,
+	linerange={19-51}, % chktex 8
+	caption={\texttt{bcd.py}},
+	label={src:bcd}
+]{src/bcd.py}
+\smallskip
+
+Estudie el código y véalo en funcionamiento, ejecutándolo de la siguiente manera:
+\begin{Verbatim}[fontsize=\footnotesize]
+./bcd.py
+\end{Verbatim}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Programs
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programas}%
+\label{sec:programs}
+
+Genere un conjunto de 5 programas que resuelvan los siguientes problemas.
+
+\begin{enumerate}
+	\item{} [1pt] Modifique el código de la \cref{sec:step2} para todos los leds de la fila parpadeen.
+	Nombre el archivo de código fuente \texttt{blink8.py}
+
+	\item{} [1pt] Modifique el código de las \cref{sec:step2,sec:step3} para que los leds de la fila enciendan de manera continua en una marquesina de izquierda a derecha.
+	Nombre el archivo de código fuente \texttt{marquee.py}
+
+	\item{} [2pt] Modifique el código de la \cref{sec:step2} para que ocho leds parpadeen en el simulador en línea \url{https://create.withcode.uk/python/A3}.
+	Nombre el archivo de código fuente \texttt{osblink8.py}
+	Proporcione un video (captura de pantalla) con nombre \texttt{osblink8.mp4}, sin audio y con \emph{codec} h.264 a 15fps como evidencia.
+
+	\item{} [2pt] Modifique el código de las \cref{sec:step2,sec:step3} para que 8 leds en la misma fila del simulador en línea el simulador en línea \url{https://create.withcode.uk/python/A3} enciendan de manera continua en una marquesina de izquierda a derecha.
+	Nombre el archivo de código fuente \texttt{osmarquee.py}
+	Proporcione un video (captura de pantalla) con nombre \texttt{osmarquee.mp4}, sin audio y con \emph{codec} h.264 a 15fps como evidencia.
+
+	\item{} [2pt] Modifique el código de las \cref{sec:step2,sec:step3,sec:step4}, para que los últimos 4 leds de la derecha muestren el código BCD enviado al display de 7 segmentos.
+	Nombre el archivo de código fuente \texttt{bcd.py}
+\end{enumerate}
+
+\section{Especificaciones técnicas de los programas}%
+\label{sec:programs-specs}
+\begin{itemize}[noitemsep]
+	\item No utilice paquetes adicionales.
+	\item El código deberá ser ejecutable con Python versión 3.5 o posterior.
+	\item Todos los programas deberán comenzar con la línea de intérprete o \emph{she-bang} correspondiente
+	\item Todos los programas deberán tener el nombre del autor de la forma:
+
+\begin{lstlisting}[language=python]
+# Author: Nombre del Alumno
+\end{lstlisting}
+
+	\item Incluya sólo los videos, el cuestionario, y el código fuente de los programas \textbi{sin librerías ni paquetes}.
+	\item Los archivos de código python deberán estar en raíz \texttt{./}.
+	\item Los videos-evidencia deberán estar en el subdirectorio \texttt{./vid/}.
+	\item Los videos-evidencia deberán durar no más de 60 segundos, incluir sólo la ventana del simulador y contar únicamente con \emph{stream} de video comprimido con \emph{codec} h.264 a \(15fps\) con una resolución máxima de \(1280 \times 720\) y con un tamaño máximo de 3MB por archivo (velocidad de datos aproximada de \(1500kbps\))\footnote{\texttt{ffmpeg -i input -an -vf scale=-1:720 -c:v libx264 -crf 28 -r 15 -preset veryslow hicm\_osblink8.mp4}}.
+	\item Anexe el cuestionario en formato \emph{pdf} bajo \texttt{./doc/} como \texttt{questionnaire.pdf}.
+	\item Los nombres de todos los archivos proporcionados deberán llevar un prefijo \(p\) de 5 caracteres, tales que:
+	\begin{itemize}[noitemsep]
+		\item \textbf{\(p[0]\)} Primera letra del apellido paterno del alumno excluyendo preposiciones.
+		\item \textbf{\(p[1]\)} Segunda letra del apellido paterno del alumno excluyendo preposiciones.
+		\item \textbf{\(p[2]\)} Primera letra del apellido materno del alumno excluyendo preposiciones.
+		\item \textbf{\(p[3]\)} Primera letra del primer nombre del alumno o X en caso de nombres compuestos principiantes por J, J., José, Ma., Ma o María.
+		\item \textbf{\(p[4]\)} Guión bajo (caracter ASCII 95).
+		\item Toda Ñ se reemplaza con una X
+	\end{itemize}
+	Es decir, las primeras 4 letras de su \href{http://www.renapo.gob.mx/RENAPOPortal/docs/InstructivoParaLaCurp.pdf}{RFC o CURP} seguidas de un guión bajo.
+	Así, el cuestionario de Miguel Hidalgo y Costilla quedaría almacenado como \texttt{./doc/hicm\_questionnaire.pdf}.
+	\item El conjunto de programas, videos y el questionario deberá estar empaquetado en un archivo comprimido de nombre \texttt{[prefijo]\_p01}, por ejemplo \texttt{hicm\_p01.zip}.
+	Los formatos aceptables son \emph{7z}, \emph{rar}, \emph{tar.bz2}, \emph{tar.gz} y \emph{zip}.
+\end{itemize}
+
+
+	% \footnotetext{Archivo de video sin \emph{stream} de audio. Utilice el \emph{codec} h264}}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Questionnaire
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cuestionario}%
+\label{sec:questionnaire}
+\begin{enumerate}
+	\item{} [2pt] Investigue el efecto que se produciría al regular el tiempo de encendido de un LED mediante la modulación del ciclo de trabajo del PWM en alta frecuencia (ej.~1kHz) y explique por qué no es posible observar este efecto en los simuladores.
+\end{enumerate}
+
+\end{document}

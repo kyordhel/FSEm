@@ -1,0 +1,103 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-control.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Control}%
+\label{intro-control}
+
+Un sistema de control cerrado es aquel que utiliza un sensor para medir la salida del sistema, calcular el error respecto al valor deseado, y así suministrar la entrada necesaria para reducir el error lo más posible.
+Así cuando se habla de control cerrado de manera implícita se habla de sistemas retroalimentados: aquellos en los que la salida actual depende tanto de la entrada como del error entre el valor real y el valor deseado, tal como semuestra en la \Cref{fig:closed-loop}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth,height=3cm,keepaspectratio]{img/closed-loop.png}
+	\caption{Un sistema en lazo cerrado}%
+	\label{fig:closed-loop}
+\end{figure}
+
+Para controlar un sistema con un control de lazo cerrado (en adelante \emph{sistema de control}) se necesita de tres componentes fundamentales: un sensor que convierta la salida del sistema en una señal $B(s)$ que el controlador pueda interpretar, un amplificador operacional en modo resta que calcule el error $E(s)$ entre el valor deseado o entrada $R(s)$ y el valor sensado $B(s)$, y un dispositivo controlador $G_{c}(s)$ que transforme el error $E(s)$ en la entrada $V(s)$ que necesita el sistema controlado o \emph{planta} $G_p(s)$ para producir la salida deseada $Y(s)$, tal como se ejemplifica en la \Cref{fig:control-loop}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth,height=3cm,keepaspectratio]{img/control-loop.png}
+	\caption{Un sistema de control en lazo cerrado}%
+	\label{fig:control-loop}
+\end{figure}
+
+Debido a que los modelos de este tipo de sistemas son aproximados con funciones diferenciales, es común se utilicen transformadas como la de Laplace o Fourier para simplificar el análisis y poder modelar el controlador de forma un poco más fácil, además de que interesa mucho más conocer la respuesta en frecuencia del sistema.
+
+Matemáticamente:
+
+\begin{align}
+	Y(s) &= E(s)G(s)%
+	\tag{a}\label{eqn:sysmodel-y}\\[5pt]
+	G(s) &= G_{c}(s)G_{p}(s)%
+	\tag{b}\label{eqn:sysmodel-g}\\[5pt]
+	E(s) &= R(s)-B(s)%
+	\tag{c}\label{eqn:sysmodel-e}\\[5pt]
+	B(s) &= Y(s)H(s)%
+	\tag{d}\label{eqn:sysmodel-b}
+\end{align}
+
+Sustituyendo las \cref{eqn:sysmodel-e,eqn:sysmodel-g} en la \cref{eqn:sysmodel-y}:
+
+\begin{align}
+	Y(s) &= \big(G_{c}(s)G_{p}(s)\big)\big(R(s)-B(s)\big)
+	\notag{}\\[5pt]%
+	&= G_{c}(s)G_{p}(s)R(s)-G_{c}(s)G_{p}(s)B(s)
+	\tag{e}\label{eqn:sysmodel-y2}
+\end{align}
+
+reemplazando las \cref{eqn:sysmodel-b} en la \cref{eqn:sysmodel-y2}:
+
+\begin{align}
+	Y(s) &=
+		G_{c}(s)G_{p}(s)R(s)
+		-
+		G_{c}(s)G_{p}(s)\Big[Y(s)H(s)\Big]
+	\tag{f}\label{eqn:sysmodel-y3}
+\end{align}
+
+agrupando y reordenando:
+\begin{align*}
+	Y(s) &=
+		G_{c}(s)G_{p}(s)R(s) -
+		G_{c}(s)G_{p}(s)Y(s)H(s)\\[5pt]
+	Y(s) + G_{c}(s)G_{p}(s)Y(s)H(s) &=
+		G_{c}(s)G_{p}(s)R(s)\\[5pt]
+	Y(s)\Big[1 + G_{c}(s)G_{p}(s)H(s)\Big] &=
+		G_{c}(s)G_{p}(s)R(s)\\[5pt]
+	Y(s) &= \frac%
+		{G_{c}(s)G_{p}(s)R(s)}%
+		{1 + G_{c}(s)G_{p}(s)H(s)}\\[5pt]
+\end{align*}
+
+Con lo que finalmente se obtiene la \emph{función de transferencia de lazo cerrado} $T(s)$ para un sistema retroalimentado con control cerrado:
+
+\begin{equation}
+	T(s) = \frac{Y(s)}{R(s)} =
+	\frac{G_{c}(s)G_{p}(s)}{1 + G_{c}(s)G_{p}(s)H(s)}
+	\label{eqn:transfer}
+\end{equation}
+
+Esta aproximación tiene un problema fundamental: la solución analítica de este tipo de ecuaciones suele ser computacionalmente muy costoso, lo que implica que se requerirán procesadores más potentes con un mayor consumo.
+Para resolver este problema, el análisis se realiza no en el contínuo, sino que se discretiza al sistema y se modela un control en tiempo discreto (o digital) usando la transformada Z.
+Con este tipo de modelado, la solución de integrales se convierte en suma de valores y las diferenciales en restas, lo que reduce enormemente el costo computacional de la solución del modelo del sistema, típicamente reduciéndolo a unos cuantos productos de matrices.
+
+
+\input{sections/intro-control-onoff}
+\input{sections/intro-control-p}
+\input{sections/intro-control-pi}
+\input{sections/intro-control-pd}
+\input{sections/intro-control-pid}
+

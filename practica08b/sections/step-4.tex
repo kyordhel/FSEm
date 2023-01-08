@@ -1,0 +1,72 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 4: Bitácora de temperatura via \IIC}%
+\label{sec:step4}
+
+Con la Raspberry Pi configurada, basta con generar los dos programas para transferir las temperaturas registradas en el Arduino a la Raspberry Pi que se encargará de almacenar esta información en un archivo o bitácora.
+
+Primero, es necesario configurar al Arduino como dispositivo esclavo e inicializar el bus \IIC, tal como se muestra en los \Cref{lst:arduino-code-i2c-def,lst:arduino-code-i2c-setup}.
+Las comunicaciones via \IIC son asíncronas, por lo que se requerirá almacenar la temperatura en una variable global que será leída por la función que atenderá las peticiones de datos del dispositivo maestro (la Raspberry Pi).
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:16} --- Dirección asignada al dispositivo esclavo},
+	label={lst:arduino-code-i2c-def},
+	firstline=16,
+	lastline=16]{src/arduino-code-i2c.cpp}
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:37--42} --- Configuración del bus \IIC y funciones de control},
+	label={lst:arduino-code-i2c-setup},
+	firstline=37,
+	lastline=42]{src/arduino-code-i2c.cpp}
+
+El envío de datos se realiza byte por byte, por lo que es necesario convertir la medición de temperatura (\emph{float}) en un arreglo de bytes que pueda ser transmitido.
+Esto se hace en la función \texttt{i2c\_request\_handler} con una llamada a \texttt{Wire.write} tal como se ilustra en el \Cref{lst:arduino-code-i2c-reqh}.
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:58--60} --- Envío asíncrono de datos},
+	label={lst:arduino-code-i2c-reqh},
+	firstline=56,
+	lastline=58]{src/arduino-code-i2c.cpp}
+
+Del lado de la Raspberry Pi, primero ha inicializarse el bus \IIC mediante el uso de la librería \texttt{smbus}\footnotemark y posteriormente se realizarán las lecturas en un poleo o bucle infinito, cada una de las cuales se irá almacenando en un archivo bitácora.
+La inicialización del bus requiere de una simple línea (véase \Cref{lst:rpi-code-i2c-setup}).
+\footnotetext{La implementación de la práctica utiliza \texttt{smbus2} que es una reimplementación codificada exclusivamente en Python de la librería \texttt{smbus} que es un \emph{wrapper} de la \emph{smbuslib} de C.}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:26} --- Configuración del bus \IIC},
+	label={lst:rpi-code-i2c-setup},
+	linerange={9-10,19-21}% CHKTEX 8
+	]{src/raspberry-code-i2c.py}
+
+La conversión de un arreglo de bytes a punto flotante en Python no es inmediata.
+Para esta opreación se utilizará la librería \texttt{struct} (véase \Cref{lst:rpi-code-i2c-setup}) que tomará los cuatro paquetes de 1 byte recibidos vía \IIC del Arduino y los convertira en un \emph{float}, como se muestra en el \Cref{lst:rpi-code-i2c-read}.
+Nótese el símbolo $<$ (menor qué) a la izquierda del especificador de formato $f$, el cual se utiliza para definir el endianness de la transmisión de la información.
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:28--35} --- Lectura de flotantes del bus \IIC},
+	label={lst:rpi-code-i2c-read},
+	linerange={23-35} %CHKTEX 8
+	]{src/raspberry-code-i2c.py}
+
+El resto del programa es trivial, pues consiste sólo en la escritura del \emph{timestamp UNIX} y el valor de temperatura registrado en un archivo de texto y la lectura de datos del arduino cada segundo.
+
+Por conveniencia, los códigos completos de los programas de ejemplo se encuentran en los \Cref{sec:appendix1,sec:appendix2,sec:appendix3}.

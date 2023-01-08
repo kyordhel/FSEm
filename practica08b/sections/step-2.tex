@@ -1,0 +1,73 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-2.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 8
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 2: Lectura del sensor DS18B20}%
+\label{sec:step2}
+Para poder leer el sensor de temperatura DS18B20 es necesario habilitar la carga del controlador 1-Wire en el kernel.
+Para esto edite el archivo \texttt{/boot/config.txt} como superusuario y agregue al final la línea
+
+\begin{Verbatim}
+dtoverlay=w1-gpio
+\end{Verbatim}
+
+\noindent
+A continuacíón reinicie la Raspberry Pi.
+
+\medskip
+
+\noindent
+Cuando la Pi termine de iniciar, verifique que el controlador está habilitado con los siguientes comandos
+
+\begin{Verbatim}
+# modprobe w1-gpio
+# modprobe w1-therm
+# ls sys/bus/w1/devices
+\end{Verbatim}
+
+\noindent
+El resultado debería ser muy parecido al siguiente
+
+\begin{Verbatim}
+28-00000495db35 w1_bus_master1
+\end{Verbatim}
+
+\noindent
+donde \texttt{28-00000495db35} es el número de serie del sensor de temperatura.
+
+\medskip
+
+Si se montó correctamente, las funciones del sensor DS18B20 serán accessibles como archivos en el directorio mostrado por el comando \texttt{ls}, a saber:
+\begin{Verbatim}
+root@raspberrypi:/sys/bus/w1/devices/28-00000495db35# ls
+driver         id              name            power
+subsystem      uevent          w1_slave
+\end{Verbatim}
+
+% \noindent
+La lectura del sensor (temperatura) se realiza leyendo el archivo \texttt{w1\_slave} en modo texto, por ejemplo con \texttt{cat}:
+\begin{Verbatim}
+root@raspberrypi:/sys/bus/w1/devices/28-00000495db35# cat w1_slave
+a3 01 4b 46 7f ff 0d 10 ce : crc=ce YES
+a3 01 4b 46 7f ff 0d 10 ce t=26187
+\end{Verbatim}
+
+\noindent
+donde \texttt{t=26187} es la temperatura en m°C.
+Es decir es necesario dividir el valor \texttt{t} entre 1000 para obtener la temperatura en °C: % CHKTEX 13
+
+\begin{equation*}
+\frac{26187m{}^{o}C}{1000} = 26.187{}^{o}C
+\end{equation*}
