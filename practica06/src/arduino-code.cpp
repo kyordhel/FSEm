@@ -12,9 +12,8 @@
 
 
 // Update this value with the voltage measured in AREF
-// Do remember that resistors have 5% tolerance and
-// that voltage in the pin may drop once you connect the
-// Arduino
+// Do remember that resistors have 5% tolerance and that voltage
+// in the pin may drop once you connect the Arduino
 #define VAREF 2.7273
 
 // Prototypes
