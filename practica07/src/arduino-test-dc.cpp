@@ -10,6 +10,8 @@
 *
 */
 
+#include <avr/io.h>
+
 // Digital 2 is Pin 2 in UNO
 #define ZXPIN 2
 // Digital 3 is Pin 3 in UNO
@@ -17,11 +19,12 @@
 
 // Globals
 volatile bool flag = false;
-int pfactor = 0;
+int pdelay = 7000;
+int inc = -10;
 
 // Prototypes
-float read_temp(void);
-float read_avg_temp(int count);
+void turnLampOn(void);
+void zxhandle(void);
 
 /**
 * Setup the Arduino
@@ -29,34 +32,43 @@ float read_avg_temp(int count);
 void setup(void){
 	// Setup interupt pin (input)
 	pinMode(ZXPIN, INPUT);
-	attachInterrupt(digitalPinToInterrupt(ZXPIN), zxhandle, RISING);
+	// digitalPinToInterrupt may not work, so we choose directly the
+	// interrupt number. It is Zero for pin 2 on Arduino UNO
+	// attachInterrupt(digitalPinToInterrupt(ZXPIN), zxhandle, RISING);
+	attachInterrupt(0, zxhandle, RISING);
 	// Setup output (triac) pin
 	pinMode(TRIAC, OUTPUT);
 	// Blink led on interrupt
-	pinMode(13, OUTPUT);
+	pinMode(TRIAC, OUTPUT);
 }
 
 void loop(){
-	if(!flag){
-		// Slack until next interrupt
-		delayMicroseconds(10);
-		return;
-	}
+	// Do nothing till the next zero-cross
+	if(!flag) return;
 	// Reset flag
 	flag = !flag;
-	// Keep power on for pfactor us
-	delayMicroseconds(pfactor);
-	// Disable power
-	digitalWrite( 3, LOW);
-	digitalWrite(13, LOW);
+	// Keep power off for pdelay microseconds
+	delayMicroseconds(pdelay);
+	// Power up TRIAC
+	turnLampOn();
 	// Increment/reset power factor
-	pfactor+= 10
-	if(pfactor > 8000) pfactor = 0;
+	pdelay+= inc;
+	if(pdelay <= 1000) inc = 10;
+	else if(pdelay >= 7000) inc = -10;
+}
+
+void turnLampOn(){
+	// Turn sentinel LED on
+	digitalWrite(13, HIGH);
+	// Send a 10us pulse to the TRIAC
+	digitalWrite(TRIAC, HIGH);
+	delayMicroseconds(20);
+	digitalWrite(TRIAC, LOW);
 }
 
 void zxhandle(){
 	flag = true;
-	// Enable power
-	digitalWrite( 3, HIGH);
-	digitalWrite(13, HIGH);
+	// Turn TRIAC off
+	digitalWrite(TRIAC, LOW);
+	digitalWrite(13, LOW);
 }
