@@ -1,0 +1,417 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 2 bis:\\Instalación de \emph{Android Open Source Project}\\
+(LineageOS) en la Raspberry Pi\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a instalar un sistema operativo de código abierto basado en Android en una tarjeta microcontroladora.
+
+\section{Introducción}%
+\label{sec:introduction}
+LineageOS es un sistema operativo basado en Android diseñado para operar teléfonos inteligentes, tabletas y kiosocos, entre otros dispositivos móviles.
+A diferencia del Android original que requiere de una licencia y ser compilado desde código fuente (approx 250GB más 150GB para su compilación), LineageOS ha sido adaptado para usar software gratuito y de código abierto casi de manera exclusiva.
+
+Al estar diseñados para operar en un dispositivo táctil, suele decirse que los sistemas operativos basados en Android requieren de una pantalla tipo \emph{TouchScreen}.
+Si bien esta afirmación no es cierta, la experiencia de usuario no será tan fluida con un teclado y un mouse como si se tuviera una pantalla táctil.
+
+\section{Instrucciones}%
+\label{sec:instructions}
+
+Instalar LineageOS en la Raspberry Pi es relativamente sencillo.
+Basta con descargar LineageOS y grabar la imagen de disco en una tarjeta de memoria microSD, desde la cual arrancará el sistema operativo.
+
+Para esta práctica se necesitará:
+\begin{itemize}[nosep]
+	\item Una tarjeta de memoria microSD de al menos 8 GB (se recomiendan 16GB)
+	\item Una computadora capaz de leer y escribir tarjetas microSD (o bien un adaptador para la misma) y conexión a internet para descargar la imagen de LineageOS. %CHKTEX 13
+	\item Una Raspberry Pi 3B o posterior con al menos 2GB de memoria RAM
+	\item Un monitor con soporte para HDMI
+	\item Un teclado USB
+	\item Un mouse USB
+	\item Una memoria USB con formato \textsc{Fat32}
+	\item Una fuente de alimentación de 5V@1A con adaptador microUSB o USB-C
+\end{itemize}
+
+\paragraph*{Importante:} Si no cuenta con monitor, teclado y mouse, no será posible instalar LineageOS en la Raspberry Pi.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Descargar LineageOS}%
+\label{sec:step1}
+Ingrese a \url{https://konstakang.com/} y seleccione el modelo de su Raspberry (véase \Cref{fig:lineage-download}).
+A continuación seleccione
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p02-01a.png} %CHKTEX 8
+		\caption{Página de KonstaKANG}
+		\label{fig:konstaKANG-web} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p02-01b.png} %CHKTEX 8
+		\caption{Versiones disponibles de Android LineageOS}
+		\label{fig:lineage-flavors} %CHKTEX 24
+	\end{subfigure}
+	\caption{Descarga de LineageOS/KonstaKANG}%
+	\label{fig:lineage-download} %CHKTEX 24
+\end{figure}
+
+La versión a descargar dependerá de la capacidad de la memoria microSD, la cantidad de recursos de la Raspberry y el uso que se le dará a la tarjeta microcontroladora.
+Se recomienda descargar LineageOS 20.0 para la Raspberry Pi 4.
+
+Ligas de acceso rápido se proporcionan a continuación por conveniencia:
+
+\begin{itemize}[noitemsep]
+	\item \href{https://www.androidfilehost.com/?fid=4279422670115708605}{LineageOS 20.0 para Raspberry Pi 4}
+	\item \href{https://www.androidfilehost.com/?fid=10763459528675579938}{LineageOS 17.1 para Raspbrerry Pi 3B}
+\end{itemize}
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Descargar NikGapps}%
+Debido a que la Raspberry Pi no se considera un dispositivo comercializable con Android licenciable (no existe una compañía que pague a Google por el soporte de hardware y la licencia de acceso a la tienda de aplicaciones), LineageOS no viene con la tienda Google Play precargada.
+Es por esto que es necesario instalar una tienda alternativa.
+
+Dos de las opciones más cómunes son \emph{OpenGapps} y \emph{NikGapps}.
+\emph{OpenGapps} se considera un desarrollo abandonado pues no actualizan las aplicaciones muy seguido o, si lo hacen, las actualizaciones se liberan con meses o incluso años de retraso.
+Por otro lado, \emph{NikGapps} se actualiza con mucha más frecuencia.
+
+Es por esto que se recomienda descargar \emph{NikGapps} de \url{https://nikgapps.com/}.
+Para ello, simplemente acceda al sitio y, bajo descargas, encontrará un enlace que le llevará al sitio en SourceForge de donde podrá descargar la versión que más le convenga.
+Siga los siguientes pasos:
+\begin{enumerate}[nosep]
+	\item De click en \emph{Download Now}.
+	\item Una vez en SourceForge, vaya a \emph{Releases} y abra la carpeta con fecha más reciente.
+
+\end{enumerate}
+    Click on the links, then “Download Now”.
+    On SourceForge, go to “Releases” and open the latest folder.
+
+    Download the version you want, the “Core” package is enough for a Raspberry Pi, the important part is Google Play Store.
+
+I recommend copying the “NikGapps” or “OpenGapps” file to a USB key.
+It’s easier than downloading it from the Android system. I’ll show you in the last part how to install them. Attention: make sure the USB key is formatted in FAT32. It won’t work with another file format.
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 3
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 3: Escribir imagen en la microSD}%
+\label{sec:step2}
+Si no lo ha hecho, introduzca la memoria microSD en la computadora.
+La memoria será reformateada por lo que se aconseja respaldar la información.
+
+Escribir la imagen de LineageOS en la microSD requiere de un programa externo según el sistema operativo.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 3a: Linux
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Escribir imagen usando Linux}%
+Descargue \href{https://etcher.io/}{Etcher} en \texttt{\textasciitilde/Downloads}, descomprima y ejecute; por ejemplo
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ cd ~/Downloads
+$ unzip balena-etcher-electron-1.13.1-linux-x64.zip
+$ ./balenaEtcher-1.13.1-x64.AppImage
+\end{Verbatim}
+
+
+A continuación, siga los pasos de Etcher para grabar la imagen (véase \Cref{fig:write-image-linux})
+\begin{enumerate}[noitemsep]
+	\item Seleccione la imagen IMG de LineageOS
+	\item Seleccione el medio en el cual se grabará la imagen de LineageOS (punto de montaje de la microSD)
+	\item De click en \emph{Flash!} para empezar el proceso de grabado
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p02-02-etcher-a.png} %CHKTEX 8
+		\caption{Selección de imagen a grabar}
+		\label{fig:write-image-linux-a} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p02-02-etcher-b.png} %CHKTEX 8
+		\caption{Listo para grabar la imagen}
+		\label{fig:write-image-linux-b} %CHKTEX 24
+	\end{subfigure}
+	\caption{Escritura de la imagen IMG de LineageOS en la microSD con Etcher}%
+	\label{fig:write-image-linux} %CHKTEX 24
+\end{figure}
+
+Cuando la escritura de datos en la microSD termine, notará que ésta ha sido reparticionada con cuatro particiones:
+\begin{itemize}[nosep]
+	\item\texttt{boot} (circa.~128MiB) Partición de arranque tipo \textit{FAT32}.
+	\item \texttt{/} (\emph{root}, circa.~1.5GiB) Partición raíz tipo \textit{EXT4} que contendrá el sistema base.
+	\item \texttt{vendor} (circa.~256MiB) Partición para las aplicaciones del fabricante \textit{EXT4}.
+	\item \texttt{userdata} (circa.~5.12GiB) Partición para las aplicaciones y datos del usuario \textit{EXT4}.
+\end{itemize}
+
+Finalmente, desmonte la tarjeta microSD e insértela en la Raspberry Pi.
+
+\medskip{}
+
+\begin{yellowbox}{Nota}
+Si el sistema se reinicia antes de mostrar el asistente es debido a que el Kernel no es compatible con su modelo de Raspberry Pi. En ese caso, pruebe con otra versión o una más reciente.
+\end{yellowbox}
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 4
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \clearpage
+\subsection{Paso 4: Configurar LineageOS}%
+Para configuar Raspbian, la Raspberry Pi deberá tener una tarjeta de memoria microSD con una imagen de LineageOS precargada y estar conectada a un monitor vía el puerto HDMI incorporado.
+Además, se precisa de un teclado y apuntador (mouse) USB para realizar el proceso de configuración o, preferentemente, una pantalla táctil.
+A continuación, conecte la Raspberry Pi y espere entre 1 y 3 minutos a que el sistema operativo cargue.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-03-wizard-0.png} %CHKTEX 8
+	\caption{Pantalla de inicio del asistente de configuración de LineageOS}
+	\label{fig:lineageOS-wizard} %CHKTEX 24
+\end{figure}
+
+\noindent
+Una vez terminado el proceso de arranque, siga el asistente como se muestra en la \Cref{fig:setup-wizard}.
+
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-1.png} %CHKTEX 8
+		\caption{Paso 1\\Acepte el acuerdo de licencia\\~}
+		\label{fig:setup-wizard-step-1} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-2.png} %CHKTEX 8
+		\caption{Paso 2\\Seleccione el idioma\\~}
+		\label{fig:setup-wizard-step-2} %CHKTEX 24
+	\end{subfigure}\\
+\end{figure}%
+\begin{figure}[H]
+	\ContinuedFloat%
+	\centering%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-3.png} %CHKTEX 8
+		\caption{Paso 3\\Omita la conexión a internet\\~}
+		\label{fig:setup-wizard-step-3} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-4.png} %CHKTEX 8
+		\caption{Paso 4\\Deshabilite los servicios de localización\\~}
+		\label{fig:setup-wizard-step-4} %CHKTEX 24
+	\end{subfigure}\\
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-5.png} %CHKTEX 8
+		\caption{Paso 5\\Desuscríbase del envío de datos diagnósticos\\~}
+		\label{fig:setup-wizard-step-5} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-6.png} %CHKTEX 8
+		\caption{Paso 6\\Elija los botones de navegación del sistema\\~}
+		\label{fig:setup-wizard-step-6} %CHKTEX 24
+	\end{subfigure}\\%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-7.png} %CHKTEX 8
+		\caption{Paso 7\\Omita la generación del PIN o contraseña\\~}
+		\label{fig:setup-wizard-step-7} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.48\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=44mm,keepaspectratio]{img/p02-03-wizard-8.png} %CHKTEX 8
+		\caption{Paso 8\\Omita la sincronización con la nube\\~}
+		\label{fig:setup-wizard-step-8} %CHKTEX 24
+	\end{subfigure}\\
+	\caption{Asistente de configuración de LineageOS}%
+	\label{fig:setup-wizard} %CHKTEX 24
+\end{figure}
+
+\medskip{}
+\begin{greenbox}{Nota}
+Algunos modelos de Raspberry Pi podrían no detectar correctamente la resolución del monitor, causando que la pantalla esté desajustada.
+\medskip{}
+Si esto sucediere, utilice las flechas del teclado para seleccionar el boton \emph{Start} en la primer pantalla.
+A partir de este punto, los botones deberían ser visibles sin mayores complicaciones.
+Al terminar el asistente podrá ajustar la pantalla en las opciones de Android.
+\end{greenbox}
+\medskip{}
+
+\noindent
+Una vez concluido el asistente de configuración, de click en siguiente para comenzar a usar su sistema Android en la Raspberry Pi (véase~\Cref{fig:setup-wizard-end,fig:lineageOS-desktop}).
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-03-wizard-9.png} %CHKTEX 8
+	\caption{Fin del asistente de configuración de LineageOS}
+	\label{fig:lineageOS-wizard-end} %CHKTEX 24
+\end{figure}
+
+Ahora observará el escritorio de Android Lineage OS en su Rasberyy Pi.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/P02-04-desktop.png} %CHKTEX 8
+	\caption{Escritorio de LineageOS}
+	\label{fig:lineageOS-desktop} %CHKTEX 24
+\end{figure}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 5
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \clearpage
+\subsection{Paso 5: Instalación de \emph{Google Play}}%
+\begin{yellowbox}{Nota}
+Para completar este paso necesitará una conexión a internet.
+\end{yellowbox}
+\medskip{}
+
+Este paso es el más complicado de toda la instalación, principalmente porque no es posible utilizar la tienda oficial \emph{Google Play} de Android ya que la Raspberry Pi no se considera un dispositivo comercializable con Android licenciable.
+Por este motivo, es necesario instalar una tienda alternativa siguiendo una seire de sencillos pasos.
+
+\begin{enumerate}
+	\item Abra la aplicación \emph{Settings} (Configuración).
+	\item Vaya a \emph{System} (Sistema).
+	\item Vaya a \emph{Advanced settings} (Configuraciones avanzadas).
+	\item Habilite la primera opción \emph{Reboot to recovery} (Reinicio de recuperación).
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-05-recovery-boot.png} %CHKTEX 8
+		\caption{Opción \emph{Reboot to recovery} habilitada}%
+		\label{fig:recovery-boot} %CHKTEX 24
+	\end{subfigure}\\%
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-05-advanced-restart.png} %CHKTEX 8
+		\caption{Opción \emph{Advanced Restart} habilitada}%
+		\label{fig:advanced-restart} %CHKTEX 24
+	\end{subfigure}
+	\caption{Activación de reinicio de recuperación}%
+	\label{fig:recovery-restart} %CHKTEX 24
+\end{figure}
+
+\medskip{}
+\begin{greenbox}{Nota}
+La ubicación de la opción \emph{Reboot to recovery} puede cambiar entre versiones.
+Si no la encuentra en \emph{Settings} \(\rightarrow{}\) \emph{System} \(\rightarrow{}\) \emph{Advanced settings}, búsquela en las configuraciones.
+Por ejemplo en la versión 13 se encuentra en \emph{System}, \emph\emph{Buttons}, \emph{Power Menu}, \emph{Advanced Restart}.
+\end{greenbox}
+\medskip{}
+
+A continuación de click en el botón de la batería para mostrar las opciones del dispositivo.
+Seleccione \emph{Restart} (Reiniciar) y después \emph{Reccovery} (Recuperación).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-05-recovery-restart.png} %CHKTEX 8
+	\caption{Opción \emph{Reboot to recovery} habilitada}
+	\label{fig:recovery-restart} %CHKTEX 24
+\end{figure}
+
+Tras seleccionar esta opción, inserte la USB con y espere a que la Raspberry termine de cargar LineageOS. %CHKTEX 13
+La pantalla será diferente esta vez pues se habrá iniciado en modo recuperación, algo parecido a como muestra la \Cref{fig:recovery-mode}.
+Siga los siguientes pasos:
+
+\begin{enumerate}
+	\item De click en \emph{Mount} (Montar), opción desde donde puede montar una partición en específico.
+	\item Busuqe su memoria USB en la lista de dispositivos montables y seleccione la partición pertinente (normalmente las memorias USB sólo tienen una partición).
+	\item De regreso en la pantalla principal, de click en \emph{Install} (Instalar).
+	\item De click en \emph{Select Storage} (Seleccionar Almacenamiento).
+	\item Seleccione la unidad USB que acaba de montar.
+	\item Cuando aparezcan los archivos almacenados en la unidad USB, de click en \emph{NikGapps} para instalarlo.
+	\item Confirme que desea instalar \emph{NikGapps} deslizando a la derecha la barra de desplazamiento (véase~\Cref{fig:nikgapps-install-confirm}).
+	\item Si la instalación se concluye con éxito, regresará a la pantalla principal.
+	\item De click en \emph{Reboot} (Reiniciar).
+	\item Elija \emph{System} (Sistema) para regresar al modo normal.
+\end{enumerate}
+
+\medskip{}
+\begin{greenbox}{Nota}
+	No seleccione la opción \emph{Reboot after installation is complete} (reiniciar al completar la instalación), ya que el sistema volvería  a arrancar en modo de recuperación automáticamente.
+\end{greenbox}
+\medskip{}
+
+Cuando reinicie la Raspberry, busque la Play Store entre las aplicaciones (véase \Cref{fig:playstore}) e inicie sesión con su cuenta de Google.
+Si la aplicación aparece haberse atascado, siga esperando hasta que se reciba respuesta del servidor.
+Una vez que haya iniciado sesión, reinicie el dispositivo.
+
+Ya puede instalar aplicaciones normalmente.
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-05-recovery-mode.png} %CHKTEX 8
+		\caption{LineageOS en modo de recuperación}
+		\label{fig:recovery-mode} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-05-nikgapps-install.png} %CHKTEX 8
+		\caption{Confirmación de instalación de NikGapps}
+		\label{fig:nikgapps-install-confirm} %CHKTEX 24
+	\end{subfigure}
+	\caption{Instalación de NikGapps}
+	\label{fig:nikgapps-install} %CHKTEX 24
+\end{figure}
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.9\linewidth,height=68mm,keepaspectratio]{img/p02-06-playstore.png} %CHKTEX 8
+	\caption{\emph{Google Play Store} instalada}
+	\label{fig:playstore} %CHKTEX 24
+\end{figure}
+
+\end{document}
