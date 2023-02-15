@@ -1,0 +1,185 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHKTEX-FILE 46
+
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Lista de materiales y componentes\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Componentes Electrónicos}
+
+\noindent
+\textbf{Importante:} La lista de materiales presentada a continuación es meramente informativa.
+Los materiales utilizados durante las prácticas podrán cambiar dependiendo de su disponibilidad y precio, así como de las prácticas que se realicen.
+
+Se asume que el alumno cuenta con un conector DIL para el GPIO de la Raspberry Pi (similar al de un Disco Duro PATA) y una protoboard, así como los cables y eliminadores necesarios.
+
+\subsection{Tarjetas}
+\begin{itemize}[nosep]
+	\item $1\times$ Raspberry Pi 3B o posterior
+	\item $1\times$ Arduino UNO o Arduino Mega
+	\item $1\times$ Display de cristal líquido $LCD-16\times2$
+	\item $1\times$ Adaptador \IIC{} a $LCD-16\times2$ con módulo expansor PCF8574
+
+\end{itemize}
+
+\subsection{Encapsulados}
+\begin{itemize}[nosep]
+	\item $1\times$ Sensor de temperatura LM35 en encapsulado TO-220 o TO-92
+	\item $1\times$ Sensor de temperatura DS18B20 en encapsulado TO-92
+	\item $1\times$ TRIAC BT138 o BT139 a 400V o más
+	\item $1\times$ Display 7 segmentos ánodo común
+\end{itemize}
+
+\subsection{Diodos}
+\begin{itemize}[nosep]
+	\item $2\times$ Diodos 1N914
+	\item $4\times$ diodos 1N4007 o puente rectificador equivalente
+	\item $7\times$ Diodos emisores de luz LEDS de 5mm
+	\item $1\times$ LED ultrabrillante de 5mm
+\end{itemize}
+
+\subsection{Resistencias}
+\begin{itemize}[nosep]
+	\item $8\times$ resistencias de 330$\Omega$
+	\item $2\times$ resistencia  de 470$\Omega$
+	\item $2\times$ resistencia  de  1k$\Omega$, \sfrac{1}{4}Watt
+	\item $1\times$ resistencia  de  1k$\Omega$, 1Watt
+	\item $2\times$ resistencias de 4k7$\Omega$
+	\item $3\times$ resistencias de 10k$\Omega$
+	\item $1\times$ resistencia  de 12k$\Omega$
+	\item $1\times$ resistencia  de 15k$\Omega$
+	\item $1\times$ resistencia  de 18k$\Omega$
+	\item $1\times$ resistencia  de 68k$\Omega$
+\end{itemize}
+
+\subsection{Condensadores y capacitores electrolíticos}
+\begin{itemize}[nosep]
+	\item $1\times$ Condensador de 0.1$\mu$F
+\end{itemize}
+
+\subsection{Circuitos integrados}
+\begin{itemize}[nosep]
+	\item $1\times$ Decodificador 7–segmentos SN74LS47N
+	\item $1\times$ Optoacoplador NPN 4N25
+	\footnote{El 4N25 es muy sensible. Se aconseja comprar 2 unidades en caso de que se queme} %CHKTEX 42
+	\item $1\times$ Optoacoplador MOC 3021
+	\footnote{El MOC 3021 es muy sensible. Se aconseja comprar 2 unidades en caso de que se queme} %CHKTEX 42
+	\item $1\times$ Darlington Array ULN2003
+\end{itemize}
+
+\subsection{Otros}
+\begin{itemize}[nosep]
+	\item $1\times$ Fusible 127V 0.5A
+	\item $1\times$ foco incandescente a 60W NO AHORRADOR NI LED
+	(preferentemente un foco tipo vela con socket E--12 de 10W)
+\end{itemize}
+
+\section{Prácticas}
+
+A continuación se enlistan los componentes eléctricos y electrónicos que utilizarán algunas de las prácticas a realizarse. La lista no es exhaustiva y puede cambiar dependiendo de disponibilidad.
+Es posible utilizar componentes equivalentes, sin embargo, utilizar componentes diferentes puede hacer necesario el reemplazo de algunos otros.
+
+\textbf{Importante:} Las prácticas a/b se realizan una u otra a elección del estudiante.
+No compre materiales para prácticas que no va a realizar.
+
+
+
+\section{Práctica 3: Uso del puerto GPIO de la Raspberry Pi} %3
+\begin{itemize}[noitemsep]
+	\item 7 Diodos emisores de luz LEDS
+	\item 8 resistencias de 330$\Omega$
+	\item 1 Condensador de 0.1$\mu$F
+	\item 1 Array Darlington ULN2003 (o 7 transistores de potencia)
+	\item 1 Decodificador de 7--segmentos ánodo común
+	\item 1 Display de 7 segmentos ánodo común
+\end{itemize}
+
+
+
+\section{Práctica 6: Lectura de datos analógicos usando Arduino y la Raspberry Pi} %6
+\begin{itemize}[noitemsep]
+	\item 1 Arduino UNO, Arduino Mega, o Convertidor A/D \IIC{}
+	\item 1 sensor de temperatura LM35 en encapsulado TO-220 o TO-92
+	\item 2 Diodos 1N914
+	\item 2 resistencia de 10k$\Omega$
+	\item 1 resistencia de 12k$\Omega$\footnotemark
+	\item 1 resistencia de 18k$\Omega$
+	\item 1 Condensador de 0.1$\mu$F
+\end{itemize}
+
+
+
+\section{Práctica 7: Modulación de potencia de una lámpara incandecente} %7
+\begin{itemize}[noitemsep]
+	\item 1 Arduino UNO o Arduino Mega
+	\item 1 TRIAC BT138 o BT139
+	\item 4 diodos 1N4007 o puente rectificador equivalente
+	\item 1 optoacoplador MOC 3021
+	\item 1 optoacoplador 4N25
+	\item 1 foco incandescente (NO AHORRADOR NI LED)
+	\item 1 resistencia de 68k$\Omega$, \sfrac{1}{4}Watt
+	\item 1 resistencia de 10k$\Omega$, \sfrac{1}{4}Watt
+	\item 2 resistencia de 4k7$\Omega$, \sfrac{1}{4}Watt
+	\item 1 resistencia de  1k$\Omega$, 1Watt
+	\item 2 resistencia de 470$\Omega$, \sfrac{1}{4}Watt
+	\item 2 resistencia de 330$\Omega$, \sfrac{1}{4}Watt
+	\item 1 LED de 5mm
+	\item 1 LED ultrabrillante de 5mm
+\end{itemize}
+
+
+
+\section{Práctica 8a: Control de temperatura en lazo cerrado} %8b
+\begin{itemize}[noitemsep]
+	\item 1 Display de cristal líquido $LCD-16\times2$
+	\item 1 sensor de temperatura DS18B20 en encapsulado TO-92
+	\item 1 adaptador \IIC{} a $LCD-16\times2$ con módulo expansor PCF8574
+	\item 2 resistencias de 1k$\Omega$
+	\item 1 resistencia de 10k$\Omega$
+	\item 1 diodo emisor de luz \textsc{Led} rojo
+	\item 1 diodo emisor de luz \textsc{Led} verde
+\end{itemize}
+
+
+
+\section{Práctica 8b: Desplegado de temperatura en un display digital} %8
+\begin{itemize}[noitemsep]
+	\item 1 Arduino UNO o Arduino Mega
+	\item 1 sensor de temperatura LM35 en encapsulado TO-220 o TO-92
+	\item 1 TRIAC BT138 o BT139
+	\item 4 diodos 1N4007 o puente rectificador equivalente
+	\item 2 diodos 1N914
+	\item 1 optoacoplador MOC 3021
+	\item 1 optoacoplador 4N25
+	\item 1 foco incandescente (NO AHORRADOR NI LED)
+	\item 1 resistencia de 15k$\Omega$
+	\item 1 resistencia de 18k$\Omega$
+	\item 1 resistencia de 12k$\Omega$
+	\item 3 resistencia de 10k$\Omega$
+	\item 2 resistencia de 4k7$\Omega$
+	\item 1 resistencia de  1k$\Omega$
+	\item 2 resistencia de 470$\Omega$
+	\item 2 resistencia de 330$\Omega$
+	\item 1 condensador de 0.1$\mu$F
+\end{itemize}
+
+\end{document}
