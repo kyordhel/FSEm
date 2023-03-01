@@ -1,3 +1,4 @@
+% CHKTEX-FILE 46
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % practica.tex
 %
@@ -36,7 +37,7 @@ Raspbian es una distribución de Linux basada en Debian, optimizado para la Rasp
 \label{sec:instructions}
 
 Instalar Raspbian en la Raspberry Pi es sencillo.
-Basta con descargar Raspbian y grabar la imagen de disco en una tarjeta de memoria microSD, desde la cual arrancará el sistema operativo.
+Basta con descargar Raspbian (ahora Raspberry Pi Os) y grabar la imagen de disco en una tarjeta de memoria microSD, desde la cual arrancará el sistema operativo.
 
 Para esta práctica se necesitará:
 \begin{itemize}[nosep]
@@ -58,7 +59,7 @@ Para esta práctica se necesitará:
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Paso 1: Descargar Raspbian}%
 \label{sec:step1}
-Ingrese a \url{https://www.raspberrypi.org/downloads/raspbian/} y descargue alguna de las imágenes de Raspbian disponibles (véase \Cref{fig:raspbian-flavors}). Si se descargó un archivo Zip, habrá que descomprimirlo para extraer la imagen.
+Ingrese a \url{https://www.raspberrypi.com/software/operating-systems/} y descargue alguna de las imágenes de Raspbian disponibles (véase \Cref{fig:raspbian-flavors}). Si se descargó un archivo \texttt{img.xz}, habrá que descomprimirlo para extraer la imagen.
 
 \begin{figure}
 	\centering%
@@ -67,15 +68,18 @@ Ingrese a \url{https://www.raspberrypi.org/downloads/raspbian/} y descargue algu
 	\label{fig:raspbian-flavors} %CHKTEX 24
 \end{figure}
 
+\begin{greenbox}{Importante}
+Si tiene una Raspberry Pi 3 o 4 descargue la versión de 64 bits. Es más eficiente.
+\end{greenbox}
+
 La versión a descargar dependerá de la capacidad de la memoria microSD y la cantidad de recursos de la tarjeta Raspbian.
-Para tarjetas de 4GB se aconseja el sabor \emph{Raspbian Buster with desktop}, mientras que usuarios con tarjetas de sólo 512MB de RAM querrán instalar \emph{Raspbian Buster Lite}.
+Para tarjetas de 4GB se aconseja el sabor \emph{Raspberry Pi OS with desktop}, mientras que usuarios con Raspberries de sólo 512MB de RAM querrán instalar \emph{Raspberry Pi OS Lite}.
 
 Ligas de acceso rápido se proporcionan a continuación por conveniencia:
 
 \begin{itemize}[noitemsep]
-	\item \href{https://downloads.raspberrypi.org/raspbian_full_latest}{Raspbian Buster with desktop and recommended software}
-	\item \href{https://downloads.raspberrypi.org/raspbian_latest}{Raspbian Buster with desktop}
-	\item \href{https://downloads.raspberrypi.org/raspbian_lite_latest}{Raspbian Buster Lite}
+	\item \href{https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2023-02-22/2023-02-21-raspios-bullseye-arm64.img.xz}{Raspberry Pi OS with desktop}
+	\item \href{https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-02-22/2023-02-21-raspios-bullseye-arm64-lite.img.xz}{Raspberry Pi OS Lite}
 \end{itemize}
 
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,7 +90,7 @@ Ligas de acceso rápido se proporcionan a continuación por conveniencia:
 \subsection{Paso 2: Escribir imagen en la microSD}%
 \label{sec:step2}
 Si no lo ha hecho, introduzca la memoria microSD en la computadora.
-La memoria tendrá que formatearse, por lo que se aconseja respaldar la información.
+La memoria será reparticionada y cada partición será reformateada, por lo que se aconseja respaldar la información.
 
 Escribir la imagen de Raspbian en la microSD requiere de un programa externo según el sistema operativo.
 
@@ -96,18 +100,20 @@ Escribir la imagen de Raspbian en la microSD requiere de un programa externo seg
 %
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Escribir imagen usando Linux}%
-Descargue \href{https://etcher.io/}{Etcher} en \texttt{\textasciitilde/Downloads}, descomprima y ejecute; por ejemplo
+Descargue \href{https://etcher.io/}{Etcher} en \texttt{\textasciitilde/Downloads}.
+el archivo \texttt{AppImage} ya es ejecutable por lo que sólo hace falta darle permisos de ejecución y ejecutarlo; por ejemplo:
 
 \begin{Verbatim}[fontsize=\footnotesize]
 $ cd ~/Downloads
-$ unzip balena-etcher-electron-1.5.75-linux-x64.zip
-$ ./balenaEtcher-1.5.75-x64.AppImage
+$ wget https://github.com/balena-io/etcher/releases/download/v1.14.3/balenaEtcher-1.14.3-x64.AppImage
+$ chmod +x balenaEtcher-1.14.3-x64.AppImage
+$ ./balenaEtcher-1.14.3-x64.AppImage
 \end{Verbatim}
 
 
 A continuación, siga los pasos de Etcher para grabar la imagen (véase \Cref{fig:write-image-linux})
 \begin{enumerate}[noitemsep]
-	\item Seleccione la imagen IMG de Raspbian
+	\item Seleccione la imagen \texttt{IMG} de Raspbian
 	\item Seleccione el medio en el cual se grabará la imagen de Raspbian (punto de montaje de la microSD)
 	\item De click en \emph{Flash!} para empezar el proceso de grabado
 \end{enumerate}
@@ -129,6 +135,11 @@ A continuación, siga los pasos de Etcher para grabar la imagen (véase \Cref{fi
 	\caption{Escritura de la imagen IMG de Raspbian en la microSD con Etcher}%
 	\label{fig:write-image-linux} %CHKTEX 24
 \end{figure}
+
+\begin{importantbox}{Advertencia}
+Tenga cuidado de no seleccionar su disco duro.
+Este proceso destruirá toda la información del medio seleccionado.
+\end{importantbox}
 
 Cuando la escritura de datos en la microSD termine, notará que ésta ha sido reparticionada en \texttt{boot} (partición de arranque tipo \textit{FAT32}) y \texttt{rootfs} (partición raíz tipo \textit{EXT4}).
 
@@ -247,25 +258,202 @@ Para ello, ejecute en una terminal la herramienta de configuración \texttt{sudo
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix%
 % \clearpage%
+\section{Configuración de la red alámbrica \texttt{eth0} con IP estática}%
+\label{sec:setup-eth0}
+
+\begin{importantbox}{Importante}
+Configurar la red alámbrica requiere modificar un archivo en la partición \texttt{rootfs}, por lo que sólo puede hacerse desde un sistema basado en Unix con soporte para sistema de archivos \texttt{ext4} o directamente en la Raspberry Pi con monitor y teclado.
+\end{importantbox}
+
+Para acceder al archivo de configuración es necesario acceder a la partición \texttt{rootfs}.
+Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
+El proceso de montado de la partición \texttt{rootfs} es como sigue:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ mkdir /media/[user]/rootfs
+# mount /dev/mmcblk0p2 /media/[user]/rootfs
+$ cd /media/[user]/rootfs
+\end{Verbatim}
+
+\noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
+Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \texttt{lsblk}.
+
+Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
+
+Siga los siguientes pasos:
+
+\begin{enumerate}
+	\item Abra el archivo \texttt{dhcpcd.conf} localizado en el directorio \texttt{etc/} de la partición \texttt{rootfs} de la $\mu$SD con un editor de texto.
+	Si trabaja directamente en la Raspberry Pi la ruta es \texttt{/etc/dhcpcd.conf}.
+
+	\item Localice la línea \texttt{\# Example static IP configuration:}. Verá un código similar al siguiente:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+# Example static IP configuration:
+#interface eth0
+#static ip_address=192.168.0.10/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
+\end{Verbatim}
+
+	\item Edite la configuración anterior de la siguiente manera:
+\begin{Verbatim}[fontsize=\footnotesize]
+# Example static IP configuration:
+interface eth0
+static ip_address=192.168.0.110/24
+static routers=192.168.0.254
+static domain_name_servers=132.248.204.1 132.248.10.2 8.8.8.8
+\end{Verbatim}
+	donde
+	\begin{itemize}
+		\item \texttt{static ip\_address} es la dirección IP de la Raspberry Pi, seguido de el código de la máscara de sub red (24 = 255.255.255.0).
+		\item \texttt{static routers} es la dirección IP del punto de acceso de la red local, su puerta a la Internet.
+		\item \texttt{static domain\_name\_servers} es la dirección de los servidores de resolución de nombres para acceder a la Internet.
+	\end{itemize}
+\end{enumerate}
+
+\begin{greenbox}{Importante}
+Coordínese con sus compañeros de clase para que cada Raspberry Pi tenga una dirección IP diferente, ya que de otro modo habrá una colisión y ninguna tendrá acceso a la red.
+
+Se recomienda usar la IP de la computadora cuyo cable utiliza.
+\end{greenbox}
+
+\noindent
+Finalmente reinicie la Raspberry Pi.
+
+
+
+\section{Configuración de la red inalámbrica sin monitor}%
+\label{sec:setup-wifi}
+Para configurar la red inalámbrica sin un monitor necesita crear un archivo  llamado \texttt{wpa\_supplicant.conf} en la raíz de la partición \texttt{boot}.
+Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
+El proceso de creación del archivo \texttt{wpa\_supplicant.conf} en la raíz de la partición \texttt{boot} es como sigue:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ mkdir /media/[user]/boot
+# mount /dev/mmcblk0p1 /media/[user]/boot
+$ touch /media/[user]/boot/wpa_supplicant.conf
+\end{Verbatim}
+
+\noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
+Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \texttt{lsblk}.
+
+Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
+
+A continuación proceda a editar el archivo \texttt{wpa\_supplicant.conf}
+
+\begin{Verbatim}[fontsize=\footnotesize]
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=MX
+
+network={
+    ssid="<NOMBRE DE LA RED INALÁMBRICA>"
+    psk="<CONTRASEÑA>"
+    key_mgmt=WPA-PSK
+}
+\end{Verbatim}
+
+O, si la red no tiene contraseña:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=MX
+
+network={
+    ssid="<NOMBRE DE LA RED INALÁMBRICA>"
+    key_mgmt=NONE
+}
+\end{Verbatim}
+
+Si su red inalámbrica no tiene servidor DHCP requerirá de una IP estática.
+Para esto es necesario modificar el archivo \texttt{dhcpcd.conf} tal como se describe en el \Cref{sec:setup-eth0}.
+
+Siga los siguientes pasos:
+
+\begin{enumerate}
+	\item Abra el archivo \texttt{dhcpcd.conf} localizado en el directorio \texttt{etc/} de la partición \texttt{rootfs} de la $\mu$SD con un editor de texto.
+
+	\item Localice la línea \texttt{\# Example static IP configuration:}. Verá un código similar al siguiente:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+# Example static IP configuration:
+#interface eth0
+#static ip_address=192.168.0.10/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
+\end{Verbatim}
+
+	\item Copie el bloque de texto anterior y péguelo justo debajo, editando la configuración de la siguiente manera:
+\begin{Verbatim}[fontsize=\footnotesize]
+# Example static IP configuration:
+interface wlan0
+static ip_address=192.168.0.200/24
+static routers=192.168.0.254
+static domain_name_servers=132.248.204.1 132.248.10.2 8.8.8.8
+\end{Verbatim}
+	donde
+	\begin{itemize}
+		\item \texttt{static ip\_address} es la dirección IP de la Raspberry Pi, seguido de el código de la máscara de sub red (24 = 255.255.255.0).
+		\item \texttt{static routers} es la dirección IP del punto de acceso de la red local, su puerta a la Internet.
+		\item \texttt{static domain\_name\_servers} es la dirección de los servidores de resolución de nombres para acceder a la Internet.
+	\end{itemize}
+\end{enumerate}
+
+\begin{greenbox}{Importante}
+Coordínese con sus compañeros de clase para que cada Raspberry Pi tenga una dirección IP diferente, ya que de otro modo habrá una colisión y ninguna tendrá acceso a la red.
+\end{greenbox}
+
+Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
+
 \section{Instalación de Raspbian via SSH}%
 \label{sec:annex1}
 En caso de que no se cuente con un monitor, es posible instalar Raspbian vía SSH. %CHKTEX 13
 Para ello es necesario habilitar conexiones vía SSH ya que estas se encuentran deshabilitadas por defecto.
 
 
-\subsection{Habiliar conexiones SSH}
+
+\subsection{Habiliar conexiones SSH}%
 \label{sec:annex1-ssh-enable}
-Para habilitar SSH, se necesita crear un archivo vacío llamado \texttt{SSH} en la raíz de la partición \texttt{rootfs}.
-Supóngase que la microSD está asociada a \texttt{/dev/sdc}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/sdc1} y \texttt{/dev/sdc2} respectivamente.
-El proceso de creación del archivo \texttt{SSH} en la raíz de la partición \texttt{rootfs} es como sigue:
+Para habilitar SSH, se necesita crear un par de archivos:
+\begin{enumerate*}[label=\roman*\rpar]
+	\item un archivo vacío llamado \texttt{SSH}
+	y
+	\item un archivo llamado \texttt{userconf.txt} con el usuario y contraseña para conexiones SSH; % CHKTEX 13
+\end{enumerate*}
+ambos en la raíz de la partición \texttt{boot}.
+
+Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
+El proceso de creación del archivo \texttt{SSH} en la raíz de la partición \texttt{boot} es como sigue:
 
 \begin{Verbatim}[fontsize=\footnotesize]
-$ mkdir /media/user/rootfs
-# mount /dev/sdc2 /media/user/rootfs
-# touch /media/user/rootfs/SSH
+$ mkdir /media/[user]/boot
+# mount /dev/mmcblk0p1 /media/[user]/boot
+$ touch /media/[user]/boot/SSH
 \end{Verbatim}
 
+\noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
+Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \texttt{lsblk}.
+
 Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
+
+A continuación use \texttt{nano} para crear el archivo \texttt{userconf.txt} y escriba el siguiente texto:
+\begin{verbatim}[fontsize=\footnotesize]
+pi:$6$9Qp0F2Al16JhvGmB$JLOIQjLdBIgRAbI6iMl.bylomaIshgHlNTB51oHUSNbTW3D5l6hEnPr6HEBtMo/0IKwlGkc7.FlFOhaMwPKB1/
+\end{verbatim}
+
+Esta cadena habilitará iniciar sesión con el usuario \texttt{pi} y la contraseña \texttt{raspberry}.
+
+Teclear la cadena encriptada es un proceso tedioso y propenso a errores, por lo que una forma más simple de hacer esto es ejecutar el comando
+
+\begin{verbatim}[fontsize=\footnotesize]
+echo "pi:$(openssl passwd -6)" > /media/[user]/boot/userconf.txt
+\end{verbatim}
+
+Con lo que podrá definir cualquier usuario y contraseña que desee.
 
 Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
 
@@ -331,3 +519,5 @@ Se aconseja definir el idioma, localización, y cambiar la contraseña del usuar
 \end{figure}
 
 \end{document}
+
+
