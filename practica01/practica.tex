@@ -441,17 +441,17 @@ Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \textt
 Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
 
 A continuación use \texttt{nano} para crear el archivo \texttt{userconf.txt} y escriba el siguiente texto:
-\begin{verbatim}[fontsize=\footnotesize]
+\begin{Verbatim}[fontsize=\scriptsize]
 pi:$6$9Qp0F2Al16JhvGmB$JLOIQjLdBIgRAbI6iMl.bylomaIshgHlNTB51oHUSNbTW3D5l6hEnPr6HEBtMo/0IKwlGkc7.FlFOhaMwPKB1/
-\end{verbatim}
+\end{Verbatim}
 
 Esta cadena habilitará iniciar sesión con el usuario \texttt{pi} y la contraseña \texttt{raspberry}.
 
 Teclear la cadena encriptada es un proceso tedioso y propenso a errores, por lo que una forma más simple de hacer esto es ejecutar el comando
 
-\begin{verbatim}[fontsize=\footnotesize]
+\begin{Verbatim}[fontsize=\footnotesize]
 echo "pi:$(openssl passwd -6)" > /media/[user]/boot/userconf.txt
-\end{verbatim}
+\end{Verbatim}
 
 Con lo que podrá definir cualquier usuario y contraseña que desee.
 

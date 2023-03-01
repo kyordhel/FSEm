@@ -1,0 +1,17 @@
+# Ignore everything
+*
+# But these files
+!.gitignore
+!*.tex
+!*.pdf
+!Makefile
+!License
+!readme.MD
+!boot/userconf.txt
+!boot/SSH
+
+# And these folders
+!boot/
+
+# Even if they are in subdirectories
+!*/
