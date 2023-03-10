@@ -1,0 +1,12 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+!pi/media.tar.gz
+# And these filetypes
+!*.pdf
+!src/*.py
+!pi/videos/*.mp4
+!pi/pictures/*.jpg
+# Even if they are in subdirectories
+!*/
