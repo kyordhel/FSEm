@@ -1,0 +1,105 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% main.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TEX-ROOT=references.bib
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\hypersetup{
+	hidelinks,
+	pdfauthor={Mauricio Matamoros},
+	pdftitle={Tarea 01 – Fundamentos de Sistemas Embebidos},
+% 	pdfsubject={The Subject},
+% 	pdfkeywords={Some Keywords},
+% 	pdfproducer={Latex with hyperref, or other system},
+% 	pdfcreator={pdflatex, or other tool}
+}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Tarea 1:}
+\date{Fundamentos de Sistemas Embebidos}
+
+
+% Document body
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+% \section{Introducción}
+% \label{sec:introduction}
+
+\section{Instrucciones}%
+\label{sec:instructions}
+Investigue qué es el plagio académico.
+Con la información recopilada realice un escrito de entre 250 y 500 palabras (de media a una cuartilla) donde explique:
+\begin{enumerate*}[nosep,label=\roman*\(\rpar{}\)]
+	\item qué es el plagio
+	y
+	\item por qué éste es pernicioso tanto para quien lo comete como para el desarrollo de la ciencia y técnica en general.
+\end{enumerate*}
+Finalmente, responda el cuestionario de la \Cref{sec:cuestionario}.
+
+\bigskip\noindent
+Se recomiendan las siguientes fuentes de información:
+\begin{itemize}[noitemsep]
+
+	\item \textit{Plagio y Ética}. UNAM. México, 2018. %CHKTEX 13
+		\href{http://www.libros.unam.mx/plagioyetica.pdf}{[En Línea]}
+
+	\item \textit{Plagio}. UNAM. México, 2014. %CHKTEX 13
+		\href{http://www.eticaacademica.unam.mx/Plagio.html}{[En Línea]}
+
+	\item \textit{Tipos de plagio}. UNAM. México, 2014. %CHKTEX 13
+		\href{http://www.eticaacademica.unam.mx/Tipos_de_plagio.html}{[En Línea]}
+
+	\item Coordinación de Transparencia y Rendición de Cuentas. \textit{Guía rápida sobre plagio y derechos de autor}. UNAM. México, 2014. %CHKTEX 13
+		\href{https://www.derecho.unam.mx/integridad-academica/pdf/guia-plagio-derecho-autor.pdf}{[En Línea]}
+
+	\item E. Cervera. \textit{Plagio académico}. Universitat Oberta de Catlunya. Cataluña, 2019.
+		\href{http://biblioteca.uoc.edu/es/recursos/plagio-academico}{[En Línea]}
+
+	\item J. Sarrión. \textit{Plagio. Qué es y qué consecuencias tiene}. Universitat de València. Valencia, 2016.
+		\href{https://www.researchgate.net/publication/302261122_Plagio_Que_es_y_que_consecuencias_tiene}{[En Línea]}
+
+	\item M. Pérez et al. \textit{Manual de citas y referencias bibliográficas}. 2\textsuperscript{a} Edición. Universidad de los Andes. Bogotá, 2015.
+		\href{https://drive.google.com/file/d/11hlh4eQ28i9fXg-yOKV-OlYDyWSkiy6t/view?usp=sharing}{[En Línea]}
+
+	\item D. Ordaz. \textit{El plagio constituye un delito que se castiga hasta con cárcel: Luis Fernando Granados}. Aristegui Noticias. México, 12 de agosto de 2016.
+		\href{https://aristeguinoticias.com/2908/mexico/el-plagio-constituye-un-delito-que-se-castiga-hasta-con-carcel-luis-fernando-granados/}{[En Línea]}
+\end{itemize}
+
+\section{Cuestionario}
+Responda las siguientes preguntas de forma breve, clara y concisa.
+% Cada inciso tiene un valor de 2 puntos.
+\label{sec:cuestionario} %chktex 24
+\begin{enumerate}[noitemsep]
+	\item ¿Qué es el plagio?
+		\points{1 punto}
+	\item ¿Cuál es la diferencia entre plagio y plagio académico?
+		\points{1 punto}
+	\item ¿Cómo afecta el plagio a la reputación de una institución educativa?
+		\points{1 punto}
+	\item De acuerdo con la legislación universitaria, ¿cómo se castiga el plagio en la UNAM? %CHKTEX 13
+		\points{$1\sfrac{1}{2}$ puntos}
+	\item De acuerdo con el código penal, ¿cómo se castiga el plagio en México?
+		\points{$1\sfrac{1}{2}$ puntos}
+	\item El problema de plagio, ¿es aplicable al código fuente del software?
+		\points{2 puntos}
+	\item ¿Por qué es importante incluir una licencia con el código fuente del software?
+		\points{2 puntos}
+\end{enumerate}
+
+
+\end{document}
