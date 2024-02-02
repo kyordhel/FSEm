@@ -1,0 +1,95 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-3.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 3: Instalación de Thonny bajo Ubuntu Linux}%
+\label{sec:step3}
+El motivo por el cual se aconseja el desarrollo de software y firmware para microcontroladores en sistemas basados en Unix es porque dichos sistemas ofrecen un vasto conjunto de herramientas de compilación cruzada, facilitando el desarrollo para virtualmente cualquier integrado con absoluta independencia de software para terceros, y todo de forma gratuita.
+Además, el software GNU cuenta con licencia de código abierto, por lo que siempre es posible estudiar y comprender en completitud cómo operan las herramientas de desarrollo para obtener el máximo desempeño posible.
+Así, un sistema moderno podrá compilar sin ningún problema un sistema desarrollado en 1985, cosa que no es posible en sistemas con Windows.
+
+\medskip{}
+
+\noindent
+En un sistema con Ubuntu Linux, instalar Thonny es tan sencillo como abrir una terminal y ejecutar la línea:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{gray}{$} sudo \textbf{apt} install thonny
+\end{Verbatim}
+
+\begin{importantbox}{Importante}
+	Los sistemas POSIX cuentan con dos niveles de acceso: usuario y súper-usuario (root) y, por seguridad, sólo un súper-usuario puede instalar programas.
+
+	En una terminal, el prompt de los usuarios es un signo de pesos \code{\$}, mientras que el de los súper-usuarios es el símbolo hash \code{\#}.
+	Dado que la mayoría de los sistemas POSIX no cuentan con comando \code{sudo} se estila especificar en nivel de acceso requerido antes del comando; así la línea
+
+	\begin{Verbatim}[commandchars=\\\{\},gobble=2]
+		\textcolor{Black!70}{$} sudo \textbf{apt} install thonny
+	\end{Verbatim}
+
+	es equivalente a
+
+	\begin{Verbatim}[commandchars=\\\{\},gobble=2]
+		\textcolor{Sepia!50}{#} \textbf{apt} install thonny
+	\end{Verbatim}
+
+	¡Pero en ningún caso los caracteres \code{\$} ni \code{\#} se escriben!
+\end{importantbox}
+
+Es necesario señalar que \emph{aptitude}, el gestor de paquetes de los sistemas basados en Debian (como ubuntu), contiene versiones estables, robustas y bien probadas en lugar de la última versión con las últimas características.
+Es por esto que la versión de Thonny instalada vía \code{apt} podría no tener soporte para el RP2040.
+Por ello, el conjunto de pasos recomendado a seguir es el siguiente:
+
+\begin{Verbatim}[commandchars=\\\{\},gobble=1]
+	\textcolor{Sepia!50}{#} \textbf{apt} install python3 python3-pip
+	\textcolor{Black!70}{$} \textbf{pip} install -U pip thonny
+\end{Verbatim}
+
+\noindent
+A diferencia de \emph{aptitude}, \emph{pip} instalará la versión estable más reciente.
+
+\medskip.
+
+\noindent
+Finalmente ejecute Thonny, invocándolo con la línea
+
+\begin{Verbatim}[commandchars=\\\{\},gobble=1]
+	\textcolor{Black!70}{$} thonny
+\end{Verbatim}
+
+\noindent
+deberá ver una ventana como la siguiente:
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/thonny.png} %CHKTEX 8
+	\caption{Thonny}
+	\label{fig:thonny} %CHKTEX 24
+\end{figure}
+
+Es normal que Thonny marque un error la primera vez que se ejecuta.
+Esto se debe a que no se ha configurado el intérprete.
+Para verificar que Thonny pueda operar con el RP2040, haga click en el menú \emph{Run} y seleccione \emph{Configure interpreter\dots} (ejecutar, configurar intérprete).
+Verá una ventana similar a la siguiente:
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/thonny-interpreter.png} %CHKTEX 8
+	\caption{Selección de intérprete y tarjeta en Thonny}
+	\label{fig:thonny-interpreter} %CHKTEX 24
+\end{figure}
+
+En el combo superior seleccione la tarjeta Raspberry Pi Pico (el RP2040).
+En el recuadro inferior seleccione el puerto en el que se encuentra conectada la tarjeta.
+Si el cuadro inferior no muestra ningún puerto, verifique que la tarjeta microcontroladora se encuentra conectada a la computadora vía el cable USB.

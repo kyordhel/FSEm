@@ -1,0 +1,60 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+\subsection{MicroPython}%
+\label{sec:uPy}
+
+% The use of the Python language for controlling hardware has been around for some time. Users of the Raspberry Pi, pcDuino, and other low-cost computers and similar boards have had the advantage of using Python for controlling hardware. In this case, they used full versions of the Python programming language on the native Linux-based operating system. While these boards made it possible for those who wanted to develop electronics projects, it required users to buy the board as well as peripherals like a keyboard, mouse, and monitor. Not only that, but users also had to learn the operating system. For those not used to Linux, this can be a challenge in and of itself.
+
+% The vision for MicroPython was to combine the simplicity of learning Python with the low cost and ease of use of microcontroller boards, which would permit a lot more people to work with electronics for art and science projects. Beginners would not have to learn a new operating system or learn one of the more complex programming languages.
+
+Creado por Damien P. George y Paul Sokolovsky (entre otros),
+MicroPython fue diseñado para ser una versión ligera y eficiente del lenguaje Python 3 instalable en un pequeño microcontrolador.
+Dado que Python es un lenguaje interpretado y, por lo tanto, en general más lento que los lenguajes compilados (véase~\Cref{sec:uPy-interpreter}), MicroPython fue diseñado para ser lo más eficiente posible para que pueda ejecutarse en microcontroladores que normalmente son más lentos y tienen mucha menos memoria que una computadora personal típica~\Citep{bell2022MicroPython,bell2022}.
+
+Otro aspecto es que las tarjetas microcontroladores como Arduino requieren que el código sea compilado en otra computadora para producir un código objeto ejecutable que debe ser cargado en dicha tarjeta.
+En contraste, dado que MicroPython es un intérprete ejecutándose directamente en el hardware, puede prescindirse del paso intermedio de compilación:
+¡se puede ejecutar el código fuente directamente en el hardware!
+Esto permite a los fabricantes de hardware construir tarjetas pequeñas y económicas con MicroPython embebido en el chip y que puedan ejecutar virtualmente cualquier programa tanto en la fase de desarrollo como en la de producción~\Citep{bell2022MicroPython,bell2022}.
+
+MicroPython permite crear programas simples, eficientemente especificados y fáciles de entender.
+Además, incluye las siguientes características~\Citep{bell2022MicroPython,bell2022}:
+
+\begin{itemize}[nosep]
+	\item \textbf{Intérprete interactivo:} MicroPython habilita en la tarjeta física una consola interactiva especial a la que puede acceder conectándose via USB. % CHKTEX 13
+
+	\item \textbf{Bibliotecas estándar de Python:} MicroPython es compatible con muchas de las bibliotecas estándar de Python.
+	En general, uno puede confiar en que alrededor del del 80\% de las bibliotecas más utilizadas estarán disponibles.
+
+	\item \textbf{Bibliotecas a nivel de hardware:} MicroPython tiene bibliotecas integradas que le permiten acceder al hardware directamente para encender o apagar pines, leer datos analógicos, leer datos digitales, controlar hardware (PWM) y más.
+
+	\item \textbf{Extensible:} MicroPython también es extensible.
+	Ésta es una gran característica para usuarios avanzados que necesitan implementar alguna biblioteca compleja de bajo nivel (en C/C++) e incluir la nueva biblioteca en MicroPython.
+\end{itemize}
+
+La mayor limitación de MicroPython  deriva de su facilidad de uso:
+aunque MicroPython está altamente optimizado el código se interpreta sobre la marcha lo que agrega una penalización de desempeño y memoria por parte del intérprete.
+Esto significa que los proyectos que requieren un alto grado de precisión, un muestreo de datos a alta frecuencia, o comunicaciones a alta velocidad (por ejemplo USB), pueden no ejecutarse lo suficientemente rápido.
+Estos problemas suelen superarse con el uso de bibliotecas en C/C++ optimizadas para manejar la comunicación de bajo nivel.
+Por otro lado, MicroPython también requiere de un poco más de memoria que el código nativo.
+Normalmente, esto no es un problema, aunque debe tomarse en cuenta si el programa va a extenderse con características nuevas.
+Los programas más grandes que usan muchas bibliotecas podrían consumir más memoria de la disponible.
+Finalmente, como se mencionó anteriormente, MicroPython no implementa todas las funciones de todas las bibliotecas de Python 3~\Citep{bell2022MicroPython,bell2022}.
+
+
+
+\subsection{Lenguajes compilados \textsuperscript{v}/\textsubscript{s} lenguajes interpretados}%
+\label{sec:uPy-interpreter}
+Los lenguajes compilados requieren de un programa externo llamado compilador para convertir el código fuente de una forma legible por humanos a una forma ejecutable binaria que pueda ser entendido y ejecutado con máxima eficiencia por el procesador.
+Por otro lado, los lenguajes interpretados no se compilan, sino que se evalúan línea a línea sobre la marcha con un programa llamado intérprete.
+Python 3 proporciona un ejecutable de Python que es a la vez un intérprete y una consola que le permite ejecutar el código a medida que se escribe.
+
+Por lo tanto, los lenguajes compilados son mucho más rápidos que los lenguajes interpretados porque el código está preparado (y optimizado) para su ejecución en el microprocesador sin requerir de pasos intermedio en tiempo real para procesar el código antes de la ejecución.

@@ -1,0 +1,75 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-2.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 2: Instalar MicroPython en el RP2040}%
+\label{sec:step2}
+Antes de proceder, verifique que su cable adaptador USB-C soporta transmisión de datos.
+
+\medskip{}
+
+El RP2040 viene precargado con un microfirmware especial que permite dos modos de arranque:
+\begin{enumerate*}[label=\roman*\rpar]
+	\item el arranque normal en modo microcontrolador que comenzará la ejecución de las microinstrucciones grabadas en la memoria \textsc{Flash} de programa
+	y
+	\item el arranque en modo carga, que inicializará al microcontrolador como si fuera un dispositivo de almacenamiento masivo (ej.~una memoria USB) donde se puede copiar el firmware compilado para el microcrontrolador.
+\end{enumerate*}
+Lejos atrás quedaron los tiempos en que se requería de un dispositivo programador especial o de software complejo para interactuar con el microcontrolador.
+
+Para arrancar el microcontrolador RP2040 en modo carga, basta con presionar el botón \textsc{Bootsel} en la tarjeta antes de energizar el microcontrolador conectándolo a una computadora, tal como muestra la \Cref{fig:boot-btn}.
+Se requiere de un cable adaptador USB tipo C para este propósito.
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering%
+		\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/dualMCU-boot.png} %CHKTEX 8
+		\caption{Boton BOOT en la \textsc{Unit} DualMCU}
+		\label{fig:dualMCU-boot} %CHKTEX 24
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering%
+		\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/pico-boot.png} %CHKTEX 8
+		\caption{Boton BOOTSEL en la Raspberry Pi Pico}
+		\label{fig:pico-boot} %CHKTEX 24
+	\end{subfigure}
+	\caption{Descarga de la última versión de MicroPython}
+	\label{fig:boot-btn} %CHKTEX 24
+\end{figure}
+
+\begin{greenbox}{Importante}
+	Si cuenta con una tarjeta una tarjeta \textsc{Unit} DualMCU, verifique que el interruptor USB-Selector esté activado en modo RP2040.
+	Esta tarjeta cuenta, además, con un botón \textsc{Rst} que sirve para reiniciar el RP2040 evitando el desgaste innecesario del conector USB.
+\end{greenbox}
+
+\noindent
+Para grabar MicroPython en el RP2040 siga los siguientes pasos:
+
+\begin{enumerate}[nosep]
+	\item Presione el botón BOOT/\textsc{Bootsel} de la tarjeta.
+	\item Sin soltar el botón, conecte la tarjeta a la computadora usando el cable USB-C.
+	\item Espere dos segundos antes de soltar el botón BOOT/\textsc{Bootsel}.
+	\item Espere unos segundos a que la computadora reconozca el dispositivo.\footnotemark{}
+	El volumen tendrá un nombre parecido a RPI-RP2.
+	\item Copie el archivo de firmware, por ejemplo el \code{rp2-pico-20230426-v1.20.0.uf2} al dispositivo de almacenamiento masivo (la tarjeta).
+\end{enumerate}
+\footnotetext{
+	Si la computadora no ha reconocido la tarjeta como un dispositivo de almacenamiento masivo luego de aproximadamente medio minuto, verifique que su cable tenga soporte para transporte de datos.
+}
+
+\medskip{}
+
+\noindent
+Tan pronto como la tarjeta detecte que se ha cargado un nuevo firmware, ésta se reiniciará automáticamente.

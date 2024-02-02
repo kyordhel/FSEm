@@ -1,0 +1,47 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-1.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 1: Descargar MicroPython}%
+\label{sec:step1}
+
+Ingrese a \url{https://micropython.org/download/?port=rp2} y seleccione el modelo de su tarjeta controladora.
+Si no está seguro, simplemente de click en la imagen correspondiente a la Raspberry Pi Pico (\url{https://micropython.org/download/rp2-pico/}).
+A continuación descargue último firmware disponible de MicroPython, por ejemplo la \href{https://micropython.org/resources/firmware/rp2-pico-20230426-v1.20.0.uf2}{versión 1.20.0}.
+Deberá ser un archivo extensión \code{uf2}.
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering%
+		\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/upy-dl-01.png} %CHKTEX 8
+		\caption{Selección de la Raspberry Pi Pico}
+		\label{fig:upy-dl-a} %CHKTEX 24
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering%
+		\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/upy-dl-02.png} %CHKTEX 8
+		\caption{Firmwares disponibles}
+		\label{fig:upy-dl-b} %CHKTEX 24
+	\end{subfigure}
+	\caption{Descarga de la última versión de MicroPython}
+	\label{fig:upy-dl} %CHKTEX 24
+\end{figure}
+
+\begin{greenbox}{Importante}
+	Si tiene una Raspberry Pi Pico-W descargue el firmware para la Pico-W.
+	De otro modo no podrá usar la tarjeta inalámbrica
+\end{greenbox}
+

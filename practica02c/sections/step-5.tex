@@ -1,0 +1,93 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 5: Temperatura del RP2040}%
+\label{sec:step5}
+
+La \cref{eqn:v-to-temp} tiene un problema fundamental: un convertidor ADC entrega valores discretos enteros que corresponden de forma proporcional y lineal al voltaje sensado entre $V_\text{Ref-}$ y $V_\text{Ref+}$.
+En el caso del RP2040 $V_\text{Ref-} = \text{\textsc{Gnd}} = 0\text{V}$ y $V_\text{Ref+} = \text{\textsc{Vcc}} = 3.3\text{V}$ y, dado que la precisión del ADC es de 12bits, los valores registrados estarrían entre cero y $2^{12}-1 = 4095$.
+Sin embargo, MicroPython ofrece el método \code{read_u16()} de las instancias de \code{ADC} que provee un entero no signado de 16 bits.
+Así, las conversiones tendrán que tomar en cuenta un rango entre 0 y 65535.
+
+Con esto en mente y considerando que $v = \frac{3.3V}{65535}x$, se puede reemplazar $v$ por $x$ en la \cref{eqn:v-to-temp} para obtener una fórmula de conversión directa del valor reportado del ADC a un valor de temperatura.
+
+\noindent
+Así, la \cref{eqn:v-to-temp} quedaría como:
+
+\begin{align*}%
+	\label{eqn:adc-to-temp}
+	T &=%
+		\Bigg( \frac{-1}{1.721\frac{\text{mV}}{\text{°C}}} \Bigg)
+		\Bigg( \frac{3.3\text{V}}{65535} \cdot x \Bigg) +
+		437.23\text{°C} \\
+%
+	  &=
+		\Bigg( \frac{-1}{1.721\frac{\text{mV}}{\text{°C}}} \Bigg)
+		\Bigg( \frac{3300\text{mV}}{65535} \cdot x \Bigg) +
+		437.23\text{°C} \\
+%
+	  &=
+		\frac{
+			-3300\cancel{\text{mV}}
+		}{
+			65535 \times 1.721\frac{\cancel{\text{mV}}}{\text{°C}}
+		}
+		\cdot x +
+		437.23\text{°C} \\
+%
+	  &=
+		\frac{
+			-3300
+		}{
+			112785.74\frac{1}{\text{°C}}
+		}
+		\cdot x +
+		437.23\text{°C} \\
+\end{align*}
+
+\noindent
+Lo que finalmente produce la ecuación:
+
+\begin{equation}%
+	\label{eqn:adc-to-temp}
+	T = -29259\times10^{-6}x + 437.23
+\end{equation}
+
+\noindent
+Esta ley se refleja en el código presentado en \cref{lst:temp}.
+
+\medskip{}
+
+\noindent
+Ingrese el siguiente código en el editor de Thonny y ejecútelo
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{temp.py}: --- Temperatura del RP2040},
+	label={lst:temp},
+	firstline=11
+]{src/temp.py}
+
+
+El \cref{lst:temp} configura primero el ADC para leer del canal 4 (sensor interno de temperatura) y luego define un bucle infinito con la cláusula \code{while} dentro del cual
+\begin{enumerate*}[label=\roman*\rpar]
+	\item se lee el valor del convertidor A/D,
+	\item se convierte el valor sensado a temperatura en grados celcius
+	\item se imprime la temperatura
+	y, finalmente,
+	\item se espera durante un segundo.
+\end{enumerate*}
+
+Por conveniencia, los códigos completos de los programas de ejemplo se encuentran en el \Cref{sec:appendix3}.

@@ -1,0 +1,71 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 4: Led parpadeante con el RP2040}%
+\label{sec:step4}
+
+Con la tarjeta controladora configurada y conectada, basta con copiar los programas al editor de Thonny y presionar el botón de ejecución (invocable vía la tecla F5).
+
+\medskip{}
+
+\noindent
+Ingrese el siguiente código en el editor y ejecútelo
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{blink.py}: --- Led parpadeante usando retardos},
+	label={lst:blink},
+	firstline=11
+]{src/blink.py}
+
+
+El \cref{lst:blink} configura primero el pin 25 del RP2040 como salida y luego define un bucle infinito con la cláusula \code{while} dentro del cual se alterna el estado del pin y se realiza una espera activa de 500ms.
+El paquete \code{machine} contiene las clases que abstraen el acceso a todo el hardware del microcontrolador.
+Es decir, los elementos de \code{machine} pueden variar entre diferentes integrados, por lo que el código de MicroPython no es necesariamente portable ni agnóstico respecto a hardware a diferencia de los programas hechos en CPython.
+
+La línea 1 del \cref{lst:blink} importa la clase \code{Pin} del paquete \code{machine}, que posteriormente será usado en la línea 4 para crear un objeto tipo \code{Pin}.
+MicroPython ocupa el paradigma de programación orientado a objetos para hacer el código más compacto y legible.
+Para cambiar el estado del pin basta con llamar a las funciones \code{on()}, \code{off()} o \code{toggle()} sin necesidad de volver a especificar el número de pin o su configuración.\footnote{Para más información consúltese la documentación de MicroPython en \url{https://docs.micropython.org/en/latest/library/machine.Pin.html}}
+
+El estudiante avezado habrá podido notar que el \cref{lst:blink} es bastante ineficiente.
+La función \code{sleep_ms} se traducirá en una larga cadena de \code{NOP}s que mantendrán al procesador activo y ocupado haciendo nada, es decir, incapaz de realizar otras tareas.
+Además, a menos que se programe en ensamblador, es imposible estimar de forma precisa los tiempos de ejecución del código en lenguajes de medio y alto nivel.
+
+Para resolver este problema, el \cref{lst:blink-timer} hace uso de un temporizador o \emph{timer} de \textsc{software}\footnotemark{} para hacer parpadear el led~(véase la línea 9 del \cref{lst:blink-timer}).
+En la siguiente línea el temporizador se inicializa con tres parámetros:
+\begin{enumerate*}[label=\roman*\rpar]
+	\item \code{freq}, que especifica la frecuencia de operación del timer en Hertz;
+	\item \code{mode}, que indica si el timer debe correr sólo una vez (\code{Timer.ONE_SHOT}) o de forma periódica (\code{Timer.PERIODIC})
+	y
+	\item \code{callback}, que especifica el nombre la función que se llamará cuando el contador llegue a cero;
+\end{enumerate*}
+o \code{blik} en nuestro caso.
+Para más información consúltese la documentación de MicroPython en \url{https://docs.micropython.org/en/latest/library/machine.Timer.html}
+\footnotetext{
+	Nótese que no se le proporciona el ID del timer a utilizar al constructor.
+	Esto es debido a que la implementación actual del MicroPython para el RP2040 aún no tiene soporte para el uso de los timers físicos (Hardware) del integrado.
+}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{blink-timer.py}: --- Led parpadeante usando temporizadores},
+	label={lst:blink-timer},
+	firstline=11
+]{src/blink-timer.py}
+
+Nótese que el objeto \code{Timer} se crea después de declararse la función \code{blink}.
+Esto es debido a que los scripts de Python se ejecutan línea a línea, por lo que el intérprete no conocerá a la función \code{blink} si ésta se declara después.
+
+Por conveniencia, los códigos completos de los programas de ejemplo se encuentran en los \Cref{sec:appendix1,sec:appendix2}.

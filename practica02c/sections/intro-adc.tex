@@ -1,0 +1,72 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-adc.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Convertidor Analógico---Digital y sensado de temperatura}%
+\label{sec:intro-adc}
+El RP2040 cuenta con un convertidor analógico-digital de 12 bits con cinco canales, cuatro de los cuales están anclados a los pines A0--A3 (GPIO 27--29) y un canal especial cuyo único propósito es medir la temperatura del integrado.
+
+\noindent
+De acuerdo con la hoja de especificaciones del RP20240:
+
+\begin{displayquote}
+	El sensor de temperatura mide el voltaje $V_{BE}$ de un diodo bipolar conectado al quinto canal del convertidor AD (AINSEL=4).
+	Normalmente $V_{BE} = 0.706V$ cuando $T=27^{o}C$ con una pendiente de~$-1.721\frac{mV}{^{o}C}$~\Citep{datasheet:rp2040}.
+\end{displayquote}
+
+Con esta información, y suponiendo linearidad en la respuesta, se puede utilizar la ecuación de la recta $y = mx + b$ para extrapolar el valor de temperatura del integrado de la siguiente manera:
+
+\begin{align*}
+	y &= m x + b \\
+	  &= m \left(x - x_0 \right) + y_0 \\
+\end{align*}
+
+\noindent
+o, sustituyento la variable $x$ por la temperatura $T$ y $y$ por el voltaje $v$ y los valores
+	$m = -1.721\frac{mV}{^{o}C}$,
+	$T_{0} = 27^{o}C$ y
+	$v_{0} = 0.706V$:
+
+\begin{align*}
+	v &= m \left(T - T_0 \right) + v_0 \\
+%
+	  &= -1.721\frac{\text{mV}}{\text{°C}} \left(T - 27\text{°C} \right) + 0.706\text{V} \\
+%
+	  &= \left(-1.721\frac{\text{mV}}{\text{°C}} \times T  \right) +
+		\left(27\cancel{\text{°C}} \times 1.721\frac{\text{mV}}{\cancel{\text{°C}}} \right) +
+		0.706\text{V} \\
+%
+	  &= -1.721T \frac{\text{mV}}{\text{°C}} + 46.467\text{mV} + 706\text{mV} \\
+%
+	  &= -1.721T \frac{\text{mV}}{\text{°C}} + 752.47\text{mV} \\
+\end{align*}
+
+\noindent
+despejando a $T$:
+
+\begin{equation*}
+	\frac{v}{-1.721\frac{\text{mV}}{\text{°C}}} =
+		\frac{\left(T\right)\cancel{\left(-1.721\frac{\text{mV}}{\text{°C}}\right)}}{\cancel{-1.721\frac{\text{mV}}{\text{°C}}}} +
+	  	\frac{752.47\cancel{\text{mV}}}{-1.721\frac{\cancel{\text{mV}}}{\text{°C}}}
+\end{equation*}
+
+\noindent
+finalmente:
+
+\begin{equation}%
+	\label{eqn:v-to-temp}
+	T = \frac{-1}{1.721\frac{\text{mV}}{\text{°C}}} \cdot v + 437.23\text{°C}
+\end{equation}
+
+Así, bastará con convertir el valor reportado por el convertidor analógico-digital a su equivalente en milivoltios para obtener la temperatura del circuito integrado.

@@ -1,0 +1,34 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-lm35.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+
+\subsection{Thonny}%
+\label{sec:intro-thonny}
+
+Thonny es un IDE\footnote{Entorno de desarrollo integrado, por sus siglas en inglés \emph{Integrated Development Environment}}
+de código abierto
+para Python desarrollado por la Universidad de Tartu, Estonia, pensado para ser amigable con el principiante.
+Además de las capacidades estándar de construcción y ejecución de programas, cuenta con un soporte extendido para animación de programas,
+permitiendo ilustrar los conceptos de variables, control de flujo, evaluacíón de expresiones, llamada a funciones, recursión, referencias y montículos, objetos (incluyendo clases y funciones como valores), datos compuestos (listas, diccionarios y conjuntos) y operaciones de entrada/salida sobre archivos~\Citep{annamaa2015a,annamaa2015b}.
+
+Thonny puede llevar registro de las acciones del usuario con suficiente detalle para reproducir el proceso de elaboración de un programa, permitiéndole a los estudiantes elegir el nivel de detalle con el que desean analizar la reproducción~\Citep{annamaa2015a,annamaa2015b}.
+
+Una de las ventajas de Thonny sobre cualquier otro editor de Python es que, a partir de la versión 4.0, incluye soporte para interactuar con varios  microcontroladores como el RP2040, el ESP32 y el ESP8266; todos de amplia difusión en el mercado.
+Además, Thonny permite realizar operaciones en el sistema de archivos virtual del RP2040 (MicroPython convierte el RP2040 en una suerte de memoria USB de unos cuantos kB).
+Para este fin, basta con contectar la tarjeta controladora a la PC, iniciar Thonny y seleccionar las opciones \emph{View} y \emph{Files}.
+De igual manera Thony permite copiar archivos de y a la tarjeta controladora para ser utilizados por MicroPython~\cite{bell2022MicroPython,bell2022}.
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=\columnwidth,height=8cm,keepaspectratio]{img/thonny-files.png} %CHKTEX 8
+	\caption{Thonny permite visualizar, crear, copiar, cortar, pegar y, en general, manupular archivos dentro del RP2040.}
+	\label{fig:thonny} %CHKTEX 24
+\end{figure}
