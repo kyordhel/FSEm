@@ -10,11 +10,6 @@
 #
 # ## ###############################################
 
-# Future imports (Python 2.7 compatibility)
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 # Importa la librería de control del GPIO de la Raspberry Pi
 import RPi.GPIO as GPIO
 # Importa la función sleep del módulo time

@@ -130,7 +130,7 @@ Si alguno de los componentes emitiera calor, verifique las conexiones en busca d
 Verificadas las conexiones, instale los complementos de desarrollo del puerto de propósito general de la Raspberry Pi (deberían venir instalados por defecto).
 
 \begin{Verbatim}[fontsize=\footnotesize]
-$ sudo apt-get install python-rpi.gpio python3-rpi.gpio
+$ sudo apt-get install python-pigpio python3-pigpio
 \end{Verbatim}
 
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,21 +294,33 @@ GPIO.cleanup()
 \cleardoublepage
 \section{Programa Ejemplo: \texttt{blink.py}}%
 \label{sec:appendix1}
-\lstinputlisting[language=C,firstline=13]{src/blink.py}
+\lstinputlisting[%
+	language=Python,%
+	firstline=12%
+]{src/blink.py}
 
-\cleardoublepage
+% \cleardoublepage
 \section{Programa Ejemplo: \texttt{bcd.py}}%
 \label{sec:appendix2}
-\lstinputlisting[language=Python,firstline=14]{src/bcd.py}
+\lstinputlisting[%
+	language=Python,%
+	firstline=12%
+]{src/bcd.py}
 
 \cleardoublepage
 \section{Programa Ejemplo: \texttt{pwm.py}}%
 \label{sec:appendix3}
-\lstinputlisting[language=C,firstline=11]{src/pwm.py}
+\lstinputlisting[%
+	language=Python,%
+	firstline=12%
+]{src/pwm.py}
 
-\cleardoublepage
+% \cleardoublepage
 \section{Programa Ejemplo: \texttt{pwm\_fast.py}}%
 \label{sec:appendix3}
-\lstinputlisting[language=C,firstline=11]{src/pwm_fast.py}%CHKTEX 25
+\lstinputlisting[%
+	language=Python,%
+	firstline=2%
+]{src/pwm_fast.py}%CHKTEX 25
 
 \end{document}
