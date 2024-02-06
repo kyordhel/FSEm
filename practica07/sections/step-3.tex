@@ -1,0 +1,85 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-3.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+\subsection{Paso 3: Control en lazo abierto de la potencia de una carga resistiva}%
+\label{sec:step3}
+Antes de proceder, verifique conexiones con un multímetro en busca de corto circuitos.
+En particular verifique que los circuitos de AC y DC funcionan de manera independiente y que existe una impedancia infinita entre pines optoacoplados.
+
+Con la Raspberry Pi configurada, basta con generar los dos programas para transferir la potencia de salida deseada de la Raspberry Pi al Arduino quien se encargará cortar el flujo de corriente en el instante correcto para obtener la potencia deseada.
+
+Primero, es necesario configurar al Arduino como dispositivo esclavo e inicializar el bus \IIC, tal como se muestra en los \Cref{lst:arduino-code-i2c-def,lst:arduino-code-i2c-setup}.
+Las comunicaciones via \IIC son asíncronas, por lo que se requerirá almacenar la potencia deseada en una variable global que será leída por la función que atenderá las peticiones de datos del dispositivo maestro (la Raspberry Pi).
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:14} --- Dirección asignada al dispositivo esclavo},
+	label={lst:arduino-code-i2c-def},
+	firstline=14,
+	lastline=14]{src/arduino-code-i2c.cpp}
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:28--33} --- Configuración del bus \IIC y funciones de control},
+	label={lst:arduino-code-i2c-setup},
+	firstline=28,
+	lastline=33]{src/arduino-code-i2c.cpp}
+
+Tanto el envío como la recepción de datos se realizan byte por byte, por lo que es necesario convertir la potencia (\emph{float}) en un arreglo de bytes que pueda ser transmitido.
+Esto se hace en la funciones \texttt{i2c\_request\_handler} e \texttt{i2c\_received\_handler} tal como se ilustra en los \Cref{lst:arduino-code-i2c-read,lst:arduino-code-i2c-write}.
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:46--48} --- Escritura de flotantes en el bus \IIC},
+	label={lst:arduino-code-i2c-write},
+	firstline=46,
+	lastline=48]{src/arduino-code-i2c.cpp}
+
+\lstinputlisting[%
+	language=C,
+	caption={\texttt{arduino-code-i2c.cpp:54--62} --- Lectura de flotantes del bus \IIC},
+	label={lst:arduino-code-i2c-read},
+	firstline=54,
+	lastline=62]{src/arduino-code-i2c.cpp}
+
+Del lado de la Raspberry Pi, primero ha inicializarse el bus \IIC y posteriormente se realizarán las lecturas en un poleo o bucle infinito, cada una de las cuales se irá almacenando en un archivo bitácora.
+La inicialización del bus requiere de una simple línea (véase \Cref{lst:rpi-code-i2c-setup}).
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:18} --- Configuración del bus \IIC},
+	label={lst:rpi-code-i2c-setup},
+	firstline=18,
+	lastline=18]{src/raspberry-code-i2c.py}
+
+La conversión de un arreglo de bytes a punto flotante en Python no es inmediata.
+Para esta opreación se utilizará la librería \texttt{struct} que empaquetará y desempaquetará flotantes (\emph{float}) en listas de 4 bytes que pueden ser enviados o recibidos del arduino  via \IIC tal como se muestra en los \Cref{lst:rpi-code-i2c-read,lst:rpi-code-i2c-write}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:37--44} --- Escritura de flotantes en el bus \IIC},
+	label={lst:rpi-code-i2c-write},
+	firstline=36,
+	lastline=43]{src/raspberry-code-i2c.py}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:25--35} --- Lectura de flotantes del bus \IIC},
+	label={lst:rpi-code-i2c-read},
+	firstline=20,
+	lastline=34]{src/raspberry-code-i2c.py}
+
+
+El resto del programa es trivial, pues consiste sólo en solicitar al usuario un valor de potencia y enviarlo al Arduino.
+
+Por conveniencia, los códigos completos de los programas de ejemplo se encuentran en los \Cref{sec:appendix1,sec:appendix2,sec:appendix3}.

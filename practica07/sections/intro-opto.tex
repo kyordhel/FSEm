@@ -1,0 +1,57 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-opto.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Optoacopladores}%
+\label{seq:intro-opto}
+Un optoacoplador o optoaislador es un circuito integrado que permite aislar mecánicamente dos circuitos, por lo que se usa comunmente para separar la lógica de control de los circuitos de potencia.
+El principio básico de un optoacoplador, como su nombre lo indica, es utilizar transductores ópticos para la transmisión de señales eléctricas.
+Así, en un lado del optoacoplador se tendrá siempre un diodo LED y en el otro extremo un fotoreceptor, que puede ser un foto SRC, un foto dárlington, un foto TRIAC o un fototransistor, siendo este último el más común.
+
+En un optoacoplador, el diodo LED emite una cantidad de luz directamente proporcional a la corriente que circula por éste y, al incidir ésta en el fotoreceptor, el estímulo luminoso activa el paso de corriente a través de éste.
+Por ejemplo, en el caso de un fototransistor, al incidir la luz en la juntura de la base ésta se ioniza, generando un puente de iones que permite el flujo entre los extremos del transistor.
+Además, la mayoría de los optoacopladores tienen un pin conectado directamente a la base que sirve para ajustar la sensibilidad de la misma mediante la inyección de un voltaje pequeño.
+
+Los fototransistores foto-dárlingtons se utilizan principalmente en circuitos DC, mientras que los foto SCR y los foto TRIACs permiten controlar los circuitos de AC.
+Existen muchos otros tipos de combinaciones de fuente-sensor tales como LED-fotodiodo, LED-LÁSER, pares de lámpara-fotorresistencia, optoacopladores reflectantes y ranurados.
+
+Por ejemplo, el integrado 4N25 puede usarse para monitorear el voltaje de la línea de tensión doméstica con un integrado.
+Según su hoja de especificaciones~\Citep{4N25datasheet}, la entrada del 4N25 acepta hasta 60mA, permite un flujo por el colector de hasta 50mA, y aisla hasta 5000V\textsubscript{RMS}.
+Si se toma como entrada un voltaje de línea rectificado de 127V\textsubscript{RMS} y se limita la corriente a la corriente de prueba de 50mA indicada en la hoja de especificaciones~\Citep{4N25datasheet}, el 4N25 tendrá que acoplarse con una resistencia de al menos 2K7$\Omega$ aproximada mediante la fórmula:
+
+\begin{equation*}
+R=\frac{V}{I}=\frac{127V_\text{RMS}}{0.050A}
+= 2540\Omega
+\end{equation*}
+
+Sin embargo, como $P=I^2R$ una resistencia de 2k7$\Omega$ disiparía ${\left(47mA\right)}^{2}\times 2.7k\Omega = 5.96\text{Watt}$, que es un tremendo desperdicio de energía disipada como calor.
+
+En este caso conviene reducir mucho más la corriente que circula por el 4N25.
+Supóngase que el propósito del 4N25 fuera el de activar una interrupción en un microcontrolador.
+Normalmente las entradas digitales de los microcontroladores requieren de unos cuantos microamperios para activarse, por lo que pueden elegirse $10\mu A$ como un valor conservador seguro.
+Por otro lado, la hoja de especificaciones nos indica que la corriente que circula por el transistor será el 50\% de la corriente que pase por el fotodiodo~\Citep{4N25datasheet}; por lo que la resistencia elegida tendrá que limitar la corriente a por lo menos $20\mu A$, en este caso:
+
+\begin{equation*}
+R=\frac{V}{I}=\frac{127V_\text{RMS}}{20\times{10}^{-6}A}
+= 6350000\Omega \approx 5\text{M}6\Omega
+\end{equation*}
+
+Otro enfoque es considerar las resistencias comerciales más económicas en el mercado, es decir las de $\sfrac{1}{4}$Watt.
+Como $P=\frac{V^2}{R}=0.25\text{Watt}$ y $V=127V$ entonces
+\(
+	R_\text{Max}
+		=\frac{{\left(127V\right)}^2}{0.25\text{Watt}}
+		=\frac{16129{V}^2}{0.25\text{Watt}}
+		=64516\Omega \approx 68\text{K}\Omega
+\)
+cualquier resistencia de $68\text{K}\Omega$ o mayor será suficientemente grande para optoacoplar un microcontrolador a una línea de tensión de 127VAC con un 4N25 sin disipar mucho calor, proporcionando un flujo por el fototransistor de 0.9mA; más que suficiente para drenar un pin digital acoplado a \textsc{Vcc} con una resistencia de \emph{pull-up} de $10\text{K}\Omega$.

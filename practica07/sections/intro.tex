@@ -1,0 +1,26 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\section{Introducción}%
+\label{seq:introduction}
+La presente práctica resume los pasos a seguir para modular la cantidad de corriente que pasa por un foco incandescente con un microcontrolador.
+En particular, se interesa en el uso de un circuito de detección de cruce por cero para conmutar un triac acoplado a un Arduino UNO/Mega.
+Los datos registrados serán posteriormente enviados vía \IIC a una Raspberry Pi para controlar la intencidad del foco.
+
+\input{sections/intro-bridge}
+\input{sections/intro-opto}
+\input{sections/intro-zerox}
+\input{sections/intro-triac}
+\input{sections/intro-dimmer}
+\input{sections/intro-i2c}

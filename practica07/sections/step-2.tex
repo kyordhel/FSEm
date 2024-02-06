@@ -1,0 +1,63 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-2.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+\subsection{Paso 2: Configuración de comunicaciones \IIC}%
+\label{sec:step3}
+Primero ha de configurarse la Raspberry Pi para funcionar como dispositivo maestro o \emph{master} en el bus \IIC.
+Para esto, inicie la utilidad de configuración de la Raspberry Pi con el comando
+
+\begin{Verbatim}
+# raspi-config
+\end{Verbatim}
+
+\noindent y seleccione la opción 5: Opciones de Interfaz (\emph{Interfacing Options}) y active la opción \texttt{P5} para habilitar el \IIC.
+
+A continuación, verifique que el puerto \IIC no se encuentre en la lista negra.
+Edite el archivo \\\texttt{/etc/modprobe.d/raspi-blacklist.conf} y revise que la línea \texttt{blacklist spi-bcm2708} esté comentada con \#.
+
+% $ cat /etc/modprobe.d/raspi-blacklist.conf
+\begin{lstlisting}[
+	language=conf,
+	caption={/etc/modprobe.d/raspi-blacklist.conf},
+	label={lst:raspi-blacklist.conf},
+	numbers=none
+]
+# blacklist spi and i2c by default (many users don't need them)
+# blacklist i2c-bcm2708
+\end{lstlisting}
+
+Como paso siguiente, se habilita la carga del driver \IIC.
+Esto se logra agregando la línea \texttt{i2c-dev} al final del archivo \texttt{/etc/modules} si esta no se encuentra ya allí.
+
+Por último, se instalan los paquetes que permiten la comunicación mediante el bus \IIC y se habilita al usuario predeterminado \emph{pi} (o cualquier otro que se esté usando) para acceder al recurso.
+
+\begin{Verbatim}
+# apt-get install i2c-tools python-smbus
+# adduser pi i2c
+\end{Verbatim}
+
+Reinicie la Raspberry Pi y pruebe la configuración ejecutando \texttt{i2cdetect -y 1} para buscar dispositivos conectados al bus \IIC.
+Debería ver una salida como la siguiente:
+
+\begin{Verbatim}
+\$ i2cdetect -y 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- --
+\end{Verbatim}

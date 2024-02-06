@@ -1,0 +1,46 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TEX-ROOT=references.bib
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 7:\\Modulación de potencia de una lámpara incandecente\\usando Arduino y la Raspberry Pi\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+% \date{Martes 10 de Marzo, 2020}
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a modular la potencia de una carga resistiva de alta potencia opto-acoplada a un microcontrolador por medio de un detector de cruce por cero y un TRIAC.
+% auxiliar, mismas que serán procesadas por otro microcontrolador de mayor potencia.%
+
+\input{sections/intro}
+\input{sections/material}
+\cleardoublepage
+\input{sections/steps}
+\cleardoublepage
+\input{sections/experiments}
+\input{sections/references}
+
+\appendix
+
+\input{sections/appendices}
+
+\end{document}
