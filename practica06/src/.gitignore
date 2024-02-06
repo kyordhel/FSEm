@@ -3,8 +3,11 @@
 # But these files
 !.gitignore
 # And these filetypes
-!*.tex
-!*.bib
+!*.c
+!*.cpp
+!*.h
+!*.hpp
 !*.pdf
+!*.py
 # Even if they are in subdirectories
 !*/
