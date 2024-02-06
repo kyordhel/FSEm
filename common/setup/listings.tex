@@ -135,14 +135,29 @@
 	breaklines,
 }
 
-\lstdefinestyle{c_without_comments}%
-{
+\lstdefinestyle{c_without_comments}{%
 	style        = c_with_comments,
 	% numbers      = none,
 	% keepspaces   = false,
 	morecomment  = [l][\nullfont]{//},
 	morecomment  = [is]{//}{\^^M},
 	morecomment  = [is]{/*}{*/},
+	emptylines   = *1,
+}
+
+\lstdefinestyle{py_without_comments}{%
+	language     = python,
+	morecomment  = [l][\nullfont]{\#},
+	% morecomment  = [il]{\#},
+	% morecomment  = [is]{\#}{\^^M},
+	emptylines   = *1,
+}
+
+\lstdefinestyle{py_without_doclines}{%
+	morecomment  = [is]{'''}{'''},%CHKTEX 23
+	morecomment  = [is]{"""}{"""},%CHKTEX 18
+	morecomment  = [is]{\#'''}{'''},%CHKTEX 23
+	morecomment  = [is]{\#"""}{"""},%CHKTEX 18
 }
 
 \lstdefinelanguage{conf}

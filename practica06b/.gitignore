@@ -1,0 +1,13 @@
+# ignore everything
+*
+# But these files
+!.gitignore
+# And these filetypes
+!*.c
+!*.cpp
+!*.h
+!*.hpp
+!*.pdf
+!*.py
+# Even if they are in subdirectories
+!*/
