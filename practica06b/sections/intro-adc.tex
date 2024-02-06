@@ -1,0 +1,55 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro-adc.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHKTEX-FILE 1
+% CHKTEX-FILE 46
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+\subsection{Convertidor Analógico---Digital}%
+\label{sec:intro-adc}
+Para leer la señal del LM35 se requiere de un Convertidor Analógico Digital o ADC (por sus siglas en inglés: \emph{Digital-Analog Converter}).
+Un ADC se elige con base en dos factores clave: su precisión y su tiempo de muestreo.
+Debido a que la aplicación del ADC será convertir mediciones de temperatura y los cambios de temperatura son muy lentos,\footnotemark{} puede obviarse el tiempo de muestreo.
+En cuanto a la precisión, los convertidores A/D más comunes son de 8 y 10 bits, de los cuales ha de elegirse uno.
+
+La precisión del ADC se calcula tomando en cuenta el rango de operación y la precisión del componente analógico a discretizar.
+El LM35 tiene un rango de \degreesC{205}, una diferencial de voltaje $\Delta{}V=10mV/^{o}C$ y una precisión máxima de \degreesC{0.5}, por lo que el sensor entregará un máximo de 2.5V respecto al voltaje de referencia del mismo, con incrementos de 5mV.
+Debido a que 256 valores para un rango de \degreesC{205} en incrementos de \degreesC{0.5} (es decir 410 valores) es claramente insuficiente para este sensor, por lo que será conveniente utilizar un convertidor A/D de 10 bits.
+
+Un ADC típico de 12 bits convertirá las señales analógicas entre voltajes de referencia $V_{Ref-}$ y $V_{Ref+}$ como un entero con valores entre 0 y 4096, interpretando los valores $V_{Ref-}$ como 0 lógico y $V_{Ref+}$ como 4096 de manera aproximadamente lineal.
+El decir, la lectura obtenida es directamente proporcional al voltaje dentro del rango, estimable mediante la fórmula:
+
+\begin{equation}
+V_{out}= value \times \frac{ V_{Ref+} - V_{Ref-} }{ 4096 }
+\end{equation}
+
+En una configuración simple, $V_{Ref-}$ y $V_{Ref+}$ se conectan internamente dentro del RP2040 a tierra y V\textsubscript{CC} respectivamente. Esto simplifica la fórmula como:
+
+\begin{equation}
+V_{out}= value \times \frac{ 5V }{ 4096 } = value \times 1.22mV
+\end{equation}
+
+En lo concerniente al RP040, éste incorpora un convertidor analógico-digital de 12 bits con soporte para voltaje de referencia $V_{Ref+}$, denominado \emph{ADC\_VREF} según las especificaciones del mismo~\Citep{RP2040datasheet}.
+Considerando que el LM35 en rango completo entrega hasta 2.05V ($10mV\times (150 - -55) = 2.05V$) la mayor parte de los 4096 valores jamás serán ocupados.
+Por este motivo, conviene sacar partido del pin de voltaje de referencia \emph{ADC\_VREF} del RP2040 mediante un divisor de voltaje (véase~\Cref{fig:lm35-pico}).
+En consecuencia, el pin \emph{ADC\_VREF} requerirá de un divisor de voltaje con salida de 2.73V tal como se muestra en la~\Cref{fig:lm35-pico} para dar mayor precisión al convertidor A/D.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth,height=7cm,keepaspectratio]{img/lm35-pico.png}
+	\caption{Circuito medidor de temperatura LM35 con el RP2040}
+	\label{fig:lm35-pico} % chktex 24
+\end{figure}
+
+Con esta nueva configuración, se puede calcular de nueva cuenta la precisión del sensor digital una vez decodificado el valor analógico leído del LM35 dividiendo los 2.73V de referencia entre los 4096 valores posibles que entrega el ADC como sigue:
+
+\begin{equation}
+\Delta V = \frac{ 2.73V }{ 4096 } =  666.5\times10^{-6}V = 667\mu{}V
+\end{equation}
+
+Debido a que la resolución máxima del sensor LM35 determinada por su factor de incertidumbre es de \degreesC{0.5} equivalentes a 0.005V, ambas configuraciones (con y sin el divisor de voltaje) serán adecuadas para operar al sensor.

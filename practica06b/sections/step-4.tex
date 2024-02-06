@@ -1,0 +1,78 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 4: Bitácora de temperatura via \IIC}%
+\label{sec:step4}
+
+Con la Raspberry Pi configurada, basta con generar los dos programas para transferir las temperaturas registradas en el RP2040 a la Raspberry Pi que se encargará de almacenar esta información en un archivo o bitácora.
+
+Primero, es necesario configurar al RP2040 como dispositivo esclavo e inicializar el bus \IIC, tal como se muestra en los \Cref{lst:pico-code-i2c-def,lst:pico-code-i2c-setup}.
+
+Python es un lenguaje MUY lento que carece de tipos nativos primitivos y por ende hace un uso excesivo del \emph{heap}, lo que hace imposible gestionar interrupciones de forma rápida y segura.
+Por este motivo las comunicaciones via \IIC son \textbf{\textsc{síncronas}} y requieren verificar el estado de los registros internos de forma contínua en un loop.
+
+Además, MicroPython sólo ofrece soporte para utilizar los módulos \IIC en configuración maestro.
+Luego entonces es necesario realizar la configuración y la lectura y escritura de datos a nivel registro, mecanismo que se conoce como envoltorio o \emph{wrapping}.
+Dicho código se provee por conveniencia en el archivo \code{i2cslave.py}.
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{pico-code-i2c.py:14--19} --- Dirección asignada al dispositivo esclavo},
+	label={lst:pico-code-i2c-def},
+	linerange={14-14,18-19},%CHKTEX 8
+	]{src/pico-code-i2c.py}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{pico-code-i2c.py:51--56} --- Configuración del bus \IIC y funciones de control},
+	label={lst:pico-code-i2c-setup},
+	firstline=51,
+	lastline=56]{src/pico-code-i2c.py}
+
+El envío de datos se realiza byte por byte, por lo que es necesario convertir la medición de temperatura (\emph{objeto tipo float}) en un arreglo de bytes que pueda ser transmitido.
+Esto se hace con la función \code{pack} de \code{ustruct}, librería dedicada a la conversión de objetos de python a arreglos de bytes que representen los tipos primitivos que operan en C \Cref{lst:pico-code-i2c-reqh}.
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{pico-code-i2c.py:25--33} --- Envío de datos},
+	label={lst:pico-code-i2c-reqh},
+	firstline=25,
+	lastline=33]{src/pico-code-i2c.py}
+
+Del lado de la Raspberry Pi, primero ha inicializarse el bus \IIC mediante el uso de la librería \texttt{smbus}\footnotemark y posteriormente se realizarán las lecturas en un poleo o bucle infinito, cada una de las cuales se irá almacenando en un archivo bitácora.
+La inicialización del bus requiere de una simple línea (véase \Cref{lst:rpi-code-i2c-setup}).
+\footnotetext{La implementación de la práctica utiliza \texttt{smbus2} que es una reimplementación codificada exclusivamente en Python de la librería \texttt{smbus} que es un \emph{wrapper} de la \emph{smbuslib} de C.}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:26} --- Configuración del bus \IIC},
+	label={lst:rpi-code-i2c-setup},
+	linerange={9-10,19-21}% CHKTEX 8
+	]{src/raspberry-code-i2c.py}
+
+La conversión de un arreglo de bytes a punto flotante en Python no es inmediata.
+Para esta opreación se utilizará la librería \texttt{struct} (véase \Cref{lst:rpi-code-i2c-setup}) que tomará los cuatro paquetes de 1 byte recibidos vía \IIC del RP2040 y los convertira en un \emph{float}, como se muestra en el \Cref{lst:rpi-code-i2c-read}.
+Nótese el símbolo $<$ (menor qué) a la izquierda del especificador de formato $f$, el cual se utiliza para definir el endianness de la transmisión de la información.
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:28--35} --- Lectura de flotantes del bus \IIC},
+	label={lst:rpi-code-i2c-read},
+	linerange={23-35} %CHKTEX 8
+	]{src/raspberry-code-i2c.py}
+
+El resto del programa es trivial, pues consiste sólo en la escritura del \emph{timestamp UNIX} y el valor de temperatura registrado en un archivo de texto y la lectura de datos del RP2040 cada segundo.
+
+Por conveniencia, los códigos completos de los programas de ejemplo se encuentran en los \Cref{sec:appendix1,sec:appendix2,sec:appendix3}.

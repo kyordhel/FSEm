@@ -1,0 +1,21 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+\section{Introducción}%
+\label{sec:introduction}
+La presente práctica resume los pasos a seguir para leer una señal analógica con un microcontrolador.
+En particular, se interesa en la lectura de la temperatura registrada por un sensor LM35 mediante un microcontrolador RP2040 (Raspberry Pico).
+Los datos registrados serán posteriormente enviados vía I\textsuperscript{2}C a una Raspberry Pi para llevar una bitácora de temperatura que podrá ser desplegada en un navegador web.
+
+\input{sections/intro-lm35}
+\input{sections/intro-adc}
+\newpage
+\input{sections/intro-iic}

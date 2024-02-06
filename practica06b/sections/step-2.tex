@@ -1,0 +1,98 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-2.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 2: Lectura del sensor LM35}%
+\label{sec:step2}
+Antes de proceder, verifique conexiones con un multímetro en busca de corto circuitos.
+En particular verifique que exista una impedancia muy alta entre los pines \VCC, \GND y \textsc{ADC\_VREF} del RP2040.
+
+Para leer la temperatura con el RP2040 se necesitan convertir los valores discretos leídos por el ADC del microcontrolador en valores de temperatura.
+Esto se puede realizar mediante un simple análisis debido a la linearidad del LM35.
+Se tienen dos lecturas en el ADC: V\textsubscript{OUT+} y V\textsubscript{OUT-}, de las cuales la segunda es la referencia del LM35 y por lo tanto, la diferencia entre estos voltajes será proporcional a la temperatura en escala centígrada.
+Esto expresado matemáticamente es:
+
+\begin{equation*}
+	T[^{o}C] \propto V_{diff} = V_{OUT+}-V_{OUT-}
+\end{equation*}
+\noindent o bien
+\begin{equation*}
+	T[^{o}C] = k \times V_{diff} = k \times \big( V_{OUT+}-V_{OUT-} \big)
+\end{equation*}
+
+\noindent lo que implica que en $T = 0^{o}C; V_{OUT+}=V_{OUT-} \rightarrow V_{diff} = 0$
+
+\medskip
+Es necesario entonces calcular la constante de proporcionalidad $k$.
+Sabemos que el ADC entregará lecturas de 0 a 4096 para los voltajes registradoes entre \GND y {ADC\_VREF} (0V y 2.72V respectivamente), además de que $1^{o}C = 0.01V$.
+Luego entonces
+\begin{align*}
+	T[^{o}C] &= V_{diff} \times \frac{2.72[V]}{ 4096 \times 0.01[\tfrac{V}{^{o}C}] }  \\
+	T[^{o}C] &= V_{diff} \times \frac{2.72}{ 40.96 }[^{o}C]  \\
+\end{align*}
+
+\noindent o bien, generalizando para todo voltaje de referencia:
+\begin{equation*}
+	T[^{o}C] = V_{diff} \times \frac{V_{REF}}{ 40.96 }[^{o}C]
+\end{equation*}
+
+Esta fórmula de conversión de unidades deberá programarse en el microcontrolador que adquiera los valores discretos de temperatura del sensor.
+
+\medskip
+\begin{greenbox}{\large TIP: Calibración}
+	El voltaje de referencia $V_{REF}$ variará respecto a su valor teórico dependiendo de la tolerancia de las resistencias (típicamente ±5\%) y de las impedancias de los demás componentes conectados, incluyendo al RP2040 mismo.
+
+	\smallskip
+
+	Se recomienda usar siempre un multímetro para corroborar el voltaje entre $V_{REF}$ y tierra y poder actualizar dicho valor en el código.\footnotemark%
+\end{greenbox}
+\footnotetext{El valor real de $V_{REF}$ variará entre 2.4V y 3.1V con resistencias con tolerancia de 5\%, equivalente a una variación de 70°C.}
+\medskip
+
+El programa de ejemplo para el RP2040\footnotemark{} se presenta a continuación:
+
+\begin{minipage}{\linewidth}
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{pico-code-adc.py}:23--38, \texttt{read\_temp} function},
+	label={lst:pico-code-readtemp},
+	% style=py_without_comments,
+	showlines=false,
+	firstline=23,
+	lastline=38]{src/pico-code-adc.py}
+\end{minipage}
+
+
+En ocasiones los valores pueden fluctuar ligeramente debido a ruido o variaciones de voltaje.
+Para evitar este tipo de imprecisiones es común utilizar técnicas de filtrado, y uno de los métodos más simples y comúnes es el promedio de varias lecturas consecutivas tal y como se muestra a continuación:
+
+\begin{minipage}{\linewidth}
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{pico-code-adc.py}:41--49, \texttt{read\_avg\_temp} function},
+	label={lst:pico-code-readavgtemp},
+	% style=py_without_comments,
+	firstline=41,
+	lastline=49]{src/pico-code-adc.py}
+\end{minipage}
+
+Otro método mucho más eficaz y seguro es llevar un registro de las últimas $N$ lecturas del sensor en un buffer circular y estimar el siguiente valor probable, descartando aquellas lecturas que estén fuera de rango posible, es decir cuando $\Delta{}t \geq \epsilon{}_0$.
+
+\VerbatimFootnotes{}
+\footnotetext{%
+	Para cargar el código de Python en el RP2040 utilice el editor
+	\href{https://thonny.org/}{Thonny}.
+	Para que los cambios sean persistentes, salve el archivo dentro del microcontrolador con el nombre \code{main.py}.
+	Recuerde que no es posible programar el RP2040 via \IIC{}.
+}
