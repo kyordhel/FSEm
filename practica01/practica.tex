@@ -283,6 +283,9 @@ y la partición de arranque en
 \noindent
 \textbf{Nota:} los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo}).
 
+A continuación el estudiante querrá configurar el acceso a la Raspberry Pi vía SSH. %CHKTEX 13
+Para esto tendrá primero que configurar una red (véanse~\Cref{sec:setup-eth0,sec:setup-wifi}) y luego seguir los pasos de la \Cref{sec:annex1-ssh-enable}.
+
 
 
 \section{Configuración de la red alámbrica \texttt{eth0} con IP estática}%
@@ -293,7 +296,7 @@ Configurar la red alámbrica requiere de la modificación de archivos en la part
 
 Raspberry Pi OS puede venir precargado con \texttt{dhcpcd} o con \texttt{network-manager}.
 Las versiones con \texttt{dhcpcd} (mayo de 2023 y anteriores) son preferidas en sistemas embebidos y su configuración se detalla en el \Cref{sec:setup-eth0-dhcpcd}.
-% Si su versión es posterior y sólo cuenta con el \texttt{network-manager}, siga los pasos detallados en el \Cref{sec:setup-eth0-nm}
+Si su versión es posterior y sólo cuenta con el \texttt{network-manager}, siga los pasos detallados en el \Cref{sec:setup-eth0-nm}
 
 \subsection{Configuración de la red alámbrica \texttt{eth0} con IP estática bajo \texttt{dhcpcd}}%
 \label{sec:setup-eth0-dhcpcd}
@@ -332,13 +335,15 @@ static domain_name_servers=132.248.204.1 132.248.10.2 8.8.8.8
 	\end{itemize}
 \end{enumerate}
 
+\medskip
+
 \begin{greenbox}{Importante}
 Coordínese con sus compañeros de clase para que cada Raspberry Pi tenga una dirección IP diferente, ya que de otro modo habrá una colisión y ninguna tendrá acceso a la red.
 
 Se recomienda usar la IP de la computadora cuyo cable utiliza.
 \end{greenbox}
 
-\noindent
+\medskip\noindent
 Finalmente reinicie la Raspberry Pi.
 
 \subsection{Configuración de la red alámbrica \texttt{eth0} con IP estática con Network-Manager}%
@@ -371,28 +376,17 @@ Coordínese con sus compañeros de clase para que cada Raspberry Pi tenga una di
 Nótese que en este caso no se añaden las direcciones IP de los servidores DNS. %chktex 13
 Esto es debido a que \texttt{network-manager} realiza la búsqueda de los servidores DNS de forma manual (y arbitraria).
 
-\noindent
+\medskip\noindent
 Finalmente reinicie la Raspberry Pi.
+
+
 
 
 \section{Configuración de la red inalámbrica sin monitor}%
 \label{sec:setup-wifi}
 Para configurar la red inalámbrica sin un monitor necesita crear un archivo  llamado \texttt{wpa\_supplicant.conf} en la raíz de la partición \texttt{boot}.
-Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
-El proceso de creación del archivo \texttt{wpa\_supplicant.conf} en la raíz de la partición \texttt{boot} es como sigue:
 
-\begin{Verbatim}[fontsize=\footnotesize]
-$ mkdir /media/[user]/boot
-# mount /dev/mmcblk0p1 /media/[user]/boot
-$ touch /media/[user]/boot/wpa_supplicant.conf
-\end{Verbatim}
-
-\noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
-Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \texttt{lsblk}.
-
-Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
-
-A continuación proceda a editar el archivo \texttt{wpa\_supplicant.conf}
+Cree un archivo el archivo \texttt{wpa\_supplicant.conf} con el siguiente texto:
 
 \begin{Verbatim}[fontsize=\footnotesize]
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -422,6 +416,8 @@ network={
 Si su red inalámbrica no tiene servidor DHCP requerirá de una IP estática.
 Para esto es necesario modificar el archivo \texttt{dhcpcd.conf} tal como se describe en el \Cref{sec:setup-eth0}, reemplazando \texttt{eth0} por \texttt{wlan0}.
 
+
+% sudo nmtui
 
 
 
@@ -469,6 +465,8 @@ echo "pi:$(openssl passwd -6)" > /media/[user]/boot/userconf.txt
 Con lo que podrá definir cualquier usuario y contraseña que desee.
 
 Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
+
+
 
 
 \subsection{Configurar Raspbian vía SSH}

@@ -8,5 +8,6 @@
 # And these filetypes
 !*.py
 !*.pdf
+!*.tex
 # Even if they are in subdirectories
 !*/

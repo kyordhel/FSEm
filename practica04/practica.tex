@@ -1,0 +1,307 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% CHKTEX-FILE 1
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 4:\\Control remoto de la Raspberry Pi via WiFi y servidor web\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{}
+
+\newcommand{\prevpract}{%
+	\href{https://github.com/kyordhel/FSEm/tree/master/practica03}{Práctica 3}%
+	\xspace{}%
+}
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a configurar la Raspberry Pi como punto de acceso inalámbrico que permita acceder a un servidor web simple que controle el puerto GPIO de la misma.%
+
+% \section{Introducción}%
+% \label{sec:introduction}
+% Raspbian es el sistema operativo más popular para Raspberry Pi, además de ser el único con soporte oficial.
+% Raspbian es una distribución de Linux basada en Debian, optimizado para la Raspberry Pi y que permite a esta operar como una PC.~La distro incorpora terminal y navegador web entre otros programas.
+
+\section{Material}%
+\label{sec:material}
+Se asume que el alumno cuenta con un una Raspberry Pi con sistema operativo Raspberry Pi OS \emph{Legacy} (2023--05--03 o anterior) e interprete de Python instalado. Se aconseja encarecidamente el uso de \textit{git} como programa de control de versiones.
+
+Si se cuenta con una Raspberry Pi sin WiFi integrado (e.j~Raspberry Pi2), se precisará de un adaptador WiFi USB compatible para la misma.
+
+Además, el alumno necesitará el alambrado de la \prevpract{}.
+
+\section{Instrucciones}%
+\label{sec:instructions}
+\begin{enumerate}[noitemsep]
+	\item Alambre el circuito tal y como se detalla en la \prevpract{}.
+	\item Realice los ejercicios y experimentos de la \prevpract{}.
+
+\end{enumerate}
+
+\begin{greenbox}{Importante}
+Como \code{network-manager} no permite montar servidores web de forma automatizada se requiere de una versión de Raspberry Pi OS que tenga \code{dhcpcd} precargado.
+De otro modo, el estudiante será responsable de instalación y reconfiguración de los paquetes pertinentes.
+
+Para más información consulte la \href{https://wiki.debian.org/NetworkManager}{documentación oficial}.
+\end{greenbox}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Configuración de la Raspberry Pi como punto de acceso inalámbrico}%
+\label{sec:ap}
+
+
+Para operar como punto de acceso la Raspberry Pi necesita tener instalado el software apropiado, incluyendo un servidor DHCP para proporcionar a los dispositivos que se conecten una dirección~IP. %CHKTEX 13
+
+Se comienza por instalar los paquetes \texttt{DNSMasq} y \texttt{HostAPD}:
+
+\begin{Verbatim}
+# apt-get install dnsmasq hostapd
+# pip3 install -U python-magic
+\end{Verbatim}
+
+Si están ejecutándose los servicios, deténgalos a fin de poder reconfigurarlos
+\begin{Verbatim}
+# systemctl stop dnsmasq
+# systemctl stop hostapd
+\end{Verbatim}
+
+\subsubsection{Configuración del adaptador y el cliente DHCP}%
+\label{sec:ap-adapter}
+
+Para configurar una red independiente con servidor DHCP la Raspberry Pi debe tener asignada una dirección IP estática en el adaptador inalámbrico que proveerá la conexión.
+Debido a que la Raspberry Pi tiene un procesador pequeño, se configurará para servir en una red privada clase C, es decir con direcciones IP del tipo 198.168.x.x.
+Así mismo, se supondrá que el dispositivo inalámbrico utilizado es \texttt{wlan0}.
+
+Para configurar la dirección IP estática edite el archivo de configuración \texttt{/etc/dhcpcd.conf} como superusuario:
+
+\begin{Verbatim}
+interface wlan0
+    static ip_address=192.168.1.254/24
+    nohook wpa_supplicant
+\end{Verbatim}
+
+A continuación, reinicie el cliente DHCP
+
+\begin{Verbatim}
+# service dhcpcd restart
+\end{Verbatim}
+
+\subsubsection{Configuración del servidor DHCP}%
+\label{sec:ap-dhcp}
+El siguiente paso consiste en configurar el servidor DHCP, provisto por el servicio \texttt{dnsmasq}.
+
+De manera predeterminada el archivo de configuración \texttt{/etc/dnsmasq.conf} contiene mucha información que no es necesaria, por lo que es más fácil comenzar desde cero.
+Respáldelo y cree uno nuevo con el siguiente texto:
+
+\VerbatimInput[%
+	samepage=true,
+	label=\texttt{/etc/dnsmasq.conf},
+]{etc/dnsmasq.conf}
+
+Esta configuración proporcionará 20 direcciones IP entre 192.168.1.200 y 192.168.1.220, válidas durante 24 horas.
+
+Ahora debe iniciarse el servidor DHCP
+
+\begin{Verbatim}
+systemctl start dnsmasq
+\end{Verbatim}
+
+\subsubsection{Configuración del punto de acceso}%
+\label{sec:ap-hotspot}
+Para configurar el punto de acceso se debe editar el archivo de configuración \texttt{/etc/hostapd/hostapd.conf} con los parámetros adecuados.
+
+Respáldelo y cree uno nuevo con el siguiente texto:
+
+\VerbatimInput[%
+	samepage=true,
+	label=\texttt{/etc/hostapd/hostapd.conf},
+]{etc/hostapd/hostapd.conf}
+
+La configuración ingresada configura la Raspberry Pi para crear una red inalámbrica tipo 802.11g en el canal 5 de nombre \emph{Raspbberry} y contraseña \texttt{12345678} con seguridad WPA2.
+
+Los modos de operación posibles son:
+\begin{itemize}[nosep]
+\item a = IEEE 802.11a (5 GHz)
+\item b = IEEE 802.11b (2.4 GHz)
+\item g = IEEE 802.11g (2.4 GHz)
+\end{itemize}
+
+\paragraph*{Importante:} Tanto el nombre de la red o SSID y la contraseña no deben entrecomillarse. La contraseña debe tener entre 8 y 64 caracteres. \textbf{Cambie el SSID a \texttt{Raspberry\_Apellido} para evitar conflictos.}\medskip
+
+Ahora edite el archivo \texttt{/etc/default/hostapd} y reemplace la línea que comienza con \texttt{\#DAEMON\_CONF} con:
+
+\begin{Verbatim}
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+\end{Verbatim}
+
+\subsubsection{Configuración e inicio del punto de acceso}%
+\label{sec:ap-hotspot}
+Finalmente, habilite los servicios para iniciar el punto de acceso:
+
+\begin{Verbatim}
+# systemctl unmask hostapd
+# systemctl enable hostapd
+# systemctl start hostapd
+\end{Verbatim}
+
+Verifique que los servicios se están ejecutando
+
+\begin{Verbatim}
+# systemctl status hostapd
+# systemctl status dnsmasq
+\end{Verbatim}
+
+\paragraph*{Nota:} El servicio \texttt{hostapd} requiere acceso exclusivo a la tarjeta de red inalámbrica que podría estar ocupada por el proceso \texttt{wpa\_supplicant}.
+Si \texttt{hostapd} se reusara a iniciar indicando un error tal como \emph{Could not configure driver mode nl80211 driver initialization failed}, termine los procesos que puedan estar utilizando la tarjeta de red inalámbrica, por ejemplo ejecutando \texttt{killall wpa\_supplicant}.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Configuración de la Raspberry Pi como servidor Web}%
+\label{sec:webserver}
+
+Raspbian es una variante d Debian, por lo que se le dará bien servir páginas web de forma segura, especialmente cuando se utiliza Apache.
+Sin embargo, configurar Apache para enlazarse con Python y operar la GPIO no es una tarea trivial, por lo que en esta práctica se utilizará un servidor web simple basado en el \texttt{BaseHTTPRequestHandler} que incorpora el paquete \texttt{http.server} de Python.
+
+Para habilitar un servidor web en Python, basta con heredar de la clase \texttt{BaseHTTPRequestHandler} e implementar el método \texttt{do\_GET} para que imprima el código HTML al socket vía el método \texttt{self.wfile.write} tal como se muestra en el \Cref{lst:simple-webserver}.
+
+\lstinputlisting[%
+	firstline=17,
+	lastline=35,
+	label={lst:simple-webserver},
+	caption=Archivo \texttt{simple-webserver.py}
+]{src/simple-webserver.py}
+
+Script de Python presentado inicia un servidor web que atiende todas las peticiones entrantes vía la interfaz con la IP 192.168.1.254 (el punto de acceso) en el puerto 80 (HTTP predeterminado).
+A cada petición se le devolverá una señal de estado HTTP200 u \emph{OK}, seguido por código HTML. % CHKTEX 13
+Es importante aclarar que para cada archivo servido se debe especificar el tipo de archivo en la cabecera.
+
+\paragraph*{Importante:} El puerto 80 (y en general todos los puertos por debajo del 2014) están reservados para servicios de sistema, por lo que Python fallará al intentar levantar el servidor web en este puerto. Existen dos opciones: puede ejecutar el proceso como superusuario con \texttt{sudo} o bien usar otro puerto como el 8080.
+
+Genere el archivo \texttt{simple-webserver.py} y ejecútelo.
+A continuación, conéctese a la Raspberry Pi con cualquier dispositivo móvil e ingrese a la dirección IP del punto de acceso, es decir: \url{http://192.168.1.254}.
+
+
+Con ligeras modificaciones es posible servir cualquier tipo de archivo.
+Todas las peticiones ingresadas en la barra de direcciones del navegador llegarán por método \emph{GET}, por lo que deberán ser procesadas en el método \texttt{do\_GET}, accediendo al atributo de clase \texttt{self.path}, relativo al directorio de trabajo.
+En caso de que no se proporcione un archivo, \texttt{do\_GET} tendrá que proporcionar la página por defecto, típicamente nombrada \texttt{index.html}, pero que en este caso por motivos didácticos se ha nombrado \texttt{user\_interface.html} (véase \Cref{lst:webserver-get}).
+
+\lstinputlisting[%
+	firstline=79,
+	lastline=96,
+	label={lst:webserver-get},
+	caption=Método \texttt{do\_GET} del archivo webserver.py
+]{src/webserver.py}
+
+Para servir un archivo se tiene que verificar que el éste exista, proporcionar su tipo mime en la cabecera y devolver los datos como una cadena binaria.
+Esto se realiza en el método interno \texttt{\_serve\_file}.
+Si el archivo no se encontrare, se devuelve un error \emph{HTTP404} como se muestra en el \Cref{lst:webserver-serve}:
+
+\lstinputlisting[%
+	firstline=36,
+	lastline=45,
+	label={lst:webserver-serve},
+	caption=Método \texttt{\_serve\_file} del archivo webserver.py
+]{src/webserver.py}
+
+La interacción cliente servidor se lleva a cabo de manera similar.
+Dependerá de si los datos se envían por método \emph{GET} o \emph{POST}, de los cuales se prefiere el segundo pues hace más difícil inyectar datos.
+De manera análoga se utiliza el método \texttt{do\_POST} que recibe y procesa los datos.
+En esta práctica, se utilizan dados codificados mediante JSON para hacer llamadas asíncronas del cliente y sin respuesta por parte del servidor (véase \Cref{lst:webserver-post}).
+
+\lstinputlisting[%
+	firstline=103,
+	lastline=117,
+	label={lst:webserver-post},
+	caption=Método \texttt{do\_POST} del archivo webserver.py
+]{src/webserver.py}
+
+El método \texttt{do\_POST} preentado en el \Cref{lst:webserver-post} interpreta los datos recibidos como cadenas de texto unicode de 8 bits (\emph{utf-8}) que contienen objetos en JSON que son decodificados a un diccionario de Python.
+El diccionario es después enviado al método interno \texttt{\_parse\_post} mostrado en el \Cref{lst:webserver-parse-post} que analiza los datos y realiza las acciones pertinentes.
+
+\lstinputlisting[%
+	firstline=62,
+	lastline=73,
+	label={lst:webserver-parse-post},
+	caption=Método \texttt{\_parse\_post} del archivo webserver.py
+]{src/webserver.py}
+
+Genere los archivos \texttt{webserver.py} y \texttt{user\_interface.html} (véase \Cref{sec:webserver-py,sec:ui-html}), luego ejecute el scrypt de Python.
+A continuación, conéctese a la Raspberry Pi con cualquier dispositivo móvil e ingrese a la dirección IP del punto de acceso, es decir: \url{http://192.168.1.254}.
+Debería ver una pantalla similar a la siguiente.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=7cm,keepaspectratio]{img/screenshot-ui.png}
+	\caption{Caption: Intefaz de usuario del controlador de Leds en la Raspberry Pi.}
+	\label{fig:hello-world} %CHKTEX 24
+\end{figure}
+
+
+\section{Experimentos}%
+\label{sec:experiments}
+
+Integre el código de la \prevpract{} en un archivo python llamado \texttt{led\_manager.py} y que ofrezca las siguientes funciones:
+\begin{enumerate}
+	\item{} [2 pts] Encendido del del 1--7 al presionar el boton adecuado
+	\item{} [2 pts] Desplegado de la marquesina izquierda al presionar el boton adecuado
+	\item{} [2 pts] Desplegado de la marquesina derecha al presionar el boton adecuado
+	\item{} [2 pts] Desplegado de la marquesina tipo ping-pong al presionar el boton adecuado
+	\item{} [2 pts] Desplegado del dígito correcto en el display de 7 segmentos al presionar el boton correspondiente
+\end{enumerate}
+
+
+
+\cleardoublepage
+\appendix
+\section{El archivo \texttt{webserver.py}}%
+\label{sec:webserver-py}
+\setlength{\columnsep}{1cm}
+\begin{multicols}{2}
+\lstinputlisting[%
+	firstline=17,
+	basicstyle=\scriptsize\ttfamily,
+	xleftmargin=0cm,
+	xrightmargin=0cm,
+	frame=none,
+	label=lst:webserver-py,
+	caption=Archivo webserver.py
+]{src/webserver.py}
+\end{multicols}
+
+\section{El archivo \texttt{user\_interface.html}}%
+\label{sec:ui-html}
+\setlength{\columnsep}{1cm}
+\begin{multicols}{2}
+\lstinputlisting[%
+	basicstyle=\scriptsize\ttfamily,
+	xleftmargin=0cm,
+	xrightmargin=0cm,
+	frame=none,
+	label=lst:ui-py,
+	caption=Archivo user\_interface.html,
+]{src/user_interface.html}
+\end{multicols}
+
+\end{document}
