@@ -259,14 +259,13 @@ Para ello, ejecute en una terminal la herramienta de configuración \texttt{sudo
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix%
 % \clearpage%
-\section{Configuración de la red alámbrica \texttt{eth0} con IP estática}%
-\label{sec:setup-eth0}
+\section{Configuración sin teclado ni monitor}%
+\label{sec:setup-headless}
+Es posible configurar la Raspberry Pi sin teclado ni monitor desde un sistema externo.
+Este proceso requiere modificar los archivos en la $\mu{}$SD, particularmente las configuraciones en el directorio \texttt{/etc} localizado en la partición \texttt{rootfs} cuyo sistema de archivos es \texttt{ext4}.
 
-\begin{importantbox}{Importante}
-Configurar la red alámbrica requiere modificar un archivo en la partición \texttt{rootfs}, por lo que sólo puede hacerse desde un sistema basado en Unix con soporte para sistema de archivos \texttt{ext4} o directamente en la Raspberry Pi con monitor y teclado.
-\end{importantbox}
+Por este motivo este proceso sólo puede llevarse a cabo desde un sistema basado en Unix con soporte para sistema de archivos \texttt{ext4}.
 
-Para acceder al archivo de configuración es necesario acceder a la partición \texttt{rootfs}.
 Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
 El proceso de montado de la partición \texttt{rootfs} es como sigue:
 
@@ -276,15 +275,34 @@ $ mkdir /media/[user]/rootfs
 $ cd /media/[user]/rootfs
 \end{Verbatim}
 
-\noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
-Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \texttt{lsblk}.
+Los archivos de configuración estarán entonces en
+	\texttt{/media/[user]/rootfs/etc}
+y la partición de arranque en
+	\texttt{/media/[user]/rootfs/boot}.
 
-Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
+\noindent
+\textbf{Nota:} los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo}).
 
-Siga los siguientes pasos:
+
+
+\section{Configuración de la red alámbrica \texttt{eth0} con IP estática}%
+\label{sec:setup-eth0}
+\begin{importantbox}{Importante}
+Configurar la red alámbrica requiere de la modificación de archivos en la partición \texttt{rootfs}, por lo que sólo puede hacerse desde un sistema basado en Unix con soporte para sistema de archivos \texttt{ext4} (véase~el~\Cref{sec:setup-headless}) o directamente en la Raspberry Pi con monitor y teclado.
+\end{importantbox}
+
+Raspberry Pi OS puede venir precargado con \texttt{dhcpcd} o con \texttt{network-manager}.
+Las versiones con \texttt{dhcpcd} (mayo de 2023 y anteriores) son preferidas en sistemas embebidos y su configuración se detalla en el \Cref{sec:setup-eth0-dhcpcd}.
+% Si su versión es posterior y sólo cuenta con el \texttt{network-manager}, siga los pasos detallados en el \Cref{sec:setup-eth0-nm}
+
+\subsection{Configuración de la red alámbrica \texttt{eth0} con IP estática bajo \texttt{dhcpcd}}%
+\label{sec:setup-eth0-dhcpcd}
+
+Ejecute los pasos detallados a continuación.
+Tome en cuenta que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo}).
 
 \begin{enumerate}
-	\item Abra el archivo \texttt{dhcpcd.conf} localizado en el directorio \texttt{etc/} de la partición \texttt{rootfs} de la $\mu$SD con un editor de texto.
+	\item Abra el archivo \texttt{dhcpcd.conf} localizado en el directorio \texttt{etc} de la partición \texttt{rootfs} de la $\mu$SD con un editor de texto.
 	Si trabaja directamente en la Raspberry Pi la ruta es \texttt{/etc/dhcpcd.conf}.
 
 	\item Localice la línea \texttt{\# Example static IP configuration:}. Verá un código similar al siguiente:
@@ -323,6 +341,38 @@ Se recomienda usar la IP de la computadora cuyo cable utiliza.
 \noindent
 Finalmente reinicie la Raspberry Pi.
 
+\subsection{Configuración de la red alámbrica \texttt{eth0} con IP estática con Network-Manager}%
+\label{sec:setup-eth0-nm}
+
+\begin{enumerate}
+
+	\item Cree un archivo llamado \texttt{eth0} en el directorio \texttt{etc/network/interfaces.d} de la partición \texttt{rootfs} de la $\mu$SD con un editor de texto.
+	Si trabaja directamente en la Raspberry Pi la ruta es \texttt{/etc/network/interfaces.d}.
+
+	\item El contenido del archivo debe ser el siguiente:
+\begin{Verbatim}[fontsize=\footnotesize]
+auto eth0
+allow-hotplug
+iface eth0 inet static
+    address 192.168.0.110/24
+    gateway 192.168.0.254
+\end{Verbatim}
+	donde
+	\begin{itemize}
+		\item \texttt{address} es la dirección IP de la Raspberry Pi, seguido de el código de la máscara de sub red (24 = 255.255.255.0).
+		\item \texttt{gateway} es la dirección IP del punto de acceso de la red local, su puerta a la Internet.
+	\end{itemize}
+\end{enumerate}
+
+\begin{greenbox}{Importante}
+Coordínese con sus compañeros de clase para que cada Raspberry Pi tenga una dirección IP diferente, ya que de otro modo habrá una colisión y ninguna tendrá acceso a la red.
+\end{greenbox}
+
+Nótese que en este caso no se añaden las direcciones IP de los servidores DNS. %chktex 13
+Esto es debido a que \texttt{network-manager} realiza la búsqueda de los servidores DNS de forma manual (y arbitraria).
+
+\noindent
+Finalmente reinicie la Raspberry Pi.
 
 
 \section{Configuración de la red inalámbrica sin monitor}%
@@ -370,52 +420,15 @@ network={
 \end{Verbatim}
 
 Si su red inalámbrica no tiene servidor DHCP requerirá de una IP estática.
-Para esto es necesario modificar el archivo \texttt{dhcpcd.conf} tal como se describe en el \Cref{sec:setup-eth0}.
+Para esto es necesario modificar el archivo \texttt{dhcpcd.conf} tal como se describe en el \Cref{sec:setup-eth0}, reemplazando \texttt{eth0} por \texttt{wlan0}.
 
-Siga los siguientes pasos:
 
-\begin{enumerate}
-	\item Abra el archivo \texttt{dhcpcd.conf} localizado en el directorio \texttt{etc/} de la partición \texttt{rootfs} de la $\mu$SD con un editor de texto.
 
-	\item Localice la línea \texttt{\# Example static IP configuration:}. Verá un código similar al siguiente:
 
-\begin{Verbatim}[fontsize=\footnotesize]
-# Example static IP configuration:
-#interface eth0
-#static ip_address=192.168.0.10/24
-#static ip6_address=fd51:42f8:caae:d92e::ff/64
-#static routers=192.168.0.1
-#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
-\end{Verbatim}
 
-	\item Copie el bloque de texto anterior y péguelo justo debajo, editando la configuración de la siguiente manera:
-\begin{Verbatim}[fontsize=\footnotesize]
-# Example static IP configuration:
-interface wlan0
-static ip_address=192.168.0.200/24
-static routers=192.168.0.254
-static domain_name_servers=132.248.204.1 132.248.10.2 8.8.8.8
-\end{Verbatim}
-	donde
-	\begin{itemize}
-		\item \texttt{static ip\_address} es la dirección IP de la Raspberry Pi, seguido de el código de la máscara de sub red (24 = 255.255.255.0).
-		\item \texttt{static routers} es la dirección IP del punto de acceso de la red local, su puerta a la Internet.
-		\item \texttt{static domain\_name\_servers} es la dirección de los servidores de resolución de nombres para acceder a la Internet.
-	\end{itemize}
-\end{enumerate}
-
-\begin{greenbox}{Importante}
-Coordínese con sus compañeros de clase para que cada Raspberry Pi tenga una dirección IP diferente, ya que de otro modo habrá una colisión y ninguna tendrá acceso a la red.
-\end{greenbox}
-
-Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
-
-\section{Instalación de Raspbian via SSH}%
+\section{Configuración de acceso remoto via SSH}%
 \label{sec:annex1}
-En caso de que no se cuente con un monitor, es posible instalar Raspbian vía SSH. %CHKTEX 13
-Para ello es necesario habilitar conexiones vía SSH ya que estas se encuentran deshabilitadas por defecto.
-
-
+En caso de que no se cuente con un monitor es posible configurar SSH para controlar de forma remota su Raspberry Pi OS. %CHKTEX 13
 
 \subsection{Habiliar conexiones SSH}%
 \label{sec:annex1-ssh-enable}
@@ -427,21 +440,20 @@ Para habilitar SSH, se necesita crear un par de archivos:
 \end{enumerate*}
 ambos en la raíz de la partición \texttt{boot}.
 
-Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
-El proceso de creación del archivo \texttt{SSH} en la raíz de la partición \texttt{boot} es como sigue:
+Siga los pasos del \Cref{sec:setup-headless} para montar la $mu$SD con Raspberry Pi OS y acceda al directorio de boot, por ejemplo:
 
 \begin{Verbatim}[fontsize=\footnotesize]
-$ mkdir /media/[user]/boot
-# mount /dev/mmcblk0p1 /media/[user]/boot
-$ touch /media/[user]/boot/SSH
+$ cd /media/[user]/boot
 \end{Verbatim}
 
 \noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
-Si no conoce el nombre de dispositivo de su $\mu$SD pruebe con el comando \texttt{lsblk}.
 
-Nótese que los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo} en Ubuntu).
-
-A continuación use \texttt{nano} para crear el archivo \texttt{userconf.txt} y escriba el siguiente texto:
+A continuación cree un archivo \texttt{SSH} vacío con
+\begin{Verbatim}[fontsize=\scriptsize]
+$ touch SSH
+\end{Verbatim}
+\noindent
+Posteriormente use \texttt{nano} para crear el archivo \texttt{userconf.txt} y escriba el siguiente texto:
 \begin{Verbatim}[fontsize=\scriptsize]
 pi:$6$9Qp0F2Al16JhvGmB$JLOIQjLdBIgRAbI6iMl.bylomaIshgHlNTB51oHUSNbTW3D5l6hEnPr6HEBtMo/0IKwlGkc7.FlFOhaMwPKB1/
 \end{Verbatim}
@@ -457,6 +469,7 @@ echo "pi:$(openssl passwd -6)" > /media/[user]/boot/userconf.txt
 Con lo que podrá definir cualquier usuario y contraseña que desee.
 
 Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
+
 
 \subsection{Configurar Raspbian vía SSH}
 Para configuar Raspbian via SSH, la Raspberry Pi deberá estar conectada a la red local vía un cable Ethernet y tener una tarjeta de memoria microSD con una imagen de Raspbian precargada.
