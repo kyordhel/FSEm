@@ -1,0 +1,61 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-3.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+\subsection{Paso 3: Control en lazo abierto de la potencia de una carga resistiva}%
+\label{sec:step3}
+Antes de proceder, verifique conexiones con un multímetro en busca de corto circuitos.
+En particular verifique que los circuitos de AC y DC funcionan de manera independiente y que existe una impedancia infinita entre pines optoacoplados.
+
+Con la Raspberry Pi configurada, basta con generar los dos programas para transferir la potencia de salida deseada de la Raspberry Pi al RP2040 que se encargará cortar el flujo de corriente en el instante correcto para obtener la potencia deseada.
+
+Primero, es necesario configurar al RP2040 como dispositivo esclavo e inicializar el bus \IIC, tal como se muestra en el \Cref{lst:rp2040-test-i2c-setup}.
+Las comunicaciones via \IIC son síncronas, lo que simplifica enormemente el diseño del programa.
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{rp2040-test-i2c.py:23} --- Dirección asignada al dispositivo esclavo},
+	label={lst:rp2040-test-i2c-setup},
+	linerange=23-23]{src/rp2040-test-i2c.py} %CHKTEX 8
+
+Tanto el envío como la recepción de datos se realizan byte por byte, por lo que es necesario convertir la potencia (\emph{float}) en un arreglo de bytes que pueda ser transmitido.
+Para esta opreación se utilizará la librería \texttt{ustruct} que empaquetará y desempaquetará flotantes (\emph{float}) en listas de 4 bytes que pueden ser enviados o recibidos via \IIC de manera análoga a como se muestra en los \Cref{lst:rpi-code-i2c-read,lst:rpi-code-i2c-write}
+
+
+Del lado de la Raspberry Pi, primero ha inicializarse el bus \IIC y posteriormente se realizarán las lecturas en un poleo o bucle infinito, cada una de las cuales se irá almacenando en un archivo bitácora.
+La inicialización del bus requiere de una simple línea (véase \Cref{lst:rpi-code-i2c-setup}).
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:18} --- Configuración del bus \IIC},
+	label={lst:rpi-code-i2c-setup},
+	linerange=18-18]{src/raspberry-code-i2c.py} %CHKTEX 8
+
+La conversión de un arreglo de bytes a punto flotante en Python no es inmediata.
+Para esta opreación se utilizará la librería \texttt{struct} que empaquetará y desempaquetará flotantes (\emph{float}) en listas de 4 bytes que pueden ser enviados o recibidos del RP2040 via \IIC tal como se muestra en los \Cref{lst:rpi-code-i2c-read,lst:rpi-code-i2c-write}
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:36--43} --- Escritura de flotantes en el bus \IIC},
+	label={lst:rpi-code-i2c-write},
+	linerange=36-43]{src/raspberry-code-i2c.py} %CHKTEX 8
+
+\lstinputlisting[%
+	language=Python,
+	caption={\texttt{raspberry-code-i2c.py:20--34} --- Lectura de flotantes del bus \IIC},
+	label={lst:rpi-code-i2c-read},
+	linerange=20-34]{src/raspberry-code-i2c.py} %CHKTEX 8
+
+
+El resto del programa es trivial, pues consiste sólo en solicitar al usuario un valor de potencia y enviarlo al RP2040.
+
+Por conveniencia, los códigos completos de los programas de ejemplo se encuentran en los \Cref{sec:appendix1,sec:appendix2,sec:appendix3,sec:appendix4}.
