@@ -9,11 +9,6 @@
 #
 # ## ###############################################
 
-# Future imports (Python 2.7 compatibility)
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """ Enciende el leds especificados en num, apagando los demás
 	(To be developed by the student)
 """

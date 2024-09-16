@@ -73,16 +73,18 @@
 		width:                 6.5em;
 		height:                12.75em;
 		background-color:      #333333;
+		border-radius:         5px;
 		margin:                0.5em auto;
-		padding:               0;
+		padding:               0.2em;
 		font-size:             28pt;
-		flex-wrap:             wrap;
+		display:               grid;
+		grid-template-columns: auto auto auto;
 	}
 
 	.numbutton{
 		font-size:             inherit;
 		flex:                  1 0 0;
-		margin:                0.25em;
+		margin:                0.125em;
 	}
 
 	.ledstrip{
@@ -153,7 +155,9 @@
 				<button class="numbutton" onclick="handle(this, 'numpad', 1)">1</button>
 				<button class="numbutton" onclick="handle(this, 'numpad', 2)">2</button>
 				<button class="numbutton" onclick="handle(this, 'numpad', 3)">3</button>
+				<div class="numbutton" ></div>
 				<button class="numbutton" onclick="handle(this, 'numpad', 0)">0</button>
+				<div class="numbutton" ></div>
 			</section>
 		</article>
 	</section>

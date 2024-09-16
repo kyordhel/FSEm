@@ -50,67 +50,163 @@ Además, el alumno necesitará el alambrado de la \prevpract{}.
 \begin{enumerate}[noitemsep]
 	\item Alambre el circuito tal y como se detalla en la \prevpract{}.
 	\item Realice los ejercicios y experimentos de la \prevpract{}.
-
+	\item Configure la Raspberry Pi como punto de acceso inalámbrico.
+	\item Levante un servidor de prueba como se detalla en la \Cref{sec:webserver}.
+	\item Realice los experimentos propuestos en la \Cref{sec:experiments}.
 \end{enumerate}
-
-\begin{greenbox}{Importante}
-Como \code{network-manager} no permite montar servidores web de forma automatizada se requiere de una versión de Raspberry Pi OS que tenga \code{dhcpcd} precargado.
-De otro modo, el estudiante será responsable de instalación y reconfiguración de los paquetes pertinentes.
-
-Para más información consulte la \href{https://wiki.debian.org/NetworkManager}{documentación oficial}.
-\end{greenbox}
 
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Step 1
 %
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Paso 1: Configuración de la Raspberry Pi como punto de acceso inalámbrico}%
-\label{sec:ap}
-
+\subsection{Paso 1: Configuración del adaptador inalámbrico}%
+\label{sec:adapter}
 
 Para operar como punto de acceso la Raspberry Pi necesita tener instalado el software apropiado, incluyendo un servidor DHCP para proporcionar a los dispositivos que se conecten una dirección~IP. %CHKTEX 13
 
-Se comienza por instalar los paquetes \texttt{DNSMasq} y \texttt{HostAPD}:
+\begin{yellowbox}{\texttt{eth0}}
+	En esta práctica se modificará la configuración del adaptador inalámbrico, por lo que no podrá usarlo para conectarse a internet.
 
-\begin{Verbatim}
-# apt-get install dnsmasq hostapd
-# pip3 install -U python-magic
+	Antes de continuar, conecte su Raspberry Pi a una red cableada mediante el adaptador \texttt{eth0} tal como se indica en el manual de la Práctica 1.
+\end{yellowbox}
+
+Ejecute el siguiente comando.
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	$ dpkg -l dhcpcd*
 \end{Verbatim}
 
-Si están ejecutándose los servicios, deténgalos a fin de poder reconfigurarlos
-\begin{Verbatim}
-# systemctl stop dnsmasq
-# systemctl stop hostapd
-\end{Verbatim}
+\noindent
+La salida puede ser de cualquiera de las dos siguientes formas, dependiendo de si su instalación cuenta con \texttt{dhcpcd} (Rspberry Pi OS hasta febrero de 2023) o no (versiones actuales).
 
-\subsubsection{Configuración del adaptador y el cliente DHCP}%
-\label{sec:ap-adapter}
+\medskip{}
+
+\noindent
+Si obtiene una salida similar a la siguiente:
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	$ dpkg -l dhcpcd*
+	||/ Name           Version            Architecture Description
+	+++-==============-==================-============-==========================================
+	ii  dhcpcd         1:9.4.1-24~deb12u4 all          DHCPv4 and DHCPv6 dual-stack client
+	ii  dhcpcd-base    9.4.1-24~deb12u4   arm64        DHCPv4 and DHCPv6 dual-stack client
+	un  dhcpcd-gtk     <none>             <none>       (no description available)
+	ii  dhcpcd5        9.4.1-24~deb12u4   all          DHCPv4 and DHCPv6 dual-stack client
+\end{Verbatim}
+\noindent
+pase a la \Cref{sec:ap-adapter-dhcpcd}.
+
+\bigskip{}
+
+\noindent
+Sin embargo, si el comando produce:
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	$ dpkg -l dhcpcd*
+	||/ Name           Version      Architecture Description
+	+++-==============-============-============-=================================
+	un  dhcpcd         <none>       <none>       (no description available)
+	un  dhcpcd5        <none>       <none>       (no description available)
+\end{Verbatim}
+\noindent
+pase a la \Cref{sec:ap-adapter-new}.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Linux Setup (no DHCPCD)
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Configuración del adaptador \textcolor{Green}{sin \texttt{dhcpcd}}}%
+\label{sec:ap-adapter-new}
 
 Para configurar una red independiente con servidor DHCP la Raspberry Pi debe tener asignada una dirección IP estática en el adaptador inalámbrico que proveerá la conexión.
-Debido a que la Raspberry Pi tiene un procesador pequeño, se configurará para servir en una red privada clase C, es decir con direcciones IP del tipo 198.168.x.x.
+Debido a que la Raspberry Pi tiene un procesador pequeño, se configurará para servir en una red privada clase C, es decir con direcciones IP del tipo \texttt{198.168.X.Y}.
 Así mismo, se supondrá que el dispositivo inalámbrico utilizado es \texttt{wlan0}.
 
-Para configurar la dirección IP estática edite el archivo de configuración \texttt{/etc/dhcpcd.conf} como superusuario:
+\medskip{}
 
-\begin{Verbatim}
-interface wlan0
-    static ip_address=192.168.1.254/24
-    nohook wpa_supplicant
+Primero, deshabilite los servicios que bloquean el acceso al adaptador inalámbrico como sigue:
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl stop wpa_supplicant
+	# systemctl mask wpa_supplicant.service
+\end{Verbatim}
+
+A continuación, cree el archivo de configuración \texttt{/etc/network/interfaces.d/wlan0} como superusuario.
+Agregue el siguiente contenido.
+
+\VerbatimInput[%
+	samepage=true,
+	label=\texttt{/etc/network/interfaces.d/wlan0},
+]{etc/network/interfaces.d/wlan0}
+
+A continuación, reinicie los servicios de red
+
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl restart networking
+\end{Verbatim}
+
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DHCPCD setup
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Configuración del adaptador \textcolor{Red}{bajo \texttt{dhcpcd}}}%
+\label{sec:ap-adapter-dhcpcd}
+
+\begin{yellowbox}{\texttt{¡Cuidado!}}
+	No realice los pasos de esta sección si ya ejecutó los pasos de la \Cref{sec:ap-adapter-new}
+\end{yellowbox}
+
+Para configurar una red independiente con servidor DHCP la Raspberry Pi debe tener asignada una dirección IP estática en el adaptador inalámbrico que proveerá la conexión.
+Debido a que la Raspberry Pi tiene un procesador pequeño, se configurará para servir en una red privada clase C, es decir con direcciones IP del tipo \texttt{198.168.X.Y}.
+Así mismo, se supondrá que el dispositivo inalámbrico utilizado es \texttt{wlan0}.
+
+
+Primero, edite el archivo de configuración \texttt{/etc/dhcpcd.conf} como superusuario:
+
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	interface wlan0
+	    static ip_address=192.168.1.254/24
+	    nohook wpa_supplicant
 \end{Verbatim}
 
 A continuación, reinicie el cliente DHCP
 
-\begin{Verbatim}
-# service dhcpcd restart
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# service dhcpcd restart
 \end{Verbatim}
+
+
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Configuración de la Raspberry Pi como punto de acceso inalámbrico}%
+\label{sec:ap}
+
+Se comienza por instalar los paquetes \texttt{DNSMasq} y \texttt{HostAPD}:
+
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# apt-get install dnsmasq hostapd python3-magic
+	% # pip3 install -U python-magic
+\end{Verbatim}
+
+Si están ejecutándose los servicios, deténgalos a fin de poder reconfigurarlos
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl stop dnsmasq
+	# systemctl stop hostapd
+\end{Verbatim}
+
 
 \subsubsection{Configuración del servidor DHCP}%
 \label{sec:ap-dhcp}
 El siguiente paso consiste en configurar el servidor DHCP, provisto por el servicio \texttt{dnsmasq}.
 
 De manera predeterminada el archivo de configuración \texttt{/etc/dnsmasq.conf} contiene mucha información que no es necesaria, por lo que es más fácil comenzar desde cero.
-Respáldelo y cree uno nuevo con el siguiente texto:
+Respáldelo con \texttt{mv /etc/dnsmasq.conf /etc/dnsmasq.conf.bak} y cree uno nuevo con el siguiente texto:
 
 \VerbatimInput[%
 	samepage=true,
@@ -119,11 +215,14 @@ Respáldelo y cree uno nuevo con el siguiente texto:
 
 Esta configuración proporcionará 20 direcciones IP entre 192.168.1.200 y 192.168.1.220, válidas durante 24 horas.
 
-Ahora debe iniciarse el servidor DHCP
+Ahora debe iniciarse el servidor DHCP y habilitarse el servicio para estar disponible en cada reinicio.
 
-\begin{Verbatim}
-systemctl start dnsmasq
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl unmask dnsmasq
+	# systemctl start dnsmasq
 \end{Verbatim}
+
+
 
 \subsubsection{Configuración del punto de acceso}%
 \label{sec:ap-hotspot}
@@ -145,33 +244,42 @@ Los modos de operación posibles son:
 \item g = IEEE 802.11g (2.4 GHz)
 \end{itemize}
 
-\paragraph*{Importante:} Tanto el nombre de la red o SSID y la contraseña no deben entrecomillarse. La contraseña debe tener entre 8 y 64 caracteres. \textbf{Cambie el SSID a \texttt{Raspberry\_Apellido} para evitar conflictos.}\medskip
+\paragraph*{Importante:} Tanto el nombre de la red o SSID y la contraseña no deben entrecomillarse. La contraseña debe tener entre 8 y 64 caracteres.
+\textbf{Cambie el SSID a \texttt{Raspberry\_Apellido} para evitar conflictos.}
+De igual forma, cambie el canal para evitar saturación.
+\medskip
 
 Ahora edite el archivo \texttt{/etc/default/hostapd} y reemplace la línea que comienza con \texttt{\#DAEMON\_CONF} con:
 
-\begin{Verbatim}
-DAEMON_CONF="/etc/hostapd/hostapd.conf"
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	DAEMON_CONF="/etc/hostapd/hostapd.conf"
 \end{Verbatim}
 
-\subsubsection{Configuración e inicio del punto de acceso}%
+\subsubsection{Habilitación del punto de acceso}%
 \label{sec:ap-hotspot}
+
 Finalmente, habilite los servicios para iniciar el punto de acceso:
 
-\begin{Verbatim}
-# systemctl unmask hostapd
-# systemctl enable hostapd
-# systemctl start hostapd
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl unmask hostapd
+	# systemctl enable hostapd
+	# systemctl start hostapd
 \end{Verbatim}
 
 Verifique que los servicios se están ejecutando
 
-\begin{Verbatim}
-# systemctl status hostapd
-# systemctl status dnsmasq
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl status hostapd
+	# systemctl status dnsmasq
 \end{Verbatim}
 
 \paragraph*{Nota:} El servicio \texttt{hostapd} requiere acceso exclusivo a la tarjeta de red inalámbrica que podría estar ocupada por el proceso \texttt{wpa\_supplicant}.
-Si \texttt{hostapd} se reusara a iniciar indicando un error tal como \emph{Could not configure driver mode nl80211 driver initialization failed}, termine los procesos que puedan estar utilizando la tarjeta de red inalámbrica, por ejemplo ejecutando \texttt{killall wpa\_supplicant}.
+Si \texttt{hostapd} se reusara a iniciar indicando un error tal como \emph{Could not configure driver mode nl80211 driver initialization failed}, termine los procesos que puedan estar utilizando la tarjeta de red inalámbrica.
+
+\begin{Verbatim}[gobble=1,commentchar=\%]
+	# systemctl stop wpa_supplicant
+	# systemctl mask wpa_supplicant.service
+\end{Verbatim}
 
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -187,8 +295,8 @@ Sin embargo, configurar Apache para enlazarse con Python y operar la GPIO no es 
 Para habilitar un servidor web en Python, basta con heredar de la clase \texttt{BaseHTTPRequestHandler} e implementar el método \texttt{do\_GET} para que imprima el código HTML al socket vía el método \texttt{self.wfile.write} tal como se muestra en el \Cref{lst:simple-webserver}.
 
 \lstinputlisting[%
-	firstline=17,
-	lastline=35,
+	firstline=12,
+	lastline=34,
 	label={lst:simple-webserver},
 	caption=Archivo \texttt{simple-webserver.py}
 ]{src/simple-webserver.py}
@@ -208,8 +316,8 @@ Todas las peticiones ingresadas en la barra de direcciones del navegador llegar�
 En caso de que no se proporcione un archivo, \texttt{do\_GET} tendrá que proporcionar la página por defecto, típicamente nombrada \texttt{index.html}, pero que en este caso por motivos didácticos se ha nombrado \texttt{user\_interface.html} (véase \Cref{lst:webserver-get}).
 
 \lstinputlisting[%
-	firstline=79,
-	lastline=96,
+	firstline=73,
+	lastline=90,
 	label={lst:webserver-get},
 	caption=Método \texttt{do\_GET} del archivo webserver.py
 ]{src/webserver.py}
@@ -219,20 +327,21 @@ Esto se realiza en el método interno \texttt{\_serve\_file}.
 Si el archivo no se encontrare, se devuelve un error \emph{HTTP404} como se muestra en el \Cref{lst:webserver-serve}:
 
 \lstinputlisting[%
-	firstline=36,
-	lastline=45,
+	firstline=30,
+	lastline=39,
 	label={lst:webserver-serve},
 	caption=Método \texttt{\_serve\_file} del archivo webserver.py
 ]{src/webserver.py}
 
+\clearpage{}
 La interacción cliente servidor se lleva a cabo de manera similar.
 Dependerá de si los datos se envían por método \emph{GET} o \emph{POST}, de los cuales se prefiere el segundo pues hace más difícil inyectar datos.
 De manera análoga se utiliza el método \texttt{do\_POST} que recibe y procesa los datos.
 En esta práctica, se utilizan dados codificados mediante JSON para hacer llamadas asíncronas del cliente y sin respuesta por parte del servidor (véase \Cref{lst:webserver-post}).
 
 \lstinputlisting[%
-	firstline=103,
-	lastline=117,
+	firstline=97,
+	lastline=111,
 	label={lst:webserver-post},
 	caption=Método \texttt{do\_POST} del archivo webserver.py
 ]{src/webserver.py}
@@ -241,14 +350,14 @@ El método \texttt{do\_POST} preentado en el \Cref{lst:webserver-post} interpret
 El diccionario es después enviado al método interno \texttt{\_parse\_post} mostrado en el \Cref{lst:webserver-parse-post} que analiza los datos y realiza las acciones pertinentes.
 
 \lstinputlisting[%
-	firstline=62,
-	lastline=73,
+	firstline=56,
+	lastline=67,
 	label={lst:webserver-parse-post},
 	caption=Método \texttt{\_parse\_post} del archivo webserver.py
 ]{src/webserver.py}
 
 Genere los archivos \texttt{webserver.py} y \texttt{user\_interface.html} (véase \Cref{sec:webserver-py,sec:ui-html}), luego ejecute el scrypt de Python.
-A continuación, conéctese a la Raspberry Pi con cualquier dispositivo móvil e ingrese a la dirección IP del punto de acceso, es decir: \url{http://192.168.1.254}.
+A continuación, conéctese a la Raspberry Pi con cualquier dispositivo móvil e ingrese a la dirección IP del punto de acceso, es decir: \url{http://192.168.1.254:8080}.
 Debería ver una pantalla similar a la siguiente.
 
 \begin{figure}[H]
@@ -271,6 +380,13 @@ Integre el código de la \prevpract{} en un archivo python llamado \texttt{led\_
 	\item{} [2 pts] Desplegado del dígito correcto en el display de 7 segmentos al presionar el boton correspondiente
 \end{enumerate}
 
+Experimentos opcionales:
+\begin{enumerate}
+	\item{} [+2 pts] Modifique la implementación presentada para que sea posible definir la velocidad de rotación de la marquesina en la interfaz web.
+	\item{} [+2 pts] Genere un único script de \emph{shell} (ej.~\emph{bash}) que automatice la configuración del punto de acceso inalámbrico.
+	Dicho script recibirá dos parámetros opcionales: el SSID de la red y la contraseña a utilizar.
+\end{enumerate}
+
 
 
 \cleardoublepage
@@ -280,7 +396,7 @@ Integre el código de la \prevpract{} en un archivo python llamado \texttt{led\_
 \setlength{\columnsep}{1cm}
 \begin{multicols}{2}
 \lstinputlisting[%
-	firstline=17,
+	firstline=11,
 	basicstyle=\scriptsize\ttfamily,
 	xleftmargin=0cm,
 	xrightmargin=0cm,
