@@ -1,0 +1,622 @@
+% CHKTEX-FILE 46
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% practica.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,10.5pt]{article}
+\input{setup/packages}
+\input{setup/macros}
+\input{setup/colorboxes}
+\input{setup/listings}
+\input{setup/document}
+
+\author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
+\title{Práctica 1:\\Instalación de Raspbian en la Raspberry Pi\\
+{\large Fundamentos de Sistemas Embebidos}}
+\date{Versión 2025}
+
+
+% Document body
+\begin{document}
+\maketitle
+
+\section{Objetivo}%
+\label{sec:objective}
+El alumno aprenderá a instalar un sistema operativo basado en Linux, como sistema operativo embebido, en una tarjeta microcontroladora.
+
+\section{Introducción}%
+\label{sec:introduction}
+Raspberry Pi OS es el sistema operativo más popular para Raspberry Pi, además de ser el único con soporte oficial.
+Raspberry Pi OS es una distribución de Linux basada en Debian, optimizado para la Raspberry Pi y que permite a esta operar como una PC.~La distro incorpora terminal y navegador web entre otros programas.
+
+
+\section{Material}%
+\label{sec:material}
+Para esta práctica se necesitará:
+\begin{itemize}[nosep]
+	\item Una tarjeta de memoria microSD de al menos 4 GB (se recomiendan 8GB)
+	\item Una computadora capaz de leer y escribir tarjetas microSD (o bien un adaptador para la misma) y conexión a internet para descargar la imagen de Raspbian.
+	\item Una Raspberry Pi 2B o posterior
+	\item Un monitor con soporte para HDMI o cable convertidor de HDMI a VGA/DVI
+	\item Cable adaptador $\mu$HDMI a HDMI (sólo Raspberry Pi 4)
+	\item Un teclado USB
+	\item Un mouse USB
+	\item Una fuente de alimentación de 5V@2A con adaptador microUSB (o adaptador USB-C para Raspberry Pi 4)
+\end{itemize}
+
+\paragraph*{Importante:} Si no cuenta con monitor, teclado y mouse, aún es posible instalar Raspbian en la Raspberry Pi. Consulte el \Cref{sec:anex1}.
+
+\section{Instrucciones}%
+\label{sec:instructions}
+
+\begin{enumerate}[nosep]
+	\item Grabe una imagen de Raspberry Pi OS Lite en una memoria micro SD siguiendo los pasos descritos en las \cref{sec:step1,sec:step2}.\\
+	Alternativamente puede usar una imagen de Ubuntu Core.
+	\item Configure su Raspberry Pi tal como se indica en la \cref{sec:step3}
+	\item Conéctese a la red cableada del laboratorio como explica la  \cref{sec:step4}
+	\item Finalmente ejecute los comandos de la \cref{sec:step5} para actualizar el sistema
+\end{enumerate}
+
+\medskip{}
+Instalar Raspbian en la Raspberry Pi es sencillo.
+Basta con descargar Raspbian (ahora Raspberry Pi Os) y grabar la imagen de disco en una tarjeta de memoria microSD, desde la cual arrancará el sistema operativo.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 1: Descargar Raspbian}%
+\label{sec:step1}
+Ingrese a \url{https://www.raspberrypi.com/software/operating-systems/} y descargue alguna de las imágenes de Raspbian disponibles (véase \Cref{fig:raspbian-flavors}). Si se descargó un archivo \texttt{img.xz}, habrá que descomprimirlo para extraer la imagen.
+
+\begin{figure}
+	\centering%
+	\includegraphics[width=0.8\columnwidth,height=8cm,keepaspectratio]{img/p01-01.png} %CHKTEX 8
+	\caption{Versiones disponibles (o sabores) de Raspbian}
+	\label{fig:raspbian-flavors} %CHKTEX 24
+\end{figure}
+
+\begin{greenbox}{Importante}
+Si tiene una Raspberry Pi 3 o 4 descargue la versión de 64 bits. Es más eficiente.
+\end{greenbox}
+
+La versión a descargar dependerá de la capacidad de la memoria microSD y la cantidad de recursos de la tarjeta Raspbian.
+Para tarjetas de 4GB se aconseja el sabor \emph{Raspberry Pi OS with desktop}, mientras que usuarios con Raspberries de sólo 512MB de RAM querrán instalar \emph{Raspberry Pi OS Lite}.
+
+Ligas de acceso rápido se proporcionan a continuación por conveniencia:
+
+\begin{itemize}[noitemsep]
+	\item \href{https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-11-19/2024-11-19-raspios-bookworm-arm64-lite.img.xz}{Raspberry Pi OS Lite 64 bits}
+	\item \href{https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2024-11-19/2024-11-19-raspios-bookworm-armhf-lite.img.xz}{Raspberry Pi OS Lite 32 bits}
+\end{itemize}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 2: Escribir imagen en la microSD}%
+\label{sec:step2}
+Si no lo ha hecho, introduzca la memoria microSD en la computadora.
+La memoria será reparticionada y cada partición será reformateada, por lo que se aconseja respaldar la información.
+
+Escribir la imagen de Raspbian en la microSD requiere de un programa externo según el sistema operativo.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2a: Linux
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Escribir imagen usando Linux}%
+Descargue \href{https://etcher.io/}{Etcher} en \texttt{\textasciitilde/Downloads}.
+el archivo \texttt{AppImage} ya es ejecutable por lo que sólo hace falta darle permisos de ejecución y ejecutarlo; por ejemplo:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ cd ~/Downloads
+$ wget https://github.com/balena-io/etcher/releases/download/v1.14.3/balenaEtcher-1.14.3-x64.AppImage
+$ chmod +x balenaEtcher-1.14.3-x64.AppImage
+$ ./balenaEtcher-1.14.3-x64.AppImage
+\end{Verbatim}
+
+
+A continuación, siga los pasos de Etcher para grabar la imagen (véase \Cref{fig:write-image-linux})
+\begin{enumerate}[noitemsep]
+	\item Seleccione la imagen \texttt{IMG} de Raspbian
+	\item Seleccione el medio en el cual se grabará la imagen de Raspbian (punto de montaje de la microSD)
+	\item De click en \emph{Flash!} para empezar el proceso de grabado
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-linux-imagea.png} %CHKTEX 8
+		\caption{Selección de imagen a grabar}
+		\label{fig:write-image-linux-a} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-linux-imageb.png} %CHKTEX 8
+		\caption{Listo para grabar la imagen}
+		\label{fig:write-image-linux-b} %CHKTEX 24
+	\end{subfigure}
+	\caption{Escritura de la imagen IMG de Raspbian en la microSD con Etcher}%
+	\label{fig:write-image-linux} %CHKTEX 24
+\end{figure}
+
+\begin{importantbox}{Advertencia}
+Tenga cuidado de no seleccionar su disco duro.
+Este proceso destruirá toda la información del medio seleccionado.
+\end{importantbox}
+
+Cuando la escritura de datos en la microSD termine, notará que ésta ha sido reparticionada en \texttt{boot} (partición de arranque tipo \textit{FAT32}) y \texttt{rootfs} (partición raíz tipo \textit{EXT4}).
+
+Si no cuenta con monitor, teclado o mouse, consulte el \Cref{sec:annex1}.
+De otro modo, desmonte la tarjeta microSD e insértela en la Raspberry Pi.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2b: Linux [expert mode]
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Escribir imagen usando Linux (usuarios expertos)}%
+\begin{importantbox}{Advertencia}
+	Esta sección es sólo para usuarios avanzados de Linux.
+
+	Si no sabe lo que hace, corre el riesgo de \textbf{borrar \textsc{toda} la información de su disco duro}.
+\end{importantbox}
+
+\medskip{}
+
+En linux es posible descomprimir la imagen y grabarla al vuelo con \texttt{xz} y \texttt{dd}.
+El primer paso consiste en insertar la memoria micro SD en su sistema y localice la unidad con \texttt{lsblk} o \texttt{fdisk -l}.
+
+Ubíquese en el directorio de donde descargó la imagen de Raspberry Pi OS y ejecute el siguiente comando como superusuario:
+\begin{Verbatim}[gobble=1]
+	# xz -dc <IMAGEN> | dd of=/dev/<SDCARD> iflag=fullblock bs=1M status=progress
+\end{Verbatim}
+
+\noindent
+donde \texttt{<IMAGEN>} es el nombre del archivo comprimido con la imagen de raspbian que descargó anteriormente, y
+\texttt{/dev/<SDCARD>} es la unidad lógica que representa a la memoria microSD (no una partición) tal como \texttt{/dev/sdc} o \texttt{/dev/mmcblk}.
+
+\medskip
+
+Listo.
+La copia tardará aproximadamente entre 3 y 5 minutos dependiendo de la velocidad de su memoria microSD. %CHKTEX 13
+Espere a que termine, la velocidad que verá en el indicador de progreso es la de lectura, no la de escritura.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 2c: Windows
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Escribir imagen usando Windows}%
+Descargue e instale \href{https://sourceforge.net/projects/win32diskimager/}{Win32 Disk Imager}.
+Si no ha descmprimido la imagen de Raspbian, proceda a hacerlo con un programa que descomprima archivos Zip como \href{https://www.7-zip.org/download.html}{7zip} (Windows 7 y posterior deberí soportar descompresión zip).
+
+A continuación, siga los pasos de Win32 Disk Imager para grabar la imagen (véase \Cref{fig:write-image-windows})
+\begin{enumerate}[noitemsep]
+	\item Seleccione la imagen IMG de Raspbian en \emph{Image File}
+	\item Seleccione la unidad en la cual se grabará la imagen de Raspbian (letra asignada a la microSD) en \emph{Device}
+	\item De click en \emph{Write} para iniciar el proceso de escritura.
+	\item Win32 Disk Imager mostrará una advertencia, de click en \emph{Yes} para continuar.
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-windows-imagea.png} %CHKTEX 8
+		\caption{Selección de imagen a grabar}
+		\label{fig:write-image-windows-a} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=8cm,keepaspectratio]{img/p01-02-windows-imageb.png} %CHKTEX 8
+		\caption{Listo para grabar la imagen}
+		\label{fig:write-image-windows-b} %CHKTEX 24
+	\end{subfigure}
+	\caption{Escritura de la imagen IMG de Raspbian en la microSD con Win32 Disk Imager}%
+	\label{fig:write-image-windows} %CHKTEX 24
+\end{figure}
+
+Cuando la escritura de datos en la microSD termine, Windows asignará una letra al nuevo volúmen de datos de la microSD, llamada \texttt{boot}.
+Desmonte la tarjeta microSD e insértela en la Raspberry Pi.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 3
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\subsection{Paso 3: Configurar Raspberry Pi OS}%
+\label{sec:system-setup}
+Para configuar Raspbian, la Raspberry Pi deberá tener una tarjeta de memoria microSD con una imagen de Raspbian precargada y estar conectada a un monitor vía el puerto HDMI incorporado.
+Además, se precisa de un teclado USB para realizar el proceso de configuración.
+A continuación, conecte la Raspberry Pi y espere entre 1 y 3 minutos a que el sistema operativo cargue.
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.50\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=40mm,keepaspectratio]{img/p01-03-wizard-1.jpg} %CHKTEX 8
+		\caption{Generación de llaves SSH}
+		\label{fig:setup-wizard-step-1} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.50\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=40mm,keepaspectratio]{img/p01-03-wizard-2.jpg} %CHKTEX 8
+		\caption{Reinicio y arranque}
+		\label{fig:setup-wizard-step-2} %CHKTEX 24
+	\end{subfigure}\\
+	\begin{subfigure}[b]{0.50\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=40mm,keepaspectratio]{img/p01-03-wizard-3.jpg} %CHKTEX 8
+		\caption{Ingreso de usuario principal}
+		\label{fig:setup-wizard-step-3} %CHKTEX 24
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.50\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=40mm,keepaspectratio]{img/p01-03-wizard-4.jpg} %CHKTEX 8
+		\caption{Confirmación de contraseña}
+		\label{fig:setup-wizard-step-4} %CHKTEX 24
+	\end{subfigure}%
+	\caption{Asistente de configuración de Raspbian}%
+	\label{fig:setup-wizard} %CHKTEX 24
+\end{figure}
+
+Una vez terminado el proceso de arranque, siga el asistente para configurar Raspbian, tal como se muestra en la \Cref{fig:setup-wizard}.
+Tendrá que elegir un nombre de usuario y una contraseña para el mismo.
+Se recomienda la combinación \texttt{pi} para el usuario y \texttt{raspberry} para la contraseña.
+
+
+\begin{figure}[H]
+	\centering%
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-04-raspiconfig-1.jpg} %CHKTEX 8
+		\caption{Inicio de sesión}
+		\label{fig:fs-expand-step-1} %CHKTEX 24
+	\end{subfigure}\\
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-04-raspiconfig-2.jpg} %CHKTEX 8
+		\caption{Opciones avanzadas}
+		\label{fig:fs-expand-step-2} %CHKTEX 24
+	\end{subfigure}\\
+	\begin{subfigure}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.9\linewidth,height=33mm,keepaspectratio]{img/p01-04-raspiconfig-3.jpg} %CHKTEX 8
+		\caption{Expandir sistema de archivos}
+		\label{fig:fs-expand-step-3} %CHKTEX 24
+	\end{subfigure}%
+	\caption{Asistente de configuración de Raspbian}%
+	\label{fig:raspberry-fs-expand} %CHKTEX 24
+\end{figure}
+
+
+Finalmente, es necesario expandir la partición de Raspbian a su máxima capacidad.
+Para ello, inicie sesión en la termina y ejecute la herramienta de configuración \texttt{sudo raspi-config} (véase \Cref{fig:raspberry-fs-expand}), seleccione la opción 7, \textit{Opciones avanzadas} (Avanced Options), y luego la opción A1, \textit{Extender el sistema de archivos} (Expand Filesystem).
+Seleccione finalizar y reinicie la raspberry.
+
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 4
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 4: Configurar la red cableada \texttt{eth0}}%
+\label{sec:network-setup}
+La versión actual de Raspberry Pi OS utiliza el paquete \texttt{network-manager} como gestor de red.
+Al igual que los administradores de escritorio, éste se basa en perfiles para gestionar las conexiones, mismos que se almacenan en \texttt{/etc/NetworkManager/system-connections/}.
+A continuación se procederá a crear un archivo de configuración para la red cableada del laboratorio usando direcciones IP fijas.
+
+\begin{greenbox}{Evite colisiones}
+	Cuando dos máquinas tienen la misma dirección IP e una red se produce una colisión y ninguna puede conectarse.
+
+	Para evitar colisiones utilice la dirección IP de la computadora de la cual tomó prestado el cable ethernet.
+\end{greenbox}
+
+Para configurar la red cableada siga los siguientes pasos:
+
+\begin{enumerate}
+	\item Cambie a modo superusuario con \texttt{sudo su}
+
+	\item Cree el archivo \texttt{/etc/NetworkManager/system-connections/eth0.nmconnection} con el comando
+	\begin{Verbatim}[gobble=2]
+		# touch /etc/NetworkManager/system-connections/eth0.nmconnection
+	\end{Verbatim}
+	Recuerde que los entornos linux son sensibles al uso de mayúsculas y minúsculas.
+
+	\item Edite el archivo \texttt{/etc/NetworkManager/system-connections/eth0.nmconnection} con \texttt{vim} o \texttt{nano}
+	\begin{Verbatim}[gobble=2]
+		# nano /etc/NetworkManager/system-connections/eth0.nmconnection
+	\end{Verbatim}
+
+	\item El archivo está vacío.
+	Ingrese el texto que se muestra a continuación, reemplazando en \texttt{address1} el la dirección \texttt{192.168.0.200} por la dirección IP de la máquina de la cual tomó prestado el cable ethernet.
+	\begin{Verbatim}[fontsize=\footnotesize,gobble=2]
+		[connection]
+		id=eth0
+		type=ethernet
+		autoconnect-priority=0
+		interface-name=eth0
+
+		[ethernet]
+
+		[ipv4]
+		address1=192.168.0.200/24,192.168.0.254
+		dns=192.168.0.254;132.248.204.1;132.248.10.2;
+		method=manual
+
+		[ipv6]
+		addr-gen-mode=default
+		method=disabled
+	\end{Verbatim}
+	Tenga cuidado de no dejar espacios al rededor del caracter igual (\texttt{=}).
+
+	\item Guarde cambios y conecte el cable de red.
+
+	\item Ejecute el comando \texttt{ifconfig}
+	\begin{Verbatim}[gobble=2]
+		# ifconfig
+	\end{Verbatim}
+\end{enumerate}
+
+Si todo sale bien, deberá ver en pantalla la dirección IP asignada, una salida similar a la siguiente:
+\begin{Verbatim}[gobble=1]
+	eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+	        inet 192.168.0.200  netmask 255.255.255.0  broadcast 192.168.0.255
+	        ether xx:xx:xx:xx:xx:xx  txqueuelen 1000  (Ethernet)
+	        RX packets 0  bytes 0 (0 B)
+	        RX errors 0  dropped 0  overruns 0  frame 0
+	        TX packets 0  bytes 0 (0 B)
+	        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+\end{Verbatim}
+
+Si se desean usar direcciones DHCP (automáticas) en lugar de una IP estática, basta con establecer \texttt{method=auto} bajo \texttt{[ipv4]} y omitir los campos \texttt{address1} y \texttt{dns}.
+
+Alternativamente es posible realizar la configuración con un asistente gráfico invocando el comando \texttt{nmtui-edit}, pero estos métodos para muggles con menos ki que Yamcha se reservan para la Facultad de Contaduría y Administración, por lo que no serán revisados en este manual.
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 5
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paso 5: Actualizar el sistema}%
+\label{sec:system-update}
+Actualizar el sistema es una tarea trivial una vez que se ha conectado a internet.
+Para esto, ejecute los siguientes comandos como superusuario:
+
+\begin{Verbatim}[gobble=1]
+	# apt update
+	# apt upgrade
+\end{Verbatim}
+
+\medskip{}
+\noindent Listo! Su sitema está actualizado.
+\cleardoublepage{}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Experiments
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Ejercicios}%
+\label{sec:excercises}
+
+\begin{enumerate}
+	\item{} [6pt] Grabe la imagen del sistema operativo Raspberry Pi OS en la memoria microSD y configure el sistema.
+	Entregue como evidencia una fotografía o captura de pantalla del sistema funcionando.
+
+	\item{} [4pt] Conecte el sistema a una red alámbrica y actualícelo.
+	Entregue como evidencia una fotografía o captura de pantalla del sistema actualizado.
+
+	\item{} [+2pts] Realice la configuración del sistema de forma desacoplada en un sistema anfitrión con Linux y después actualícelo de forma remota utilizando SSH. %CHKTEX 13
+	Entregue como evidencia un breve video donde se observe al sistema ser configurado de forma desacoplada y actualizarse vía SSH. %CHKTEX 13
+	La duración del video no deberá exceder de 30 segundos.
+\end{enumerate}
+
+\cleardoublepage{}
+
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Anex
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix%
+% \clearpage%
+\section{Configuración sin teclado ni monitor}%
+\label{sec:setup-headless}
+Es posible configurar la Raspberry Pi sin teclado ni monitor desde un sistema externo.
+Este proceso requiere modificar los archivos en la $\mu{}$SD, particularmente las configuraciones en el directorio \texttt{/etc} localizado en la partición \texttt{rootfs} cuyo sistema de archivos es \texttt{ext4}.
+
+Por este motivo este proceso sólo puede llevarse a cabo desde un sistema basado en Unix con soporte para sistema de archivos \texttt{ext4}.
+
+Supóngase que la microSD está asociada a \texttt{/dev/mmcblk0}, las paticiones \texttt{boot} y \texttt{rootfs} serán entonces \texttt{/dev/mmcblk0p1} y \texttt{/dev/mmcblk0p2} respectivamente.
+El proceso de montado de la partición \texttt{rootfs} es como sigue:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ mkdir /media/[user]/rootfs
+# mount /dev/mmcblk0p2 /media/[user]/rootfs
+$ cd /media/[user]/rootfs
+\end{Verbatim}
+
+Los archivos de configuración estarán entonces en
+	\texttt{/media/[user]/rootfs/etc}
+y la partición de arranque en
+	\texttt{/media/[user]/rootfs/boot}.
+
+\noindent
+\textbf{Nota:} los comandos marcados con \texttt{\#} deben ejecutarse con permisos de super usuario (i.e.~\emph{root}, o mediante \texttt{sudo}).
+
+A continuación el estudiante querrá configurar el acceso a la Raspberry Pi vía SSH. %CHKTEX 13
+Para esto tendrá primero que configurar una red (véanse~\Cref{sec:setup-eth0,sec:setup-wifi}) y luego seguir los pasos de la \Cref{sec:annex1-ssh-enable}.
+
+
+
+\section{Configuración de la red alámbrica \texttt{eth0} con IP estática}%
+\label{sec:setup-eth0}
+\begin{importantbox}{Importante}
+Configurar la red alámbrica requiere de la modificación de archivos en la partición \texttt{rootfs}, por lo que sólo puede hacerse desde un sistema basado en Unix con soporte para sistema de archivos \texttt{ext4} (véase~el~\Cref{sec:setup-headless}) o directamente en la Raspberry Pi con monitor y teclado.
+\end{importantbox}
+
+Para configurar la red alámbrica, siga los pasos detallados en la \Cref{sec:network-setup} pero tomando encuenta que el archivo \texttt{eth0.nmconnection} tendrá una ruta relativa al punto de montaje del la partición \texttt{rootfs} en el sistema anfitrión; por ejemplo
+\texttt{/media/[user]/rootfs/etc/NetworkManager/system-connections/eth0.nmconnection}.
+
+
+\section{Configuración de la red inalámbrica sin monitor}%
+\label{sec:setup-wifi}
+Para configurar la red inalámbrica sin un monitor necesita crear un archivo  llamado \texttt{wpa\_supplicant.conf} en la raíz de la partición \texttt{boot}.
+
+Cree un archivo el archivo \texttt{wpa\_supplicant.conf} con el siguiente texto:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=MX
+
+network={
+    ssid="<NOMBRE DE LA RED INALÁMBRICA>"
+    psk="<CONTRASEÑA>"
+    key_mgmt=WPA-PSK
+}
+\end{Verbatim}
+
+O, si la red no tiene contraseña:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=MX
+
+network={
+    ssid="<NOMBRE DE LA RED INALÁMBRICA>"
+    key_mgmt=NONE
+}
+\end{Verbatim}
+
+Si su red inalámbrica no tiene servidor DHCP requerirá de una IP estática.
+Para esto es necesario modificar el archivo \texttt{dhcpcd.conf} tal como se describe en el \Cref{sec:setup-eth0}, reemplazando \texttt{eth0} por \texttt{wlan0}.
+
+
+
+
+
+\section{Configuración de acceso remoto via SSH}%
+\label{sec:annex1}
+En caso de que no se cuente con un monitor es posible configurar SSH para controlar de forma remota su Raspberry Pi OS. %CHKTEX 13
+
+\subsection{Habiliar conexiones SSH}%
+\label{sec:annex1-ssh-enable}
+Para habilitar SSH, se necesita crear un par de archivos:
+\begin{enumerate*}[label=\roman*\rpar]
+	\item un archivo vacío llamado \texttt{SSH}
+	y
+	\item un archivo llamado \texttt{userconf.txt} con el usuario y contraseña para conexiones SSH; % CHKTEX 13
+\end{enumerate*}
+ambos en la raíz de la partición \texttt{boot}.
+
+Siga los pasos del \Cref{sec:setup-headless} para montar la $mu$SD con Raspberry Pi OS y acceda al directorio de boot, por ejemplo:
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ cd /media/[user]/boot
+\end{Verbatim}
+
+\noindent donde \texttt{[user]} es el nombre de usuario que utiliza en su sistema Linux.
+
+A continuación cree un archivo \texttt{SSH} vacío con
+\begin{Verbatim}[fontsize=\scriptsize]
+$ touch SSH
+\end{Verbatim}
+\noindent
+Posteriormente use \texttt{nano} para crear el archivo \texttt{userconf.txt} y escriba el siguiente texto:
+\begin{Verbatim}[fontsize=\scriptsize]
+pi:$6$9Qp0F2Al16JhvGmB$JLOIQjLdBIgRAbI6iMl.bylomaIshgHlNTB51oHUSNbTW3D5l6hEnPr6HEBtMo/0IKwlGkc7.FlFOhaMwPKB1/
+\end{Verbatim}
+
+Esta cadena habilitará iniciar sesión con el usuario \texttt{pi} y la contraseña \texttt{raspberry}.
+
+Teclear la cadena encriptada es un proceso tedioso y propenso a errores, por lo que una forma más simple de hacer esto es ejecutar el comando
+
+\begin{Verbatim}[fontsize=\footnotesize]
+echo "pi:$(openssl passwd -6)" > /media/[user]/boot/userconf.txt
+\end{Verbatim}
+
+Con lo que podrá definir cualquier usuario y contraseña que desee.
+
+Una vez completado este proceso, desmonte la memoria microSD e insértela en la Raspberry Pi.
+
+
+
+
+\subsection{Configurar Raspbian vía SSH}
+Para configuar Raspbian via SSH, la Raspberry Pi deberá estar conectada a la red local vía un cable Ethernet y tener una tarjeta de memoria microSD con una imagen de Raspbian precargada.
+
+A continuación, conecte la Raspberry Pi y espere entre 1 y 3 minutos a que el sistema operativo cargue.
+Utilice un escaner de IP o consulte su enrutador para conocer la IP asignada a la Raspberry Pi.
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=9cm]{img/p01-appendix01.png} %CHKTEX 8
+	\caption{Dirección IP de una Raspbery Pi}
+	\label{fig:raspberry-ip} %CHKTEX 24
+\end{figure}
+
+Una vez conozca la dirección IP de la Raspberry Pi, conéctese a ésta mediante SSH. %CHKTEX 13
+Secure Shell le advertirá que no puede verificar la autenticidad del certificado, por lo que pedirá que confirme la conexión tecleando \texttt{yes}, como se muestra a continuación.
+
+\begin{Verbatim}[fontsize=\footnotesize]
+$ ssh pi@192.168.1.126
+
+    The authenticity of host '192.168.1.126 (192.168.1.126)' can't be established.
+    ECDSA key fingerprint is SHA256:1nrpQeTIb+Gzg4aIJ0WE+V0aLUQgDnQbxOGraWf0Kso.
+    Are you sure you want to continue connecting (yes/no)?
+\end{Verbatim}
+
+Teclee \texttt{yes} y presione Enter.
+De inmediato se le solicitará la contraseña
+
+\begin{Verbatim}[fontsize=\footnotesize]
+    Warning: Permanently added '192.168.1.126' (ECDSA) to the list of known hosts.
+
+    pi@192.168.1.126's password:
+\end{Verbatim}
+
+Teclee \texttt{raspberry}, la contraseña por default en Raspbian, y presione Enter.
+Se concretará la conexión.
+
+\begin{Verbatim}[fontsize=\footnotesize]
+    Linux raspberrypi 4.19.75-v7+ #1270 SMP Tue Sep 24 18:45:11 BST 2019 armv7l
+
+    The programs included with the Debian GNU/Linux system are free software;
+    the exact distribution terms for each program are described in the
+    individual files in /usr/share/doc/*/copyright.
+
+    Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+    permitted by applicable law.
+    Last login: Thu Feb  6 18:28:53 2020
+
+    SSH is enabled and the default password for the 'pi' user has not been changed.
+    This is a security risk - please login as the 'pi' user and type 'passwd' to set a new password.
+\end{Verbatim}
+
+Finalmente, para configurar su Raspbian, ejecute \texttt{sudo raspi-config}  para iniciar la herramienta de configuración (véase \Cref{fig:raspberry-config-tool}).
+Se aconseja definir el idioma, localización, y cambiar la contraseña del usuario por defecto \textit{pi}.
+
+\begin{figure}[H]
+	\centering%
+	\includegraphics[width=0.8\linewidth,height=5cm,keepaspectratio]{img/p01-appendix02.png} %CHKTEX 8
+	\caption{Herramienta de configuración de Raspbian}
+	\label{fig:raspberry-config-tool} %CHKTEX 24
+\end{figure}
+
+\end{document}
+
+
