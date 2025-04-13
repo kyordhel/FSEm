@@ -52,13 +52,11 @@ Esta fórmula de conversión de unidades deberá programarse en el microcontrola
 
 \medskip
 \begin{greenbox}{\large TIP: Calibración}
-	\begin{center}
-		El voltaje de referencia $V_{AREF}$ variará respecto a su valor teórico dependiendo de la tolerancia de las resistencias (típicamente ±5\%) y de las impedancias de los demás componentes conectados, incluyendo al Arduino mismo.
+	El voltaje de referencia $V_{AREF}$ variará respecto a su valor teórico dependiendo de la tolerancia de las resistencias (típicamente ±5\%) y de las impedancias de los demás componentes conectados, incluyendo al Arduino mismo.
 
-		\smallskip
+	\smallskip
 
-		Se recomienda usar siempre un multímetro para corroborar el voltaje entre $V_{AREF}$ y tierra y poder actualizar dicho valor en el código.\footnotemark{}
-	\end{center}
+	Se recomienda usar siempre un multímetro para corroborar el voltaje entre $V_{AREF}$ y tierra y poder actualizar dicho valor en el código.\footnotemark{}
 \end{greenbox}
 \footnotetext{El valor real de $V_{AREF}$ variará entre 2.4V y 3.1V con resistencias con tolerancia de 5\%, equivalente a una variación de 70°C.}
 \medskip
