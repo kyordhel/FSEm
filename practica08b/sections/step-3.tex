@@ -1,0 +1,98 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-3.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 3: Parche de kernel y logotipo de arranque (Opcional)}%
+\label{sec:step3}
+En este paso daremos una apariencia más profesional al sistema embebido.
+
+Debido a que modificar el kernel es un trabajo difícil y propenso a errores, \emph{buildroot} nos facilita las cosas al permitirnos mantener los archivos originales del kernel íntegros y modificarlos al vuelo mediante la aplicación de parches que se aplican previo a la compilación del mismo.
+
+Antes de compilar el kernel y los paquetes solicitados, \emph{buildroot} tomará el directorio especificado y aplicará los archivos \texttt{.patch} a los archivos especificados en los mismos utilizando la herramienta \texttt{diff}.
+El directorio de superposición puede ser cualquiera en el disco duro.
+Sin embargo, se estila colocarlo como un subdirectorio de nombre \texttt{patches} dentro de \texttt{board/<company>/<boardname>}.
+
+\noindent
+En nuestro caso la ruta relativa será:
+
+\begin{Verbatim}[gobble=1]
+	board/raspberrypi4-64/patches
+\end{Verbatim}
+
+Procederemos a crear el directorio donde almacenaremos el parche que modificará el código de arranque para mostrar nuestro logotipo de inicio.
+
+\begin{Verbatim}[gobble=1]
+	$ mkdir -p $board/raspberrypi4-64/patches/linux
+\end{Verbatim}
+
+\begin{samepage}
+\noindent
+A coninuación procedemos a crear el archivo de parche \texttt{logo.path} con un editor de texto plano como \texttt{nano} o \texttt{vim}, ingresando el siguiente contenido:
+
+\noindent
+\begin{minipage}{\columnwidth}
+\lstinputlisting[%
+	language=c,%
+	title={\texttt{patches/linux/000-center-logo.patch}},%
+	linerange={1-43}%
+]{src/board/raspberrypi4-64/patches/linux/000-center-logo.patch}
+\end{minipage}
+\end{samepage}
+
+Este archivo de parche \texttt{.patch} modifica dos archivos que controlan el desplegado de información en el \emph{framebuffer} o manejador gráfico básico del kernel.
+El primero es \texttt{fbcon.c}, el controlador del \emph{framebuffer} para el modo consola, donde se modifica la posición del logo para que aparezca en el centro de la pantalla; además de forzar que el logo siempre aparezca.
+El segundo es \texttt{fbmem.c} que tiene las rutinas de inicialización del \emph{framebuffer} donde establecemos el número de logotipos de -1 o automático (igual al número de núcleos disponibles) a exactamente uno.
+
+\begin{samepage}
+El siguiente paso consiste en indicarle a \emph{buildroot} la ruta donde se encuentran los parches a aplicar.
+Navegue desde el menú principal a opciones de construcción (\emph{build options}) y localice la entrada de directorios globales de parches y hashes (global patch and hash directories) e ingrese el siguiente valor:
+
+\begin{Verbatim}[gobble=1]
+	board/raspberrypi4-64/patches
+\end{Verbatim}
+\end{samepage}
+
+\begin{samepage}
+A continuación proveeremos la imagen a utilizar durante la carga del sistema operativo.
+Copie la imagen adjunta \texttt{logo.png} al directorio \texttt{board/raspberrypi4-64/} y después indique a \emph{buildroot} la ruta donde se encuentran dicha imagen.
+Esto se hace definiendo ruta del logo de arranque personalizado (\emph{custom boot logo file path}) dentro del menú Kernel.
+Se establece el valor:
+\begin{Verbatim}[gobble=1]
+	board/raspberrypi4-64/logo.png
+\end{Verbatim}
+\end{samepage}
+
+Por último, se deshabilitará el volcado de mensajes a la terminal para
+\begin{enumerate*}[label=\roman*\rpar]
+	\item que esta no interfiera con el desplegado de la imagen de arranque
+	y
+	\item acelerar la carga del sistema operativo.
+\end{enumerate*}
+
+Edite el archivo \texttt{cmdline.txt} en el directorio correspondiente.
+En nuestro caso (una Raspberry Pi 4 con sistema operativo de 64 bits) es el archivo \texttt{board/raspberrypi4-64/cmdline.txt}.
+Agregue el siguiente texto al final de la primera línea:
+
+\begin{Verbatim}[gobble=1]
+	quiet loglevel=3
+\end{Verbatim}
+
+O bien, puede simplemente ejecutar esta línea:
+
+\begin{Verbatim}[gobble=1]
+	$ sed -i '$s/$/ quiet loglevel=3/' board/raspberrypi4-64/cmdline.txt
+\end{Verbatim}
+
+Un inconveniente asociado a las modificaciones realizadas es que, una vez posicionado el logotipo, no nos permitirá mostrar información sino debajo del mismo, reduciendo el número de líneas que se muestran en pantalla hasta que se invoca el comando \texttt{clear}.
+Una forma de solucionar este incoveniente es automatizar la llamada del comando \texttt{clear} cada vez que se inicie sesión.

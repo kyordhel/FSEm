@@ -1,0 +1,85 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% apendices.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% !TEX root = ../practica.tex
+% !TEX root = ../references.bib
+
+\cleardoublepage{}
+\section{Añadir python-smbus2 a \emph{buildroot}}%
+\label{sec:add-smbus2}
+
+Primero ubíquese en la raíz de buildroot.
+
+A continuación cree un directorio para los archivos de configuración e inclusión de \texttt{smbus2} como sigue:
+
+\begin{Verbatim}[gobble=1]
+	$ mkdir	package/python-smbus2
+	$ touch	package/python-smbus2/Config.in
+	$ touch package/python-smbus2/python-smbus2.hash
+	$ touch package/python-smbus2/python-smbus2.mk
+\end{Verbatim}
+
+Estos archivos le indicarán a \emph{buildroot} que, en caso de que se seleccione el paquete, los binarios tendrán que ser descargados de internet, compilados para la arquitectura objetivo e incluidos en la imagen.
+
+Edite el archivo \texttt{package/python-smbus2/Config.in} en un editor como \texttt{vi} o \texttt{nano} para que contenga exactamente el siguiente texto:
+
+\begin{lstlisting}[%
+	title={\texttt{package/python-smbus2/Config.in}},%
+	firstnumber=1]
+config BR2_PACKAGE_PYTHON_SMBUS2
+	bool "python-smbus2"
+	help
+	  smbus2 is a drop-in replacement for smbus-cffi/smbus-python
+	  in pure Python.
+
+	  https://github.com/kplindegaard/smbus2
+\end{lstlisting}
+
+Edite el archivo \texttt{package/python-smbus2/python-smbus2.hash} en un editor como \texttt{vi} o \texttt{nano} para que contenga exactamente el siguiente texto:
+
+\begin{lstlisting}[%
+	title={\texttt{package/python-smbus2/python-smbus2.hash}},%
+	firstnumber=1]
+# md5, sha256 from https://pypi.org/pypi/smbus2/json
+md5  5708a6cbf052f45a3ad6dd83c00902a6  smbus2-0.5.0.tar.gz
+sha256  4a5946fd82277870c2878befdb1a29bb28d15cda14ea4d8d2d54cf3d4bdcb035  smbus2-0.5.0.tar.gz
+# Locally computed sha256 checksums
+sha256  6ee9cf18c3a75dd76fb549a4b607ae34eedc31a796c48157895e2ad28d66ce79  LICENSE
+\end{lstlisting}
+
+Edite el archivo \texttt{package/python-smbus2/python-smbus2.mk} en un editor como \texttt{vi} o \texttt{nano} para que contenga exactamente el siguiente texto:
+
+\begin{lstlisting}[%
+	title={\texttt{package/python-smbus2/python-smbus2.mk}},%
+	firstnumber=1]
+PYTHON_SMBUS2_VERSION = 0.5.0
+PYTHON_SMBUS2_SOURCE = smbus2-$(PYTHON_SMBUS2_VERSION).tar.gz
+PYTHON_SMBUS2_SITE = https://files.pythonhosted.org/packages/10/c9/6d85aa809e107adf85303010a59b340be109c8f815cbedc5c08c73bcffef
+PYTHON_SMBUS2_SETUP_TYPE = setuptools
+PYTHON_SMBUS2_LICENSE = MIT
+PYTHON_SMBUS2_LICENSE_FILES = LICENSE
+
+$(eval $(python-package))
+\end{lstlisting}
+
+Hasta este momento el paquete \texttt{python-smbus2} aún no ha sido integrado a \emph{buildroot}.
+Para integrarlo abra el archivo \texttt{package/Config.in} en un editor como \texttt{vi} o \texttt{nano}.
+Localice el paquete \texttt{python-cffi} aproximadamente en la línea 1400 y agregue una entrada similar abajo para smbus2.
+El archivo debería quedar como sigue:
+
+\begin{lstlisting}[%
+	title={\texttt{package/Config.in}},%
+	firstnumber=1399]
+	source "package/python-smbprotocol/Config.in"
+	source "package/python-smbus-cffi/Config.in"
+	source "package/python-smbus2/Config.in"
+	source "package/python-smmap2/Config.in"
+	source "package/python-snappy/Config.in"
+\end{lstlisting}
+
+Por último, ejecute \texttt{make menuconfig} y verifique que la entrada smbus2 esté disponible.

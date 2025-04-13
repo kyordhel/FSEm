@@ -1,0 +1,43 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-1.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 1: Configuración del entorno de desarrollo}%
+\label{sec:step1}%
+%
+\begin{greenbox}{Sistema base: Debian}
+	Los pasos de esta sección suponen que la máquina de desarrollo o anfitrión cuenta con un sistema operativo Debian o compatible instalado (ubuntu, mint, etc\dots{}).
+
+	Si usted cuenta con otra distribución como Fedora, Arch, o incluso iOS, es posible realizar la práctica pero tendrá que utilizar los comandos apropiados para su sistema operativo.
+
+	\medskip{}
+	\textbf{Nota:} No es posible llevar a cabo la práctica en Windows.
+\end{greenbox}
+
+La configuración del entorno de desarrollo es relativamente sencilla.
+Para esto basta con instalar los paquetes de compilación cruzada para ARM, así como los paquetes adicionales requeridos por buildroot como \texttt{flex}, \texttt{bison} o \texttt{ncurses}.
+
+\noindent{}
+Todo el procedimiento se reduce a una sóla línea:
+\begin{Verbatim}[gobble=1]
+	# apt install -y git bc bison flex libssl-dev make libc6-dev libncurses5-dev build-essential
+	crossbuild-essential-arm64 crossbuild-essential-armhf
+\end{Verbatim}
+
+A continuación, cree un nuevo directorio en su \emph{home} y sitúese allí; por ejemplo:
+
+\begin{Verbatim}[gobble=1]
+	$ mkdir ~/myPiLinux
+	$ cd ~/myPiLinux
+\end{Verbatim}

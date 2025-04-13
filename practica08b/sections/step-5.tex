@@ -1,0 +1,36 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-5.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 5: Generación de la imagen del S.O. embebido}%
+\label{sec:step5}
+Aunque muy sencillo, compilar el kernel y los paquetes, y generar el archivo de imagen es un proceso largo que consume bastante tiempo.
+
+Para crear la imagen del sistema embebido, sitúese en el directorio raíz de \emph{buildroot} y ejecute el comando make.
+
+\begin{Verbatim}[gobble=1]
+	$ make
+\end{Verbatim}
+
+\noindent
+Eso es todo.
+El proceso de compilación tardará aproximadamente entre 90 minutos y 4 horas dependiendo de la velocidad de la computadora huesped.
+
+\medskip{}
+\noindent
+Relájese y espere.
+
+\begin{center}
+	\includegraphics[width=0.8\columnwidth,height=5cm,keepaspectratio]{img/compiling.png}
+\end{center}

@@ -1,0 +1,57 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ap-speedrun.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% !TEX root = ../practica.tex
+% !TEX root = ../references.bib
+
+\section{Speedrun: imágen lista en 15 minutos}%
+\label{sec:speedrun}
+
+En esta sección se explica cómo completar la configuración de la imagen del sistema operativo embebido (pasos~2, 3 y~4) en menos de 15 minutos.
+
+\begin{enumerate}
+	\item Cree un directorio de trabajo y sítúese allí:
+	\begin{Verbatim}[gobble=2]
+		$ mkdir ~/myPiLinux
+		$ cd ~/myPiLinux
+	\end{Verbatim}
+
+	\item Descargue buildroot y descomprímalo.
+	Luego cambie al directorio de buildroot:
+	\begin{Verbatim}[gobble=2]
+		$ wget https://buildroot.org/downloads/buildroot-2025.02.tar.xz -O - | tar -xJf -
+		$ cd buildroot-2025.02.tar.xz
+	\end{Verbatim}
+
+	\item Copie el archivo de fuentes anexo a esta práctica al directorio de buildroot.
+
+	\item Descomprma el archivo anexo con:
+	\begin{Verbatim}[gobble=2]
+		$ tar -h -xJf p08-sources.tar.xz
+	\end{Verbatim}
+
+	\item Seleccione la plataforma objetivo y ejecute \texttt{menuconfig}:
+	\begin{Verbatim}[gobble=2]
+		$ make raspberrypi4_64_defconfig
+		$ make menuconfig
+	\end{Verbatim}
+
+	\item Establezca los valores que se muestran en la \Cref{tbl:menuconfig-changes}.
+
+	\item Finalmente compile la solución con \texttt{make} para generar la imagen.
+	\begin{Verbatim}[gobble=2]
+		$ make
+	\end{Verbatim}
+\end{enumerate}
+
+\begin{greenbox}{Paciencia}
+El proceso de compilación tardará entre 90 minutos y 4 horas.
+
+\medskip{}
+
+Utilice ese tiempo para estudiar a fondo los pasos de la \Cref{sec:instructions} y preparar adecuadamente los experimentos propuestos de la \Cref{sec:experiments}.
+\end{greenbox}

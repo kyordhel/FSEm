@@ -1,0 +1,85 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ap-shortcuts.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% !TEX root = ../practica.tex
+% !TEX root = ../references.bib
+
+\section{Atajos}%
+\label{sec:shortcuts}
+
+Dentro de \emph{buildroot} \texttt{make} se convierte en una poderosa herramienta que permite tanto abrir utilerías de configuración como recompilar partes del sistema.
+Por practicidad (compilar un sistema completo es muy tardado), \texttt{make} no rastrea cambios de forma inteligente, por lo que en ocasiones es necesario recompilar paquetes de forma manual~\Citep{buildrootManual}.
+
+\noindent
+La siguiente tabla presenta una serie de atajos convenientes para el estudiante:
+
+\begin{table}[H]
+	\centering
+	\caption{Atajos para \texttt{make}~\Citep{buildrootManual}}%
+	\label{tab:make-build-shortcuts}
+	\begin{tabularx}{0.9\textwidth}{l l X}
+		\toprule
+		\multicolumn{1}{c}{\bfseries Comando}&
+		\multicolumn{1}{c}{\bfseries Ejemplo}&
+		\multicolumn{1}{c}{\bfseries Descripción}\\
+		\midrule
+		\texttt{clean}       & \texttt{make clean}           &
+			Borra todo el contenido del directorio de salida \texttt{build} para una recompilación limpia y desde cero.\\[2mm]
+		\texttt{dirclean}    & \texttt{make linux-dirclean}  &
+			Borra todo el contenido del directorio asociado al paquete especificado dentro de \texttt{build}.\\[8mm]
+
+		\texttt{build}       & \texttt{make python3-build}   &
+			Compila el paquete especificado (si no está compilado).\\[2mm]
+		\texttt{rebuild}     & \texttt{make python3-rebuild} &
+			Recompila el paquete especificado sin actualizar ninguna configuración.
+			Útil cuando se mdifica el código fuente en el directorio \texttt{build}.\\[2mm]
+		\texttt{reconfigure} & \texttt{make linux-reconfigure} &
+			Reconfigura y luego recompila el paquete especificado, pero no actualiza dependencias.
+			Útil cuando se hacen cambios en \texttt{menuconfig}.\\[2mm]
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+\noindent
+Asimismo, \emph{buildroot} cuenta con alternativas gráficas a la interfaz de \texttt{menuconfig} como se muestra a continuación:
+
+\begin{table}[H]
+	\centering
+	\caption{Menús disponibles con \texttt{make}~\Citep{buildrootManual}}%
+	\label{tab:make-menus}
+	\begin{tabularx}{0.9\textwidth}{l X}
+	% \begin{tabular}{l l}
+		\toprule
+		\multicolumn{1}{c}{\bfseries Comando}&
+		\multicolumn{1}{c}{\bfseries Descripción}\\
+		\midrule
+		\texttt{make menuconfig} & Interfaz clásica en modo consola.\\[2mm]
+		\texttt{make nconfig}    & Interfaz nueva y mejorada en modo consola.\\[2mm]
+		\texttt{make xconfig}    & Interfaz gráfica con Qt para entornos de escritorio.\\[2mm]
+		\texttt{make qconfig}    & Interfaz gráfica con GTK para entornos de escritorio.\\[4mm]
+		\texttt{make linux-menuconfig} & Como \texttt{make-menuconfig} pero para configurar el kernel de linux.
+		% Funciona para cualquier paquete configurable. reemplazando \texttt{linux-} con el nombre del paquete.
+		\\
+		\bottomrule
+	% \end{tabular}
+	\end{tabularx}
+\end{table}
+
+\bigskip{}
+
+\begin{orangebox}{Importante}
+	\textbf{Buildroot nunca borra} cosas, sólo sobreescribe.
+
+	\medskip{}
+
+	Si se eliminaron componentes, integraron parches nuevos o borraron archivos se recomienda invocar \texttt{make clean} para recompilar desde cero a fin de evitar problemas y conflictos.
+\end{orangebox}
+
+\bigskip{}
+
+\noindent
+Se puede encontrar más información en la sección 8.13 del manual de \emph{buildroot}.

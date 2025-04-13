@@ -1,0 +1,32 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% experimens.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\section{Experimentos}%
+\label{sec:experiments}
+
+\begin{enumerate}
+	\item{} [6pt] Grabe la imagen generada en la memoria microSD y pruebe el sistema operativo embebido en la Raspberry Pi.
+	Como evidencia entregue un video donde se muestre el arranque de la Rasbperry Pi y el nombre de uno de los integranted de la brigada en el display.
+
+	\item{} [4pt] Con base en las instrucciones de la \cref{sec:step4} integre un programa modificado que despliegue en la primera línea del display el apellido paterno de cada integrante del equipo de trabajo, separados por espacio, como un corrimiento infinito de marquesina izquierda.
+
+	\item{} [+1pt] Con base en las instrucciones de la \cref{sec:step3} modifique la imagen generada para que despliegue un logotipo personalizado de su elección durante la carga del sistema operativo.
+	Como evidencia entregue un video donde se muestre el arranque de la Rasbperry Pi y el texto en el display.
+
+	\item{} [+4pt] Modifique la solución para que el display muestre en la primera línea del display el apellido paterno de cada integrante del equipo de trabajo, separados por espacio, como un corrimiento infinito de marquesina izquierda además de la temperatura en grados centígrados reportada por el DS18B20 en la segunda línea.\\[1em]
+	\textbf{Hint: }Necesitará habilitar la carga del controlador \texttt{w1-gpio} y recompilar la solución completa con \texttt{make clean \&\& make}.
+
+	\item{} [+10pt] Combine la práctica actual con la práctica \emph{Kiosco Multimedia} y desarrolle una imagen de sistema embebido capaz de reproducir videos y fotografías al mismo tiempo que despliega la marquesina y presenta la temperatura en un display.
+\end{enumerate}

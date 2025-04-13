@@ -1,0 +1,267 @@
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% step-4.tex
+%
+% Author:  Mauricio Matamoros
+% License: MIT
+%
+% %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%!TEX root = ../practica.tex
+%!TEX root = ../references.bib
+
+% CHKTEX-FILE 1
+% CHKTEX-FILE 13
+% CHKTEX-FILE 46
+
+\subsection{Paso 4: Configuración del \emph{root filesystem}}%
+\label{sec:step4}
+El siguiente paso consiste en configurar el sistema de archivos raíz o \emph{root filesystem}.
+Tras compilar el kernel y los paquetes solicitados, \emph{buildroot} tomará el directorio especificado y sobrepondrá el contenido de éste al sistema de archivos raíz que está siendo generado, un proceso conocido como superposición u \emph{overlay}.
+
+El directorio de superposición puede ser cualquiera en el disco duro.
+Sin embargo, se estila colocarlo como un subdirectorio de nombre \texttt{rootfs-overlay} dentro de \texttt{board/<company>/<boardname>}
+que, si inspecciona con \texttt{ls}, notará que contiene ya varios archivos de configuración para nuestra tarjeta Raspberry Pi 4 de 64bits.
+En nuestro caso la ruta relativa será:
+
+\begin{Verbatim}[gobble=1]
+	board/raspberrypi4-64/rootfs-overlay
+\end{Verbatim}
+
+Es en este directorio donde colocaremos todos los archivos y directorios que querramos contenga la imagen generada.
+
+Ejecute los siguientes comando para crear el directorio \emph{home} del usuario \emph{pi} creado en el paso anterior y otros directorios que serán necesarios para configuar al sistema embebido.
+
+\begin{Verbatim}[gobble=1]
+	mkdir -p board/raspberrypi4-64/rootfs-overlay/home/pi
+	mkdir -p board/raspberrypi4-64/rootfs-overlay/etc/init.d
+\end{Verbatim}
+
+El sistema creado por \emph{buildroot} es un sistema mínimo.
+Esto quiere decir que no se incluye nada que no sea indispensable a menos que sea declarado de forma explícita,
+y esto se logra añadiendo los archivos de configuración pertinente al sistema de archivos raíz o \emph{root filesystem} (en adelante rootFS).
+Por ejemplo, los controladores para \IIC{} no se cargan de forma predeterminada.
+
+Para especificar el rootFS en \emph{buildroot} ejecute \texttt{make menuconfig} y localice la opción \emph{root filesystem overlay directories} bajo el menú de configuración del sistema (\emph{system configuration}) con el valor del directorio creado anteriormente, es decir:
+
+\begin{Verbatim}[gobble=1]
+	board/raspberrypi4-64/rootfs-overlay
+\end{Verbatim}
+
+Para indicarle al kernel que debe cargar los controladores para \IIC{} haremos uso de dos archivos.
+El primero será el archivo \texttt{S02modules} localizado en \texttt{etc/init.d}, directorio que contiene todos los scripts de arranque del sistema y que son ejecutados en orden.%
+\footnote{
+	Los controladores tienen muy alta prioridad, de allí que se tengan que cargar primero que otros servicios.
+	Es por esto que el nombre del archivo comienza con S02, y será ejecutado después de todos los S00 y S01.
+}
+\begin{samepage}
+Procedemos a crear el archivo, marcarlo como ejecutable y editarlo con los siguientes dos comandos:
+
+\begin{Verbatim}[gobble=1]
+	touch board/raspberrypi4-64/rootfs-overlay/etc/init.d/S02modules
+	chmod +x board/raspberrypi4-64/rootfs-overlay/etc/init.d/S02modules
+	nano board/raspberrypi4-64/rootfs-overlay/etc/init.d/S02modules
+\end{Verbatim}
+\end{samepage}
+
+\medskip{}
+
+\begin{importantbox}{Advertencia}
+	Los archivos que está a punto de modificar son relativos al directorio de la tarjeta dentro de buildroot.
+
+	\medskip\bfseries
+	Por ningún motivo modifique los archivos en el directorio \texttt{/etc} de su sistema anfitrión.
+\end{importantbox}
+
+\medskip{}
+% \newpage
+
+\begin{samepage}
+\noindent
+A coninuación, agregue el siguiente contenido al archivo:
+
+\noindent
+\begin{minipage}{\columnwidth}
+\begin{lstlisting}[%
+	title={\texttt{rootfs-overlay/etc/init.d/S02modules}},%
+	firstnumber=1]
+#!/bin/sh
+case "${1}" in
+    start)
+        # Exits if /etc/modules does not exists or lacks valid entries
+        [ -r /etc/modules ] && egrep -qv '^($|#)' /etc/modules || exit 0
+        # Load listed modules
+        while read module args; do
+            # Skip comments and empty lines.
+            case "$module" in
+                ""|"#"*) continue ;;
+            esac
+            # Try to load each module
+            printf "Loading ${module}"
+            modprobe ${module} ${args} > /dev/null
+            [ $? = 0 ] && echo "OK" || echo "FAIL"
+        done < /etc/modules
+        exit 0
+        ;;
+
+    *)
+        echo "Usage: ${0} {start}"
+        exit 1
+        ;;
+esac
+\end{lstlisting}
+\end{minipage}
+\end{samepage}
+
+\texttt{S02modules} es un script de carga de controladores (módulos) simple y genérico que cargará de forma dinámica todos los controladores listados en otro archivo llamado \texttt{modules} en el directorio \texttt{/etc}, si existe.
+Procedamos pues a crear dicho archivo con un editor de texto como \texttt{nano}.
+
+\begin{Verbatim}[gobble=1]
+	nano board/raspberrypi4-64/rootfs-overlay/etc/modules
+\end{Verbatim}
+
+\begin{samepage}
+\noindent
+A coninuación, agregue el siguiente contenido al archivo:
+
+\noindent
+\begin{minipage}{\columnwidth}
+\begin{lstlisting}[%
+	title={\texttt{rootfs-overlay/etc/modules}},%
+	firstnumber=1]
+# List of modules to be loaded during startup
+i2c-bcm2835
+i2c-dev
+\end{lstlisting}
+\end{minipage}
+\end{samepage}
+
+Estos archivos harán que el kernel cargue los controladores para \IIC{} al arranque, ¡pero \texttt{/dev/i2c-1} sólo será accesible por el superusuario \emph{root}!
+Para solucionar este inconveniente crearemos otro script de arranque similar a \texttt{S02modules} que cambie los permisos de todos los periféricos \IIC{} cambiando su grupo a i2c al cual el usuario \emph{pi} que creamos en el paso anterior ya tiene acceso.
+
+\begin{samepage}
+Procedemos a crear el archivo, marcarlo como ejecutable y editarlo con los siguientes dos comandos:
+
+\begin{Verbatim}[gobble=1]
+	touch board/raspberrypi4-64/rootfs-overlay/etc/init.d/S10i2cperms
+	chmod +x board/raspberrypi4-64/rootfs-overlay/etc/init.d/S10i2cperms
+	nano board/raspberrypi4-64/rootfs-overlay/etc/init.d/S10i2cperms
+\end{Verbatim}
+\end{samepage}
+
+\begin{samepage}
+\noindent
+A continuación, agregue el siguiente contenido al archivo:
+
+\noindent
+\begin{minipage}{\columnwidth}
+\begin{lstlisting}[%
+	title={\texttt{rootfs-overlay/etc/init.d/S10i2cperms}},%
+	firstnumber=1]
+#!/bin/sh
+case "${1}" in
+    start)
+        # Loops over all i2c devices, if any
+        for iic in /dev/i2c*; do
+            chown root:i2c "${iic}"
+            chmod ug+rw "${iic}"
+        done
+        unset iic
+        ;;
+
+    *)
+        echo "Usage: ${0} {start}"
+        exit 1
+        ;;
+esac
+\end{lstlisting}
+\end{minipage}
+\end{samepage}
+
+\medskip{}
+
+Por último, crearemos los archivos que permitan la ejecución automática de cualquer script de arranque que nos sea conveniente:
+
+\begin{enumerate}
+	\item Copie el archivo anexo \texttt{test.pyc} al directorio del usuario \emph{pi}; es decir a\\
+	\texttt{board/raspberrypi4-64/rootfs-overlay/home/pi}.
+
+	\begin{samepage}
+	\item Cree un archivo de inicio \texttt{start.sh} en el mismo directorio, y márquelo como ejecutable con los siguientes comandos:
+	\begin{Verbatim}[gobble=2]
+		touch board/raspberrypi4-64/rootfs-overlay/home/pi/start.sh
+		chmod +x board/raspberrypi4-64/rootfs-overlay/home/pi/start.sh
+	\end{Verbatim}
+	\end{samepage}
+
+	\begin{samepage}
+	\item Utilizando editor de texto plano como \texttt{nano} o \texttt{vim}, edite el archivo anterior y agregue el siguiente contenido al archivo:
+	\lstinputlisting[%
+		language=sh,%
+		title={\texttt{rootfs-overlay/home/pi/start.sh}},%
+		linerange={1-43}%
+	]{src/board/raspberrypi4-64/rootfs-overlay/home/pi/start.sh}
+	\end{samepage}
+
+	\begin{samepage}
+	\item Cree un archivo de autoarranque o \emph{daemon} \texttt{S99autostart} en el mismo directorio \texttt{etc/init.d/} del \emph{overlay}, y márquelo como ejecutable con los siguientes dos comandos:
+	\begin{Verbatim}[gobble=2]
+		touch board/raspberrypi4-64/rootfs-overlay/etc/init.d/S99autostart
+		chmod +x board/raspberrypi4-64/rootfs-overlay/etc/init.d/S99autostart
+	\end{Verbatim}
+	\end{samepage}
+
+	\begin{samepage}
+	\item Utilizando editor de texto plano como \texttt{nano} o \texttt{vim}, edite el archivo \texttt{S99autostart} y agregue el siguiente contenido al archivo:\\
+\noindent
+\begin{minipage}{\columnwidth}
+\begin{lstlisting}[%
+	title={\texttt{rootfs-overlay/etc/init.d/S99autostart}},%
+	firstnumber=1]
+#!/bin/sh
+case "${1}" in
+    start)
+        # Exits if /home/pi/start.sh does not exist
+        [ -f /home/pi/start.sh ] || exit 0
+        # Else executes it
+        su - pi -c /home/pi/start.sh
+        exit 0
+        ;;
+
+    *)
+        echo "Usage: ${0} {start}"
+        exit 1
+        ;;
+esac
+\end{lstlisting}
+\end{minipage}
+\end{samepage}
+
+\end{enumerate}
+
+\noindent
+¡Listo! Ahora su sistema puede ejecutar programas como el usuario \emph{pi} automáticamente al arrancar.
+Sólo tiene que modidificar el archivo \texttt{home/pi/start.sh} de acuerdo a sus necesidades.
+
+\bigskip{}
+
+Opcionalmente, en caso de que se haya llevado a cabo la personalización con logotipo~(véase~\Cref{sec:step3}), procederemos a automatizar la solución del inconveniente y borrar la pantalla de forma automática cuando se inicie sesión.
+Esto se logra de forma simple añadiendo dicho comando al final del archivo \texttt{.profile} ubicado en cada uno de los directorios de usuario, en nuestro caso \texttt{/root} y \texttt{/home/pi}.
+
+\begin{samepage}
+Para resolver el inconveniente el caso del súperusuario \emph{root} ejecute los siguientes comandos:
+\begin{Verbatim}[gobble=1]
+	$ mkdir -p board/raspberrypi/rootfs-overlay/root
+	$ echo "clear" > board/raspberrypi/rootfs-overlay/root/.profile
+\end{Verbatim}
+\end{samepage}
+
+\begin{samepage}
+A continuación, repetimos el procedimiento para la cuenta de usuario \emph{pi}:
+
+\begin{Verbatim}[gobble=1]
+	$ echo "clear" > board/raspberrypi/rootfs-overlay/home/pi/.profile
+\end{Verbatim}
+\end{samepage}
+
+Listo.
+Hemos terminado de configurar el sistema de archivos.
