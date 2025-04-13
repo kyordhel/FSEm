@@ -1,6 +1,6 @@
 PREFIX  = practica
 SILENT  = @
-JOB     = "FSEm - $(PREFIX) 08 bis"
+JOB     = "FSEm - $(PREFIX) 07c"
 RUBBER  = rubber
 RFLAGS  = --pdf --force
 
