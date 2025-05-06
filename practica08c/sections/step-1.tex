@@ -15,7 +15,7 @@
 \subsection{Implementación un controlador On/Off}%
 \label{sec:step-1}
 
-Alambre cuidadosamente los circuitos de las prácticas \href{https://github.com/kyordhel/FSEm/tree/master/practica06}{6} y \href{https://github.com/kyordhel/FSEm/tree/master/practica07b}{7} para crear un circuito AC-DC optoacoplado completo para control cerrado de temperatura usando un foco incandescente operado con un LM35 y un circuito de variación de fase mediante detección de cruce por cero.
+Alambre cuidadosamente los circuitos de las prácticas \href{https://github.com/kyordhel/FSEm/tree/master/practica06}{6} y \href{https://github.com/kyordhel/FSEm/tree/master/practica07}{7} para crear un circuito AC-DC optoacoplado completo para control cerrado de temperatura usando un foco incandescente operado con un LM35 y un circuito de variación de fase mediante detección de cruce por cero.
 El circuito completo alambrado debe verse como el de la \Cref{fig:circuit-full}.
 
 \medskip
@@ -23,7 +23,7 @@ El circuito completo alambrado debe verse como el de la \Cref{fig:circuit-full}.
 \begin{importantbox}{\large Importante}
 	\begin{center}
 		Asegúrese de verificar con un multímetro que el circuito de AC está debidamente aislado y que no se tienen valores mayores a 5V en el segmento de DC.
-		De otro modo podría quemar su RP2040 y su Raspberry Pi.
+		De otro modo podría quemar su Arduino y su Raspberry Pi.
 	\end{center}
 \end{importantbox}
 
@@ -36,17 +36,17 @@ El circuito completo alambrado debe verse como el de la \Cref{fig:circuit-full}.
 	\label{fig:circuit-full}
 \end{figure}
 
-De acuerdo con el alambrado de la \Cref{fig:circuit-full}, el RP2040 ha de realizar tres funciones:
+De acuerdo con el alambrado de la \Cref{fig:circuit-full}, el Arduino ha de realizar tres funciones:
 \begin{enumerate*}[label=\roman*\rpar]
 	\item digitalización del valor de temperatura analógico sensado por el LM35,
 	\item la detección del cruce por cero de la onda sinusoidal de la línea eléctrica,
 	y
 	\item la modulación de potencia del foco incandescente mediante variación de fase ajustada por el retardo en el disparo del TRIAC.
 \end{enumerate*}
-Al igual que en las prácticas anteriores, el RP2040 estará configurado como dispositivo esclavo y estas operaciones estarán al servicio del dispositivo maestro: la Raspberry Pi.
-Así, una operación de lectura proporcionará al dispositivo maestro la temperatura sensada, mientras que una operación de escritura enviará la potencia con la que encenderá el foco como un valor flotante entre 0 y 100, quedando a cargo del RP2040 el cálculo de la variación de fase y la sincronización de las operaciones de hardware.
+Al igual que en las prácticas anteriores, el Arduino estará configurado como dispositivo esclavo y estas operaciones estarán al servicio del dispositivo maestro: la Raspberry Pi.
+Así, una operación de lectura proporcionará al dispositivo maestro la temperatura sensada, mientras que una operación de escritura enviará la potencia con la que encenderá el foco como un valor flotante entre 0 y 100, quedando a cargo del Arduino el cálculo de la variación de fase y la sincronización de las operaciones de hardware.
 
-\paragraph{Nota:} La implementación del código del RP2040 se deja a cargo del estudiante.
+\paragraph{Nota:} La implementación del código del Arduino se deja a cargo del estudiante.
 
 \medskip
 
@@ -73,8 +73,8 @@ tal como se muestra en el \Cref{lst:controller-code-params}.
 \end{minipage}
 
 El controlador con los parámetros descritos anteriormente requerirá de dos funciones auxiliares: \emph{readTemperature} (véase \Cref{lst:controller-code-read}) y \emph{writePower} (véase \Cref{lst:controller-code-write}).
-La primer función corresponde a una operación de lectura en la cual el RP2040 proporcionará la temperatura registrada por el sensor en grados centígrados codificado como un valor flotante (4 bytes en little endian).
-La segunda función es una operación de escritura en la cual la Raspberry Pi proporcionará al RP2040 el factor de potencia de 0 a 100 codificada como un valor flotante (4 bytes en little endian).
+La primer función corresponde a una operación de lectura en la cual el Arduino proporcionará la temperatura registrada por el sensor en grados centígrados codificado como un valor flotante (4 bytes en little endian).
+La segunda función es una operación de escritura en la cual la Raspberry Pi proporcionará al arduino el factor de potencia de 0 a 100 codificada como un valor flotante (4 bytes en little endian).
 
 \begin{minipage}{\linewidth}%
 \lstinputlisting[%
@@ -97,7 +97,7 @@ La segunda función es una operación de escritura en la cual la Raspberry Pi pr
 Por último queda revisar la implementación del controlador mostrada en el \Cref{lst:controller-onoff-code}.
 El control de temperatura se ejecuta en un bucle infinito de tres partes dentro de la función principal \emph{main}.
 \begin{enumerate*}[label=\arabic*\rpar]
-	\item Primero se lee la temperatura en °C del RP2040,
+	\item Primero se lee la temperatura en °C del arduino,
 	\item después esta se compara con los umbrales.
 	Si la temperatura es menor al valor de encendido la lámpara se enciende a máxima potencia y permanecerá encendida hasta que se supera el valor de apagado.
 	Por último,

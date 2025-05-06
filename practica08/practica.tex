@@ -9,6 +9,7 @@
 % TEX-ROOT=references.bib
 % CHKTEX-FILE 1
 % CHKTEX-FILE 13
+% CHKTEX-FILE 46
 \documentclass[letterpaper,10.5pt]{article}
 \input{setup/packages}
 \input{setup/macros}
@@ -17,7 +18,7 @@
 \input{setup/document}
 
 \author{\footnotesize Autor: José Mauricio Matamoros de Maria y Campos}
-\title{Práctica 8:\\Control de temperatura en lazo cerrado\\de una lámpara incandecente\\usando Arduino y la Raspberry Pi\\
+\title{Práctica 8:\\Linux embebido\\
 {\large Fundamentos de Sistemas Embebidos}}
 \date{}
 
@@ -27,19 +28,17 @@
 
 \section{Objetivo}%
 \label{sec:objective}
-El alumno aprenderá a controlar la temperatura de un entorno cerrado calentado una carga resistiva de alta potencia opto-acoplada a un microcontrolador por medio de un detector de cruce por cero, un TRIAC, y un sensor de temperatura LM35.
+El alumno aprenderá a generar una imagen de Linux optimizada para la Raspberry Pi usando \textit{buildroot}.
 
 \input{sections/intro}
 \input{sections/material}
-% \cleardoublepage
 \input{sections/steps}
-\cleardoublepage
+\cleardoublepage{}
 \input{sections/experiments}
 \input{sections/references}
 
+\cleardoublepage{}
 \appendix
-
 \input{sections/appendices}
 
 \end{document}
-

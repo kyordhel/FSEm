@@ -5,18 +5,30 @@
 % License: MIT
 %
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %!TEX root = ../practica.tex
 %!TEX root = ../references.bib
 
-% CHKTEX-FILE 1
-% CHKTEX-FILE 13
-% CHKTEX-FILE 46
-
 \section{Introducción}%
-\label{seq:introduction}
-La presente práctica resume los pasos a seguir para modular la temperatura de un entorno cerrado usando un sensor de temperatura LM35 y un foco incandescente o carga resistiva de alta potencia modulada mediante un detector de cruce por cero y un TRIAC.
-En particular, se interesa en la implementación de un controlador proporcional e interfaz \IIC entre un Arduino y una Raspberry Pi.
+\label{sec:introduction}
+Existen múltiples herramientas para desarrollar sistemas embebidos, tales como
+	Buildroot~\Citep{buildrootManual,barry2012modern},
+	Yocto Project~\Citep{yoctoManual,barry2012modern}
+	y
+	Linaro Project~\Citep{barry2012modern},
+entre otros.
+De estos se ha elegido Buildroot por ser minimalista y sencillo.
 
-\input{sections/intro-lamps}
-\input{sections/intro-control}
+De acuerdo con el sitio oficial de Buildroot:
+\begin{foreigndisplayquote}{english}[\Citeauthor{buildrootManual}~\Citep{buildrootManual}]
+	Buildroot is a simple, efficient and easy-to-use tool to generate embedded Linux systems through cross-compilation.
+\end{foreigndisplayquote}
 
+Buildroot es una herramienta que simplifica y automatiza el proceso de creación de un sistema Linux embebido mediante compilación cruzada~\Citep{buildrootManual}.
+Esto se logra mediante un conjunto de interfaces unificadoras que operan sobre un conjunto de parches y archivos \texttt{Makefile} para cmake que generan y enlazan binarios para el kernel y los paquetes seleccionados, incluyendo la estructura del sistema de archivos raíz y la generación de una imagen de sistema operativo~\Citep{buildrootManual,barry2012modern}.
+
+En esta práctica se resumen los pasos para crear un sistema embebido mínimo y sumamente simple.
+
+% \input{sections/intro-1wire}
+% \input{sections/intro-iic}
+% \input{sections/intro-lcd1602}
